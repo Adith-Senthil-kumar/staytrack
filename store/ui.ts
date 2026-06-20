@@ -5,6 +5,9 @@ type UiState = {
   openDrawer: () => void;
   closeDrawer: () => void;
   toggleDrawer: () => void;
+  selectedTenantId: string | null;
+  selectTenant: (id: string) => void;
+  clearSelection: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -12,4 +15,7 @@ export const useUiStore = create<UiState>((set) => ({
   openDrawer: () => set({ drawerOpen: true }),
   closeDrawer: () => set({ drawerOpen: false }),
   toggleDrawer: () => set((s) => ({ drawerOpen: !s.drawerOpen })),
+  selectedTenantId: null,
+  selectTenant: (id) => set({ selectedTenantId: id }),
+  clearSelection: () => set({ selectedTenantId: null }),
 }));

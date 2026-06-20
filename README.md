@@ -9,7 +9,9 @@ re-implementation of the design in `reference/StayTrack-PG-Manager-design/`.
    (Firebase console → Project settings → Your apps → Web).
 3. In Firebase console: enable **Authentication → Email/Password** and create a
    **Firestore** database.
-4. `npx expo start`
+4. Create the owner's account under **Authentication → Users** (email + password).
+   The app is login-only — there is no in-app sign-up.
+5. `npx expo start`
 
 ## Scripts
 - `npx expo start` — run dev (press `w` web, `i` iOS, `a` Android)
@@ -21,5 +23,6 @@ See `docs/superpowers/specs/2026-06-20-staytrack-mobile-app-design.md` and the
 plans in `docs/superpowers/plans/`.
 
 ## Status
-Foundation complete: theming, fonts, Firebase init, domain logic. Auth, screens,
-and data layer follow in later plans.
+Foundation + auth & app shell complete. Sign in (email/password) → responsive
+sidebar/drawer shell with the 4 core nav sections (placeholder screens). Onboarding,
+feature screens, and the Firestore data layer follow in later plans.

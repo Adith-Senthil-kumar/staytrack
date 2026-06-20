@@ -17,6 +17,7 @@ import {
   IBMPlexMono_500Medium,
   IBMPlexMono_600SemiBold,
 } from '@expo-google-fonts/ibm-plex-mono';
+import { useThemeStore } from '../store/theme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,6 +36,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded || error) SplashScreen.hideAsync();
   }, [loaded, error]);
+
+  const hydrateTheme = useThemeStore((s) => s.hydrate);
+  useEffect(() => { hydrateTheme(); }, [hydrateTheme]);
 
   if (!loaded && !error) return null;
 

@@ -39,6 +39,12 @@ module.exports = {
         'maint-bg': 'var(--maint-bg)', 'maint-bd': 'var(--maint-bd)',
         'vac-bg': 'var(--vac-bg)', 'bad-bg': 'var(--bad-bg)',
         'due-bg': 'var(--due-bg)', overlay: 'var(--overlay)',
+        topbar: 'var(--topbar)',
+        veg: 'rgb(var(--veg) / <alpha-value>)',
+        nonveg: 'rgb(var(--nonveg) / <alpha-value>)',
+        'ground-a': 'rgb(var(--ground-a) / <alpha-value>)',
+        'ground-b': 'rgb(var(--ground-b) / <alpha-value>)',
+        'st-vac': 'rgb(var(--st-vac) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['IBMPlexSans_400Regular'],

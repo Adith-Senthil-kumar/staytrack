@@ -1,4 +1,4 @@
-import { getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { getDoc, setDoc } from 'firebase/firestore';
 import { userRef } from './refs';
 import type { Property } from '../../types';
 
@@ -9,5 +9,10 @@ export async function ensureUserDoc(uid: string, email: string) {
     await setDoc(ref, { email, onboardingComplete: false, property: null, createdAt: new Date().toISOString() });
   }
 }
-export const setProperty = (uid: string, property: Property) => updateDoc(userRef(uid), { property });
-export const completeOnboarding = (uid: string) => updateDoc(userRef(uid), { onboardingComplete: true });
+
+// setDoc(merge) so these create-or-update — they succeed even if the user doc
+// hasn't been created yet (e.g. before ensureUserDoc has run on a fresh login).
+export const setProperty = (uid: string, property: Property) =>
+  setDoc(userRef(uid), { property }, { merge: true });
+export const completeOnboarding = (uid: string) =>
+  setDoc(userRef(uid), { onboardingComplete: true }, { merge: true });

@@ -13,12 +13,18 @@ export default function PropertyStep() {
   const [address, setAddress] = useState('');
   const [dueDay, setDueDay] = useState('5');
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const next = async () => {
     if (!uid || !name.trim()) return;
-    setBusy(true);
-    await setProperty(uid, { name: name.trim(), address: address.trim(), rentDueDay: Number(dueDay) || 5 });
-    router.push('/(onboarding)/rooms');
+    setBusy(true); setError(null);
+    try {
+      await setProperty(uid, { name: name.trim(), address: address.trim(), rentDueDay: Number(dueDay) || 5 });
+      router.push('/(onboarding)/rooms');
+    } catch (e) {
+      setError((e as Error)?.message ?? 'Could not save. Check your connection and try again.');
+      setBusy(false);
+    }
   };
 
   const input = 'rounded-[9px] border border-border bg-field px-3.5 py-3 text-sm text-text';
@@ -36,6 +42,7 @@ export default function PropertyStep() {
       <Pressable onPress={next} disabled={busy || !name.trim()} className="items-center rounded-[10px] bg-brand py-3.5" style={{ opacity: busy || !name.trim() ? 0.6 : 1 }}>
         <Text className="text-[14.5px] font-sans-semibold text-[#F4F1E7]">Continue</Text>
       </Pressable>
+      {error ? <Text className="mt-3 text-[12.5px] text-bad">{error}</Text> : null}
     </View>
   );
 }

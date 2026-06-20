@@ -19,6 +19,7 @@ import {
 } from '@expo-google-fonts/ibm-plex-mono';
 import { useThemeStore } from '../store/theme';
 import { useAuthStore } from '../store/auth';
+import { ensureUserDoc } from '../lib/db/user';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,6 +47,14 @@ export default function RootLayout() {
     const unsub = initAuth();
     return unsub;
   }, [initAuth]);
+
+  // Bootstrap the Firestore user doc whenever a user is authenticated. This runs
+  // regardless of which route is active (fresh login goes auth→app→onboarding,
+  // never mounting index.tsx), so the doc always exists before onboarding writes.
+  const user = useAuthStore((s) => s.user);
+  useEffect(() => {
+    if (user) ensureUserDoc(user.uid, user.email ?? '').catch(() => {});
+  }, [user]);
 
   if (!loaded && !error) return null;
 

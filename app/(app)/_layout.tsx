@@ -3,6 +3,7 @@ import { View, Pressable, useWindowDimensions, ScrollView } from 'react-native';
 import { Redirect, Slot, usePathname } from 'expo-router';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useAuthStore } from '../../store/auth';
+import { useUserDoc } from '../../lib/db/hooks';
 import { useUiStore } from '../../store/ui';
 import { Sidebar } from '../../components/shell/Sidebar';
 import { TopBar } from '../../components/shell/TopBar';
@@ -16,6 +17,7 @@ const META: Record<string, { title: string; subtitle: string; action?: string }>
 
 export default function AppLayout() {
   const { user, initializing } = useAuthStore();
+  const { userDoc, loading } = useUserDoc();
   const { width } = useWindowDimensions();
   const wide = width >= 1000;
   const { drawerOpen, closeDrawer } = useUiStore();
@@ -31,6 +33,8 @@ export default function AppLayout() {
 
   if (initializing) return null;
   if (!user) return <Redirect href="/(auth)/login" />;
+  if (loading) return null;
+  if (!userDoc?.onboardingComplete) return <Redirect href="/(onboarding)/property" />;
 
   return (
     <View className="flex-1 flex-row bg-bg">

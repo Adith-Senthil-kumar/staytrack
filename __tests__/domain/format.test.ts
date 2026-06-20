@@ -10,6 +10,13 @@ describe('formatINR', () => {
     expect(formatINR(0)).toBe('₹0');
     expect(formatINR(1250.6)).toBe('₹1,251');
   });
+  test('handles negatives, crore-scale grouping, and -0 normalization', () => {
+    expect(formatINR(-5000)).toBe('-₹5,000');
+    expect(formatINR(10000000)).toBe('₹1,00,00,000');   // 1 crore
+    expect(formatINR(12345678)).toBe('₹1,23,45,678');
+    expect(formatINR(-0.4)).toBe('₹0');                  // normalized, no "-₹0"
+    expect(formatINR(-0)).toBe('₹0');
+  });
 });
 
 describe('monthKey', () => {

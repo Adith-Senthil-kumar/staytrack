@@ -33,9 +33,12 @@ export interface Due {
   amountDue: number;
   amountPaid: number;
   paidAt: string | null; // ISO timestamp of last payment
+  method?: PaymentMethod;
 }
 export type NewDue = Omit<Due, 'id'>;
 export type DueStatus = 'paid' | 'partial' | 'unpaid' | 'overdue';
+
+export type PaymentMethod = 'upi' | 'cash' | 'bank';
 
 export type ExpenseCategory =
   | 'mess' | 'staff' | 'utilities' | 'repairs' | 'supplies' | 'other';

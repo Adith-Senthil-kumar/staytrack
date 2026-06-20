@@ -18,6 +18,7 @@ import {
   IBMPlexMono_600SemiBold,
 } from '@expo-google-fonts/ibm-plex-mono';
 import { useThemeStore } from '../store/theme';
+import { useAuthStore } from '../store/auth';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,6 +40,12 @@ export default function RootLayout() {
 
   const hydrateTheme = useThemeStore((s) => s.hydrate);
   useEffect(() => { hydrateTheme(); }, [hydrateTheme]);
+
+  const initAuth = useAuthStore((s) => s.init);
+  useEffect(() => {
+    const unsub = initAuth();
+    return unsub;
+  }, [initAuth]);
 
   if (!loaded && !error) return null;
 

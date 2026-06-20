@@ -1,3 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: 236 231 218;        --surface: 251 249 242;   --surface-2: 242 237 223;
+    --surface-3: 244 239 226; --field: 255 253 247;     --field-hover: 241 236 221;
+    --border: 222 216 200;    --border-2: 228 222 206;  --border-3: 236 230 214;
+    --track: 231 225 210;     --ink: 19 53 44;          --text: 35 41 31;
+    --text-2: 65 70 60;       --label: 92 97 87;        --muted: 113 119 106;
+    --muted-2: 133 137 124;   --soft: 154 154 138;      --sidebar: 14 46 39;
+    --panel: 242 237 223;     --brand: 19 53 44;        --brand-hover: 26 70 57;
+    --accent: 30 111 92;      --accent-hover: 23 96 79; --disabled: 200 194 178;
+    --ok: 30 111 92;          --warn: 198 122 30;       --bad: 181 70 47;
+    --vac-bd: 207 201 183;
+
+    --occ-bg: #EAF1EC;  --occ-bd: #C7DAD0;  --pend-bg: #FAF0DD; --pend-bd: #E8C896;
+    --maint-bg: #F7E7E1; --maint-bd: #E2B8AC; --vac-bg: #FBFAF4; --bad-bg: #F6E5DF;
+    --due-bg: #F4D6CC;  --overlay: rgba(20,30,25,0.45);
+  }
+
+  .dark:root {
+    --bg: 14 26 22;           --surface: 21 35 30;      --surface-2: 27 42 36;
+    --surface-3: 32 48 41;    --field: 19 32 27;        --field-hover: 32 48 41;
+    --border: 42 58 50;       --border-2: 36 48 41;     --border-3: 34 46 39;
+    --track: 36 48 41;        --ink: 228 237 231;       --text: 231 239 233;
+    --text-2: 188 203 194;    --label: 166 181 171;     --muted: 141 160 152;
+    --muted-2: 134 153 144;   --soft: 111 131 121;      --sidebar: 10 19 16;
+    --panel: 21 35 30;        --brand: 22 70 58;        --brand-hover: 28 84 70;
+    --accent: 46 139 114;     --accent-hover: 55 160 131; --disabled: 42 58 50;
+    --ok: 95 184 159;         --warn: 224 168 90;       --bad: 224 132 106;
+    --vac-bd: 51 67 59;
+
+    --occ-bg: rgba(46,139,114,0.16);  --occ-bd: rgba(46,139,114,0.4);
+    --pend-bg: rgba(224,168,90,0.15); --pend-bd: rgba(224,168,90,0.42);
+    --maint-bg: rgba(224,132,106,0.15); --maint-bd: rgba(224,132,106,0.42);
+    --vac-bg: rgba(255,255,255,0.025); --bad-bg: rgba(224,132,106,0.16);
+    --due-bg: rgba(224,132,106,0.28); --overlay: rgba(9,16,13,0.55);
+  }
+}

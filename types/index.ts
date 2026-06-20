@@ -11,6 +11,7 @@ export interface Room {
 }
 
 export type TenantStatus = 'active' | 'vacated';
+export type FoodPreference = 'veg' | 'nonveg';
 
 export interface Tenant {
   id: string;
@@ -21,6 +22,7 @@ export interface Tenant {
   deposit: number;
   joinDate: string;   // ISO "2026-06-01"
   status: TenantStatus;
+  foodPreference: FoodPreference;
 }
 
 // `status` is DERIVED via dueStatus(); only these fields are stored.
@@ -51,4 +53,11 @@ export interface Property {
   name: string;
   address: string;
   rentDueDay: number; // day-of-month rent is due, e.g. 5
+}
+
+export interface UserDoc {
+  email: string;
+  onboardingComplete: boolean;
+  property: Property | null;
+  createdAt: string; // ISO
 }

@@ -30,9 +30,9 @@ describe('dueStatus', () => {
 
 describe('generateDuesForMonth', () => {
   const tenants: Tenant[] = [
-    { id: 't1', name: 'A', phone: '', roomId: 'r1', rent: 8000, deposit: 0, joinDate: '2026-01-01', status: 'active' },
-    { id: 't2', name: 'B', phone: '', roomId: 'r2', rent: 6000, deposit: 0, joinDate: '2026-01-01', status: 'active' },
-    { id: 't3', name: 'C', phone: '', roomId: null, rent: 5000, deposit: 0, joinDate: '2026-01-01', status: 'vacated' },
+    { id: 't1', name: 'A', phone: '', roomId: 'r1', rent: 8000, deposit: 0, joinDate: '2026-01-01', status: 'active', foodPreference: 'veg' },
+    { id: 't2', name: 'B', phone: '', roomId: 'r2', rent: 6000, deposit: 0, joinDate: '2026-01-01', status: 'active', foodPreference: 'veg' },
+    { id: 't3', name: 'C', phone: '', roomId: null, rent: 5000, deposit: 0, joinDate: '2026-01-01', status: 'vacated', foodPreference: 'nonveg' },
   ];
   test('creates one due per active tenant with rent as amountDue', () => {
     const result = generateDuesForMonth(tenants, '2026-06', []);

@@ -23,6 +23,8 @@ See `docs/superpowers/specs/2026-06-20-staytrack-mobile-app-design.md` and the
 plans in `docs/superpowers/plans/`.
 
 ## Status
-Foundation + auth & app shell complete. Sign in (email/password) → responsive
-sidebar/drawer shell with the 4 core nav sections (placeholder screens). Onboarding,
-feature screens, and the Firestore data layer follow in later plans.
+Foundation + auth + onboarding + Firestore data layer complete. Sign in → guided
+onboarding (property → rooms → tenants) → responsive shell. Typed repos + realtime
+hooks + owner-only security rules + client-side monthly dues generation are in place.
+Feature screens (Rooms/Tenants/Rent/Expenses) are next; connect a Firebase project
+(`.env` + deploy `firebase/firestore.rules`) to run with live data.

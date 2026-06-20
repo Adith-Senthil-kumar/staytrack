@@ -3,8 +3,10 @@ import { View, Pressable, useWindowDimensions, ScrollView } from 'react-native';
 import { Redirect, Slot, usePathname } from 'expo-router';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useAuthStore } from '../../store/auth';
-import { useUserDoc } from '../../lib/db/hooks';
+import { useUserDoc, useTenants, useDues } from '../../lib/db/hooks';
 import { useUiStore } from '../../store/ui';
+import { ensureCurrentMonthDues } from '../../lib/db/duesEngine';
+import { monthKey } from '../../lib/domain/format';
 import { Sidebar } from '../../components/shell/Sidebar';
 import { TopBar } from '../../components/shell/TopBar';
 
@@ -24,6 +26,14 @@ export default function AppLayout() {
   const pathname = usePathname();
   const key = pathname.split('/').filter(Boolean).pop() ?? 'rooms';
   const meta = META[key] ?? META.rooms;
+
+  const mk = monthKey(new Date());
+  const { tenants } = useTenants();
+  const { dues } = useDues(mk);
+  const uid = useAuthStore((s) => s.user?.uid);
+  useEffect(() => {
+    if (uid && tenants.length) ensureCurrentMonthDues(uid, tenants, dues, mk).catch(() => {});
+  }, [uid, tenants, dues, mk]);
 
   useEffect(() => { if (wide) closeDrawer(); }, [wide, closeDrawer]);
 

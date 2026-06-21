@@ -14,6 +14,9 @@ type UiState = {
   showExpense: boolean;
   openExpense: () => void;
   closeExpense: () => void;
+  showManage: boolean;
+  openManage: () => void;
+  closeManage: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -30,4 +33,7 @@ export const useUiStore = create<UiState>((set) => ({
   showExpense: false,
   openExpense: () => set({ showExpense: true }),
   closeExpense: () => set({ showExpense: false }),
+  showManage: false,
+  openManage: () => set({ showManage: true }),
+  closeManage: () => set({ showManage: false }),
 }));

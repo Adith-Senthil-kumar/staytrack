@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { View, Text, useWindowDimensions } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useRooms, useTenants, useDues, useExpenses, useUserDoc } from '../../lib/db/hooks';
+import { useUiStore } from '../../store/ui';
+import { ManagePropertyModal } from '../../components/property/ManagePropertyModal';
 import { occupancyStats, collectionStats, marginStats } from '../../lib/domain/stats';
 import { monthKey } from '../../lib/domain/format';
 import { groupByFloor, messCounts, statusCounts } from '../../lib/domain/dashboard';
@@ -12,7 +13,6 @@ import { SidePanel } from '../../components/dashboard/SidePanel';
 import { MoneyText } from '../../components/ui/MoneyText';
 
 export default function Rooms() {
-  const router = useRouter();
   const mk = monthKey(new Date());
   const { rooms } = useRooms();
   const { tenants } = useTenants();
@@ -22,6 +22,10 @@ export default function Rooms() {
   const { width } = useWindowDimensions();
   const wide = width >= 1000;
   const dueDay = userDoc?.property?.rentDueDay ?? 5;
+
+  const showManage = useUiStore((s) => s.showManage);
+  const openManage = useUiStore((s) => s.openManage);
+  const closeManage = useUiStore((s) => s.closeManage);
 
   const [status, setStatus] = useState<StatusFilter>('all');
   const [floor, setFloor] = useState<number | 'all'>('all');
@@ -75,12 +79,13 @@ export default function Rooms() {
       <View className={wide ? 'flex-row items-start gap-4' : 'gap-4'}>
         <BuildingElevation floors={floorGroups} tenantByRoom={tenantByRoom} dueByTenant={dueByTenant}
           subtitle={`${userDoc?.property?.name ?? 'Your PG'} · ${rooms.length} rooms`}
-          onManage={() => router.push('/(app)/rooms')} />
+          onManage={openManage} />
         <View className={wide ? 'w-[270px]' : ''}>
           <SidePanel collected={col.collected} potential={col.billed} outstanding={col.pending} net={margin.profit}
             status={sc} mess={mess} />
         </View>
       </View>
+      <ManagePropertyModal visible={showManage} onClose={closeManage} />
     </View>
   );
 }

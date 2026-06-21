@@ -18,7 +18,7 @@ export function AttendanceTab({
   const countOf = (s: AttendanceStatus) => todayRecs.filter((a) => a.status === s).length;
   const markedIds = new Set(todayRecs.map((a) => a.staffId));
   const notMarked = staff.filter((s) => !markedIds.has(s.id)).length;
-  const present = countOf('present');
+  const present = countOf('present') + countOf('late');
   const absent = countOf('absent');
   const onLeave = countOf('leave');
 

@@ -4,7 +4,7 @@ import { useRooms, useTenants, useDues, useExpenses, useUserDoc } from '../../li
 import { useUiStore } from '../../store/ui';
 import { ManagePropertyModal } from '../../components/property/ManagePropertyModal';
 import { occupancyStats, collectionStats, marginStats } from '../../lib/domain/stats';
-import { monthKey } from '../../lib/domain/format';
+import { monthKey, monthName } from '../../lib/domain/format';
 import { groupByFloor, messCounts, statusCounts } from '../../lib/domain/dashboard';
 import { StatCard, ProgressBar } from '../../components/dashboard/StatCard';
 import { FilterBar, type StatusFilter } from '../../components/dashboard/FilterBar';
@@ -57,7 +57,7 @@ export default function Rooms() {
           </View>
           <ProgressBar pct={occ.percent} fill="bg-accent" />
         </StatCard>
-        <StatCard dot="bg-accent" title={`Collected · ${mk}`}>
+        <StatCard dot="bg-accent" title={`Collected · ${monthName(mk)}`}>
           <MoneyText amount={col.collected} className="mt-3 text-[25px]" />
           <Text className="mt-0.5 font-mono text-xs text-soft">of {col.billed ? `₹${col.billed}` : '—'} billed</Text>
           <ProgressBar pct={col.billed ? (col.collected / col.billed) * 100 : 0} />

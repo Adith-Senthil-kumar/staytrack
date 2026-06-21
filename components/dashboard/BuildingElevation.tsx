@@ -43,7 +43,7 @@ export function BuildingElevation({ floors, tenantByRoom, dueByTenant, subtitle,
             {f.rooms.length === 0 ? (
               <Text className="py-3 text-xs text-soft">No rooms on this floor yet.</Text>
             ) : f.rooms.map((r) => (
-              <View key={r.id} className="w-[30%] grow basis-[30%]">
+              <View key={r.id} className="grow basis-[30%] sm:basis-[14%]">
                 <RoomTile vm={roomTileVM(r, tenantByRoom.get(r.id), dueByTenant.get(tenantByRoom.get(r.id)?.id ?? ''))} onPress={() => onSelectRoom?.(r)} />
               </View>
             ))}

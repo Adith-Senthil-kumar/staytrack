@@ -20,3 +20,11 @@ export function monthKey(date: Date): string {
   const m = String(date.getMonth() + 1).padStart(2, '0');
   return `${y}-${m}`;
 }
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+// "2026-06" → "June"
+export function monthName(monthKey: string): string {
+  const m = Number(monthKey.split('-')[1]);
+  return MONTHS[m - 1] ?? monthKey;
+}

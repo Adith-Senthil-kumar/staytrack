@@ -1,14 +1,13 @@
-import { View, Text, useWindowDimensions } from 'react-native';
+import { View, Text } from 'react-native';
 import { MoneyText } from '../ui/MoneyText';
 
 export function RentStatCards({ collected, outstanding, billed, overdueCount }: {
   collected: number; outstanding: number; billed: number; overdueCount: number;
 }) {
-  const { width } = useWindowDimensions();
   const pct = billed ? Math.round((collected / billed) * 100) : 0;
-  const card = 'min-w-0 flex-1 rounded-[14px] border border-border bg-surface p-[18px]';
+  const card = 'min-w-0 grow basis-[47%] rounded-[14px] border border-border bg-surface p-[18px] sm:basis-0';
   return (
-    <View className={width >= 700 ? 'mb-5 flex-row gap-4' : 'mb-5 gap-3'}>
+    <View className="mb-5 flex-row flex-wrap gap-3 sm:gap-4">
       <View className={card}>
         <Text className="text-xs text-muted">Collected · this month</Text>
         <MoneyText amount={collected} className="mt-1.5 text-[26px] text-ok" />

@@ -22,8 +22,8 @@ export function TopBar({ title, subtitle, actionLabel, showBurger }: {
         </Pressable>
       )}
       <View className="min-w-0 flex-1">
-        <Text numberOfLines={1} className="font-serif text-2xl text-ink">{title}</Text>
-        {subtitle ? <Text className="mt-0.5 text-[13px] text-muted">{subtitle}</Text> : null}
+        <Text numberOfLines={1} className="font-serif text-[19px] text-ink sm:text-2xl">{title}</Text>
+        {subtitle ? <Text numberOfLines={1} className="mt-0.5 hidden text-[13px] text-muted sm:flex">{subtitle}</Text> : null}
       </View>
       <View className="flex-row items-center gap-3.5">
         <View className="hidden w-[240px] flex-row items-center gap-2 rounded-[9px] border border-border bg-surface px-3 py-2 lg:flex">
@@ -37,7 +37,7 @@ export function TopBar({ title, subtitle, actionLabel, showBurger }: {
         {actionLabel ? (
           <Pressable className="flex-row items-center gap-2 rounded-[9px] bg-brand px-4 py-2.5 active:bg-brand-hover">
             <PlusIcon size={16} color="#F4F1E7" />
-            <Text className="text-[13.5px] font-sans-semibold text-[#F4F1E7]">{actionLabel}</Text>
+            <Text className="hidden text-[13.5px] font-sans-semibold text-[#F4F1E7] sm:flex">{actionLabel}</Text>
           </Pressable>
         ) : null}
       </View>

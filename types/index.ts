@@ -76,3 +76,8 @@ export interface MaintTicket { id: string; roomNumber: string; category: MaintCa
 export type SSStatus = 'available' | 'occupied' | 'cleaning';
 export interface SSRoom { id: string; number: string; dailyRate: number; status: SSStatus; guestName: string | null; checkIn: string | null; checkOut: string | null; }
 export interface SSStay { id: string; guestName: string; roomNumber: string; checkIn: string; checkOut: string; nights: number; total: number; createdAt: string; }
+
+export type AttendanceStatus = 'present' | 'late' | 'absent' | 'leave';
+export interface Attendance { id: string; staffId: string; date: string; status: AttendanceStatus; }
+export type Shift = 'morning' | 'evening' | 'night' | 'off';
+export interface ScheduleEntry { id: string; staffId: string; day: number; shift: Shift; } // day: 0=Mon … 6=Sun

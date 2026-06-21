@@ -69,7 +69,7 @@ export function BookingModal({
   const idBtn = (active: boolean) =>
     `rounded-[8px] border px-4 py-[9px] text-[13.5px] font-sans-semibold ${active ? 'border-[#C7842A55] bg-[#C7842A1F] text-[#C7842A]' : 'border-border bg-surface text-label'}`;
   const pmBtn = (active: boolean) =>
-    `rounded-[8px] border px-4 py-[9px] text-[13.5px] font-sans-semibold ${active ? 'border-[#C7842A55] bg-[#C7842A1F] text-[#C7842A]' : 'border-border bg-surface text-label'}`;
+    `rounded-[8px] border px-4 py-[9px] text-[13.5px] font-sans-semibold ${active ? 'border-ok bg-occ-bg text-ok' : 'border-border bg-surface text-label'}`;
 
   const selectedRoom = availableRooms.find((r) => r.id === roomId);
 
@@ -213,10 +213,10 @@ export function BookingModal({
             <Text className={lbl}>Advance Payment Method</Text>
             <View className="mb-2 flex-row gap-2.5">
               <Pressable onPress={() => setPayMethod('upi')} className={pmBtn(payMethod === 'upi')}>
-                <Text className={`text-[13.5px] font-sans-semibold ${payMethod === 'upi' ? 'text-[#C7842A]' : 'text-label'}`}>UPI</Text>
+                <Text className={`text-[13.5px] font-sans-semibold ${payMethod === 'upi' ? 'text-ok' : 'text-label'}`}>UPI</Text>
               </Pressable>
               <Pressable onPress={() => setPayMethod('cash')} className={pmBtn(payMethod === 'cash')}>
-                <Text className={`text-[13.5px] font-sans-semibold ${payMethod === 'cash' ? 'text-[#C7842A]' : 'text-label'}`}>Cash</Text>
+                <Text className={`text-[13.5px] font-sans-semibold ${payMethod === 'cash' ? 'text-ok' : 'text-label'}`}>Cash</Text>
               </Pressable>
             </View>
           </ScrollView>

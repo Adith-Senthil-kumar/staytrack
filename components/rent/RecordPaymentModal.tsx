@@ -121,7 +121,7 @@ export function RecordPaymentModal({ tenant, roomNumber, due, monthLabel, onClos
                       <Pressable
                         key={m.key}
                         onPress={() => setMethod(m.key)}
-                        className={`flex-1 items-center gap-1 rounded-[10px] border py-3 ${active ? 'border-accent bg-occ-bg' : 'border-border bg-surface'}`}
+                        className={`flex-1 items-center gap-1 rounded-[10px] border py-3 ${active ? 'border-ok bg-occ-bg' : 'border-border bg-surface'}`}
                       >
                         <m.Icon />
                         <Text className={`text-[13px] font-sans-semibold ${active ? 'text-ok' : 'text-muted'}`}>{m.label}</Text>

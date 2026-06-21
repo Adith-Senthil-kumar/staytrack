@@ -8,7 +8,9 @@ import type { Room, Tenant, Due, Expense, UserDoc, Staff, MaintTicket, SSRoom, S
 function converter<T>(): FirestoreDataConverter<T> {
   return {
     toFirestore: (data) => data as object,
-    fromFirestore: (snap) => ({ id: snap.id, ...snap.data() }) as T,
+    // id LAST so the real document id always wins — a stale stored `id` field
+    // (from legacy/imported docs) can never override it and collide with another row.
+    fromFirestore: (snap) => ({ ...snap.data(), id: snap.id }) as T,
   };
 }
 

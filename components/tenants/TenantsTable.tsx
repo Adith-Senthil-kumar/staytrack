@@ -13,7 +13,7 @@ export function TenantsTable({ children, empty }: { children: React.ReactNode; e
             <Text className={`w-12 ${head}`}>Room</Text>
             <Text className={`w-16 ${head}`}>Sharing</Text>
             <Text className={`w-16 ${head}`}>Rent</Text>
-            <Text className={`w-16 ${head}`}>Status</Text>
+            <Text className={`w-20 ${head}`}>Status</Text>
           </View>
           {empty ? <Text className="px-[22px] py-12 text-center text-[13.5px] text-soft">No tenants yet — add them from onboarding or the dashboard.</Text> : children}
         </View>

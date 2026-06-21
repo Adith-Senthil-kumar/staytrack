@@ -12,6 +12,8 @@ test('tenantRentLabel maps the current due to a label + tone', () => {
   const today = new Date(2026, 5, 10); // past due day 5
   expect(tenantRentLabel(due({ amountPaid: 8000 }), today, 5)).toEqual({ label: 'Paid', tone: 'ok' });
   expect(tenantRentLabel(due({ amountPaid: 2000 }), today, 5)).toEqual({ label: 'Overdue', tone: 'bad' });
-  expect(tenantRentLabel(due({}), new Date(2026, 5, 3), 5)).toEqual({ label: 'Due', tone: 'warn' });
+  // Design's rent table is binary (paid → green, unpaid → red), so an unpaid due
+  // is 'bad'-toned even before the due day — matches StayTrack.dc.html.
+  expect(tenantRentLabel(due({}), new Date(2026, 5, 3), 5)).toEqual({ label: 'Due', tone: 'bad' });
   expect(tenantRentLabel(undefined, today, 5)).toEqual({ label: 'No dues', tone: 'muted' });
 });

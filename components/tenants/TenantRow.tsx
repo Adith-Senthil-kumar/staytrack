@@ -5,8 +5,8 @@ import type { Tenant } from '../../types';
 
 const TONE: Record<RentTone, string> = { ok: 'text-ok', warn: 'text-warn', bad: 'text-bad', muted: 'text-muted' };
 
-export function TenantRow({ tenant, roomNumber, rent, onPress }: {
-  tenant: Tenant; roomNumber: string; rent: { label: string; tone: RentTone }; onPress: () => void;
+export function TenantRow({ tenant, roomNumber, sharing, rent, onPress }: {
+  tenant: Tenant; roomNumber: string; sharing: string; rent: { label: string; tone: RentTone }; onPress: () => void;
 }) {
   const vacated = tenant.status === 'vacated';
   return (
@@ -20,6 +20,7 @@ export function TenantRow({ tenant, roomNumber, rent, onPress }: {
       </View>
       <Text numberOfLines={1} className="w-24 font-mono text-[12.5px] text-label">{tenant.phone || '—'}</Text>
       <Text className="w-12 font-mono-semibold text-[13px] text-ink">{roomNumber}</Text>
+      <Text numberOfLines={1} className="w-16 text-[12.5px] font-sans-medium capitalize text-muted-2">{sharing}</Text>
       <Text className="w-16 font-mono text-[13px] text-text">{formatINR(tenant.rent)}</Text>
       <Text className={`w-16 text-[12px] font-sans-semibold ${vacated ? 'text-muted' : TONE[rent.tone]}`}>{vacated ? 'Vacated' : rent.label}</Text>
     </Pressable>

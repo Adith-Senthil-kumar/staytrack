@@ -36,6 +36,7 @@ export default function Tenants() {
       <TenantsTable empty={active.length === 0}>
         {active.map((t) => (
           <TenantRow key={t.id} tenant={t} roomNumber={t.roomId ? roomById.get(t.roomId)?.number ?? '—' : '—'}
+            sharing={t.roomId ? roomById.get(t.roomId)?.type ?? '—' : '—'}
             rent={tenantRentLabel(dueByTenant.get(t.id), new Date(), dueDay)} onPress={() => selectTenant(t.id)} />
         ))}
       </TenantsTable>

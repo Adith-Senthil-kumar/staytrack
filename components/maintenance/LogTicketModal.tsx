@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from 'react-native';
 import { MAINT_CATEGORY, MAINT_CATEGORY_KEYS, PRIORITY_UI } from '../../constants/maintenance';
 import { CheckIcon, ImageIcon } from '../icons';
-import type { MaintCategory, MaintPriority, Vendor } from '../../types';
+import { SelectField } from '../ui/SelectField';
+import type { MaintCategory, MaintPriority, Vendor, Room } from '../../types';
 
 export function LogTicketModal({
   visible,
   onClose,
   onAdd,
   vendors,
+  rooms,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -21,6 +23,7 @@ export function LogTicketModal({
     photo: boolean;
   }) => void;
   vendors: Vendor[];
+  rooms: Room[];
 }) {
   const [roomNumber, setRoomNumber] = useState('');
   const [category, setCategory] = useState<MaintCategory>('other');
@@ -84,37 +87,21 @@ export function LogTicketModal({
             <View className="mb-4 flex-row gap-3.5">
               <View className="flex-1">
                 <Text className={label}>Room</Text>
-                <TextInput
+                <SelectField
                   value={roomNumber}
-                  onChangeText={setRoomNumber}
-                  placeholder="e.g. 101"
-                  placeholderTextColor="#9A9A8A"
-                  className={input}
+                  onChange={setRoomNumber}
+                  placeholder="Select room…"
+                  options={rooms.map((r) => ({ value: r.number, label: `Room ${r.number}` }))}
                 />
               </View>
               <View className="flex-1">
                 <Text className={label}>Category</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View className="flex-row gap-2">
-                    {MAINT_CATEGORY_KEYS.map((k) => (
-                      <Pressable
-                        key={k}
-                        onPress={() => setCategory(k)}
-                        className={`rounded-[9px] border px-3 py-[11px] ${
-                          category === k ? 'border-accent bg-occ-bg' : 'border-border bg-surface'
-                        }`}
-                      >
-                        <Text
-                          className={`font-sans-semibold text-[13px] ${
-                            category === k ? 'text-ok' : 'text-label'
-                          }`}
-                        >
-                          {MAINT_CATEGORY[k]}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </ScrollView>
+                <SelectField
+                  value={category}
+                  onChange={(v) => setCategory(v as MaintCategory)}
+                  placeholder="Select category…"
+                  options={MAINT_CATEGORY_KEYS.map((k) => ({ value: k, label: MAINT_CATEGORY[k] }))}
+                />
               </View>
             </View>
 
@@ -162,45 +149,17 @@ export function LogTicketModal({
               Assign Vendor{' '}
               <Text className="font-normal text-soft">(optional)</Text>
             </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="mb-4"
-            >
-              <View className="flex-row gap-2">
-                <Pressable
-                  onPress={() => setVendorId(null)}
-                  className={`rounded-[9px] border px-3 py-[11px] ${
-                    vendorId === null ? 'border-transparent bg-brand' : 'border-border bg-surface'
-                  }`}
-                >
-                  <Text
-                    className={`font-sans-semibold text-[13px] ${
-                      vendorId === null ? 'text-[#F4F1E7]' : 'text-label'
-                    }`}
-                  >
-                    No vendor yet
-                  </Text>
-                </Pressable>
-                {vendors.map((v) => (
-                  <Pressable
-                    key={v.id}
-                    onPress={() => setVendorId(v.id)}
-                    className={`rounded-[9px] border px-3 py-[11px] ${
-                      vendorId === v.id ? 'border-transparent bg-brand' : 'border-border bg-surface'
-                    }`}
-                  >
-                    <Text
-                      className={`font-sans-semibold text-[13px] ${
-                        vendorId === v.id ? 'text-[#F4F1E7]' : 'text-label'
-                      }`}
-                    >
-                      {v.name}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </ScrollView>
+            <View className="mb-4">
+              <SelectField
+                value={vendorId ?? ''}
+                onChange={(v) => setVendorId(v === '' ? null : v)}
+                placeholder="No vendor yet"
+                options={[
+                  { value: '', label: 'No vendor yet' },
+                  ...vendors.map((v) => ({ value: v.id, label: v.name })),
+                ]}
+              />
+            </View>
 
             {/* Photo toggle */}
             <Pressable

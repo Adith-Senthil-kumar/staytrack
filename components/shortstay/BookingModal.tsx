@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from 'react-native';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import type { SSRoom } from '../../types';
+import { SelectField } from '../ui/SelectField';
 
 const PhotoIcon = ({ size = 16, color = '#5A5A4A' }: { size?: number; color?: string }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
@@ -166,17 +167,17 @@ export function BookingModal({
                 <Text className="text-[13px] text-soft">No short-stay rooms available right now.</Text>
               </View>
             ) : (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="mb-4 flex-row gap-2">
-                {availableRooms.map((r) => (
-                  <Pressable
-                    key={r.id}
-                    onPress={() => handleRoomChange(r.id)}
-                    className={`rounded-[9px] border px-3 py-[11px] ${roomId === r.id ? 'border-[#C7842A55] bg-[#C7842A1F]' : 'border-border bg-surface'}`}
-                  >
-                    <Text className={`font-mono text-[13px] ${roomId === r.id ? 'text-[#C7842A]' : 'text-label'}`}>{r.number}</Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
+              <View className="mb-4">
+                <SelectField
+                  value={roomId}
+                  onChange={handleRoomChange}
+                  placeholder="Select a room…"
+                  options={availableRooms.map((r) => ({
+                    value: r.id,
+                    label: `Room ${r.number} · ₹${r.dailyRate}/day`,
+                  }))}
+                />
+              </View>
             )}
 
             {/* Check-in / Time / Check-out */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, Modal as RNModal } from 'react-native';
 import { VENDOR_TRADE_UI, VENDOR_TRADE_KEYS } from '../../constants/vendorTrade';
+import { SelectField } from '../ui/SelectField';
 import { TrashIcon } from '../icons';
 import type { Vendor, VendorTrade } from '../../types';
 
@@ -77,29 +78,18 @@ export function VendorModal({
               className={`mb-4 ${input}`}
             />
 
-            {/* Trade pill picker */}
+            {/* Trade */}
             <Text className="mb-1.5 text-xs font-sans-semibold text-label">Trade</Text>
-            <View className="mb-4 flex-row flex-wrap gap-2">
-              {VENDOR_TRADE_KEYS.map((k) => {
-                const selected = trade === k;
-                return (
-                  <Pressable
-                    key={k}
-                    onPress={() => setTrade(k)}
-                    className={`rounded-full px-3.5 py-2 ${
-                      selected ? 'bg-brand' : 'border border-border bg-surface'
-                    }`}
-                  >
-                    <Text
-                      className={`text-[13px] font-sans-semibold ${
-                        selected ? 'text-[#F4F1E7]' : 'text-label'
-                      }`}
-                    >
-                      {VENDOR_TRADE_UI[k].label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
+            <View className="mb-4">
+              <SelectField
+                value={trade}
+                onChange={(v) => setTrade(v as VendorTrade)}
+                placeholder="Select a trade…"
+                options={VENDOR_TRADE_KEYS.map((k) => ({
+                  value: k,
+                  label: VENDOR_TRADE_UI[k].label,
+                }))}
+              />
             </View>
 
             {/* Phone */}

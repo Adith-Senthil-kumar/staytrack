@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Text, Pressable, Linking } from 'react-native';
-import { useMaintenance, useVendors } from '../../lib/db/hooks';
+import { useMaintenance, useVendors, useRooms } from '../../lib/db/hooks';
 import { addTicket, startTicket, resolveTicket, reopenTicket } from '../../lib/db/maintenance';
 import { addVendor, updateVendor, removeVendor } from '../../lib/db/vendors';
 import { useAuthStore } from '../../store/auth';
@@ -21,6 +21,7 @@ export default function Maintenance() {
   const uid = useAuthStore((s) => s.user?.uid);
   const { tickets } = useMaintenance();
   const { vendors } = useVendors();
+  const { rooms } = useRooms();
 
   const showLogTicket = useUiStore((s) => s.showLogTicket);
   const openLogTicket = useUiStore((s) => s.openLogTicket);
@@ -110,6 +111,7 @@ export default function Maintenance() {
         onClose={closeLogTicket}
         onAdd={onAdd}
         vendors={vendors}
+        rooms={rooms}
       />
       <VendorModal
         visible={vendorModalId !== null}

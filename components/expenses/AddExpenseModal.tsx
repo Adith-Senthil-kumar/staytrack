@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from 'react-native';
+import { View, Text, TextInput, Pressable, Modal as RNModal } from 'react-native';
 import { CATEGORY_UI, CATEGORY_KEYS } from '../../constants/expenseCategory';
+import { SelectField } from '../ui/SelectField';
 import { XIcon } from '../icons';
 import type { ExpenseCategory } from '../../types';
 
@@ -60,32 +61,12 @@ export function AddExpenseModal({ visible, onClose, onAdd }: {
               {/* Category col */}
               <View className="flex-1">
                 <Text className={label}>Category</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View className="flex-row gap-2 py-1">
-                    {CATEGORY_KEYS.map((k) => {
-                      const active = category === k;
-                      return (
-                        <Pressable
-                          key={k}
-                          onPress={() => setCategory(k)}
-                          className="rounded-[9px] border px-3 py-[9px]"
-                          style={{
-                            borderColor: active ? CATEGORY_UI[k].color : undefined,
-                            backgroundColor: active ? CATEGORY_UI[k].color + '22' : undefined,
-                          }}
-                          // fallback NativeWind for non-active
-                        >
-                          <Text
-                            className={`text-[12.5px] font-sans-semibold ${active ? '' : 'border-border bg-surface text-label'}`}
-                            style={active ? { color: CATEGORY_UI[k].color } : undefined}
-                          >
-                            {CATEGORY_UI[k].label}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                </ScrollView>
+                <SelectField
+                  value={category}
+                  onChange={(v) => setCategory(v as ExpenseCategory)}
+                  placeholder="Select category…"
+                  options={CATEGORY_KEYS.map((k) => ({ value: k, label: CATEGORY_UI[k].label }))}
+                />
               </View>
 
               {/* Amount col */}

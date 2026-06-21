@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, Modal as RNModal } from 'react-native';
 import { STAFF_ROLE_UI, STAFF_ROLE_KEYS } from '../../constants/staffRole';
+import { SelectField } from '../ui/SelectField';
 import { XIcon } from '../icons';
 import type { Staff, StaffRole } from '../../types';
 
@@ -116,28 +117,12 @@ export function AddStaffModal({
             <View className="mb-4 flex-row gap-3.5">
               <View className="flex-1">
                 <Text className={label}>Role</Text>
-                {/* Chip picker for Role (native; no <select>) */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View className="flex-row gap-1.5">
-                    {STAFF_ROLE_KEYS.map((k) => (
-                      <Pressable
-                        key={k}
-                        onPress={() => setRole(k)}
-                        className={`rounded-[9px] border px-3 py-[11px] ${
-                          role === k ? 'border-accent bg-occ-bg' : 'border-border bg-surface'
-                        }`}
-                      >
-                        <Text
-                          className={`text-[13px] font-sans-semibold ${
-                            role === k ? 'text-ok' : 'text-label'
-                          }`}
-                        >
-                          {STAFF_ROLE_UI[k].label}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </ScrollView>
+                <SelectField
+                  value={role}
+                  onChange={(v) => setRole(v as StaffRole)}
+                  placeholder="Select a role…"
+                  options={STAFF_ROLE_KEYS.map((k) => ({ value: k, label: STAFF_ROLE_UI[k].label }))}
+                />
               </View>
               <View className="flex-1">
                 <Text className={label}>Phone</Text>

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { useStaff, useAttendance, useSchedule } from '../../lib/db/hooks';
+import { useStaff, useAttendance, useSchedule, useLeave, useUserDoc } from '../../lib/db/hooks';
 import { addStaff } from '../../lib/db/staff';
+import { addLeave, setLeaveStatus } from '../../lib/db/leave';
 import { markAttendance, setShift } from '../../lib/db/attendance';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
@@ -9,6 +10,10 @@ import { StaffCard } from '../../components/staff/StaffCard';
 import { AddStaffModal } from '../../components/staff/AddStaffModal';
 import { AttendanceTab } from '../../components/staff/AttendanceTab';
 import { ScheduleTab } from '../../components/staff/ScheduleTab';
+import { LeaveTab } from '../../components/staff/LeaveTab';
+import { PayrollTab } from '../../components/staff/PayrollTab';
+import { PayslipModal } from '../../components/staff/PayslipModal';
+import { LogLeaveModal } from '../../components/staff/LogLeaveModal';
 import { SubTabBar } from '../../components/ui/SubTabBar';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { PlusIcon } from '../../components/icons';
@@ -31,9 +36,17 @@ export default function Staff() {
   const { staff } = useStaff();
   const { attendance } = useAttendance();
   const { schedule } = useSchedule();
+  const { leave } = useLeave();
+  const { userDoc } = useUserDoc();
   const showAddStaff = useUiStore((s) => s.showAddStaff);
   const openAddStaff = useUiStore((s) => s.openAddStaff);
   const closeAddStaff = useUiStore((s) => s.closeAddStaff);
+  const payslipStaffId = useUiStore((s) => s.payslipStaffId);
+  const openPayslip = useUiStore((s) => s.openPayslip);
+  const closePayslip = useUiStore((s) => s.closePayslip);
+  const showLogLeave = useUiStore((s) => s.showLogLeave);
+  const openLogLeave = useUiStore((s) => s.openLogLeave);
+  const closeLogLeave = useUiStore((s) => s.closeLogLeave);
   const [tab, setTab] = useState<StaffTab>('roster');
 
   return (
@@ -88,12 +101,32 @@ export default function Staff() {
         />
       )}
 
-      {(tab === 'leave' || tab === 'payroll') && (
-        <View className="items-center rounded-[14px] border border-dashed border-border py-16">
-          <ThemedText variant="body" className="text-muted">
-            Coming soon.
-          </ThemedText>
-        </View>
+      {tab === 'leave' && (
+        <>
+          <View className="mb-4 flex-row justify-end">
+            <Pressable
+              onPress={openLogLeave}
+              className="flex-row items-center gap-1.5 rounded-[9px] bg-brand px-3.5 py-2 active:bg-brand-hover"
+            >
+              <PlusIcon size={14} color="#F4F1E7" />
+              <Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">Log Leave</Text>
+            </Pressable>
+          </View>
+          <LeaveTab
+            staff={staff}
+            leave={leave}
+            onApprove={(id) => { if (uid) setLeaveStatus(uid, id, 'approved'); }}
+            onReject={(id) => { if (uid) setLeaveStatus(uid, id, 'rejected'); }}
+          />
+        </>
+      )}
+
+      {tab === 'payroll' && (
+        <PayrollTab
+          staff={staff}
+          attendance={attendance}
+          onPayslip={openPayslip}
+        />
       )}
 
       <AddStaffModal
@@ -101,6 +134,23 @@ export default function Staff() {
         onClose={closeAddStaff}
         onAdd={(s) => {
           if (uid) addStaff(uid, s);
+        }}
+      />
+
+      <PayslipModal
+        visible={!!payslipStaffId}
+        staff={staff.find((s) => s.id === payslipStaffId) ?? null}
+        attendance={attendance}
+        propertyName={userDoc?.property?.name ?? 'PG'}
+        onClose={closePayslip}
+      />
+
+      <LogLeaveModal
+        visible={showLogLeave}
+        staff={staff}
+        onClose={closeLogLeave}
+        onSubmit={(req) => {
+          if (uid) addLeave(uid, req);
         }}
       />
     </View>

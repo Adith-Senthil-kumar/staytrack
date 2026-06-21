@@ -66,3 +66,13 @@ export const ShortStayIcon = ({ size = 18, color = '#fff' }: IconProps) => (
     <Path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9" />
   </Svg>
 );
+export const CheckIcon = ({ size = 14, color = '#fff' }: IconProps) => (
+  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M20 6 9 17l-5-5" />
+  </Svg>
+);
+export const PaperPlaneIcon = ({ size = 15, color = '#fff' }: IconProps) => (
+  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="m22 2-7 20-4-9-9-4z" /><Path d="M22 2 11 13" />
+  </Svg>
+);

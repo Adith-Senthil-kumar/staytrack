@@ -66,7 +66,11 @@ export interface UserDoc {
 }
 
 export type StaffRole = 'warden' | 'cook' | 'cleaner' | 'security' | 'manager' | 'other';
-export interface Staff { id: string; name: string; role: StaffRole; phone: string; idProof: string; joinDate: string; salary: number; }
+export interface Staff { id: string; name: string; role: StaffRole; phone: string; idProof: string; joinDate: string; salary: number; advance?: number; leave?: { cl: number; sl: number }; }
+
+export type LeaveType = 'casual' | 'sick';
+export type LeaveStatus = 'pending' | 'approved' | 'rejected';
+export interface LeaveRequest { id: string; staffId: string; type: LeaveType; from: string; to: string; days: number; reason: string; status: LeaveStatus; }
 
 export type MaintCategory = 'electrical' | 'plumbing' | 'furniture' | 'appliance' | 'cleaning' | 'other';
 export type MaintPriority = 'high' | 'medium' | 'low';

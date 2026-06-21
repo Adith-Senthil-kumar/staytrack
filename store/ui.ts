@@ -29,6 +29,12 @@ type UiState = {
   bookingRoomId: string | null;
   openBooking: (id: string) => void;
   closeBooking: () => void;
+  payslipStaffId: string | null;
+  openPayslip: (id: string) => void;
+  closePayslip: () => void;
+  showLogLeave: boolean;
+  openLogLeave: () => void;
+  closeLogLeave: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -60,4 +66,10 @@ export const useUiStore = create<UiState>((set) => ({
   bookingRoomId: null,
   openBooking: (id) => set({ bookingRoomId: id }),
   closeBooking: () => set({ bookingRoomId: null }),
+  payslipStaffId: null,
+  openPayslip: (id) => set({ payslipStaffId: id }),
+  closePayslip: () => set({ payslipStaffId: null }),
+  showLogLeave: false,
+  openLogLeave: () => set({ showLogLeave: true }),
+  closeLogLeave: () => set({ showLogLeave: false }),
 }));

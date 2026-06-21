@@ -23,6 +23,12 @@ type UiState = {
   showLogTicket: boolean;
   openLogTicket: () => void;
   closeLogTicket: () => void;
+  ssAddRoomOpen: boolean;
+  openSSAddRoom: () => void;
+  closeSSAddRoom: () => void;
+  bookingRoomId: string | null;
+  openBooking: (id: string) => void;
+  closeBooking: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -48,4 +54,10 @@ export const useUiStore = create<UiState>((set) => ({
   showLogTicket: false,
   openLogTicket: () => set({ showLogTicket: true }),
   closeLogTicket: () => set({ showLogTicket: false }),
+  ssAddRoomOpen: false,
+  openSSAddRoom: () => set({ ssAddRoomOpen: true }),
+  closeSSAddRoom: () => set({ ssAddRoomOpen: false }),
+  bookingRoomId: null,
+  openBooking: (id) => set({ bookingRoomId: id }),
+  closeBooking: () => set({ bookingRoomId: null }),
 }));

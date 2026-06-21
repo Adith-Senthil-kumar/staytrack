@@ -72,3 +72,7 @@ export type MaintCategory = 'electrical' | 'plumbing' | 'furniture' | 'appliance
 export type MaintPriority = 'high' | 'medium' | 'low';
 export type MaintStatus = 'open' | 'in_progress' | 'done';
 export interface MaintTicket { id: string; roomNumber: string; category: MaintCategory; issue: string; priority: MaintPriority; status: MaintStatus; createdDate: string; cost: number; }
+
+export type SSStatus = 'available' | 'occupied' | 'cleaning';
+export interface SSRoom { id: string; number: string; dailyRate: number; status: SSStatus; guestName: string | null; checkIn: string | null; checkOut: string | null; }
+export interface SSStay { id: string; guestName: string; roomNumber: string; checkIn: string; checkOut: string; nights: number; total: number; createdAt: string; }

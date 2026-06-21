@@ -1,7 +1,7 @@
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { usePathname, useRouter } from 'expo-router';
 import { LogoMark } from '../brand/LogoMark';
-import { RoomsIcon, TenantsIcon, RentIcon, ExpensesIcon, StaffIcon, LogoutIcon } from '../icons';
+import { RoomsIcon, TenantsIcon, RentIcon, ExpensesIcon, StaffIcon, LogoutIcon, MaintenanceIcon } from '../icons';
 import { signOutUser } from '../../lib/auth/actions';
 
 const NAV = [
@@ -10,6 +10,7 @@ const NAV = [
   { href: '/(app)/staff', label: 'Staff', Icon: StaffIcon },
   { href: '/(app)/rent', label: 'Rent Collection', Icon: RentIcon },
   { href: '/(app)/expenses', label: 'Expenses', Icon: ExpensesIcon },
+  { href: '/(app)/maintenance', label: 'Maintenance', Icon: MaintenanceIcon },
 ] as const;
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {

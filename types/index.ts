@@ -67,3 +67,8 @@ export interface UserDoc {
 
 export type StaffRole = 'warden' | 'cook' | 'cleaner' | 'security' | 'manager' | 'other';
 export interface Staff { id: string; name: string; role: StaffRole; phone: string; idProof: string; joinDate: string; salary: number; }
+
+export type MaintCategory = 'electrical' | 'plumbing' | 'furniture' | 'appliance' | 'cleaning' | 'other';
+export type MaintPriority = 'high' | 'medium' | 'low';
+export type MaintStatus = 'open' | 'in_progress' | 'done';
+export interface MaintTicket { id: string; roomNumber: string; category: MaintCategory; issue: string; priority: MaintPriority; status: MaintStatus; createdDate: string; cost: number; }

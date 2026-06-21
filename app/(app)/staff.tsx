@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { useStaff, useAttendance, useSchedule, useLeave, useUserDoc } from '../../lib/db/hooks';
-import { addStaff } from '../../lib/db/staff';
+import { addStaff, updateStaff, removeStaff } from '../../lib/db/staff';
 import { addLeave, setLeaveStatus } from '../../lib/db/leave';
 import { markAttendance, setShift } from '../../lib/db/attendance';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
 import { StaffCard } from '../../components/staff/StaffCard';
 import { AddStaffModal } from '../../components/staff/AddStaffModal';
+import { StaffDetailPanel } from '../../components/staff/StaffDetailPanel';
 import { AttendanceTab } from '../../components/staff/AttendanceTab';
 import { ScheduleTab } from '../../components/staff/ScheduleTab';
 import { LeaveTab } from '../../components/staff/LeaveTab';
@@ -47,7 +48,11 @@ export default function Staff() {
   const showLogLeave = useUiStore((s) => s.showLogLeave);
   const openLogLeave = useUiStore((s) => s.openLogLeave);
   const closeLogLeave = useUiStore((s) => s.closeLogLeave);
+  const selectedStaffId = useUiStore((s) => s.selectedStaffId);
+  const selectStaff = useUiStore((s) => s.selectStaff);
+  const clearStaffSelection = useUiStore((s) => s.clearStaffSelection);
   const [tab, setTab] = useState<StaffTab>('roster');
+  const [editStaffId, setEditStaffId] = useState<string | null>(null);
 
   return (
     <View>
@@ -74,7 +79,7 @@ export default function Staff() {
           ) : (
             <View className="flex-row flex-wrap gap-4">
               {staff.map((s) => (
-                <StaffCard key={s.id} staff={s} />
+                <StaffCard key={s.id} staff={s} onPress={() => selectStaff(s.id)} />
               ))}
             </View>
           )}
@@ -131,9 +136,13 @@ export default function Staff() {
 
       <AddStaffModal
         visible={showAddStaff}
-        onClose={closeAddStaff}
+        onClose={() => { closeAddStaff(); setEditStaffId(null); }}
         onAdd={(s) => {
           if (uid) addStaff(uid, s);
+        }}
+        initial={staff.find((s) => s.id === editStaffId) ?? null}
+        onSave={(id, patch) => {
+          if (uid) updateStaff(uid, id, patch);
         }}
       />
 
@@ -151,6 +160,24 @@ export default function Staff() {
         onClose={closeLogLeave}
         onSubmit={(req) => {
           if (uid) addLeave(uid, req);
+        }}
+      />
+
+      <StaffDetailPanel
+        staff={staff.find((s) => s.id === selectedStaffId) ?? null}
+        attendance={attendance}
+        leave={leave}
+        onClose={clearStaffSelection}
+        onPayslip={(id) => { clearStaffSelection(); openPayslip(id); }}
+        onEdit={(id) => { setEditStaffId(id); clearStaffSelection(); openAddStaff(); }}
+        onAddNote={(id, note) => {
+          if (uid) {
+            const m = staff.find((s) => s.id === id);
+            updateStaff(uid, id, { notes: [...(m?.notes ?? []), note] });
+          }
+        }}
+        onRemove={(id) => {
+          if (uid) { removeStaff(uid, id); clearStaffSelection(); }
         }}
       />
     </View>

@@ -8,6 +8,9 @@ type UiState = {
   selectedTenantId: string | null;
   selectTenant: (id: string) => void;
   clearSelection: () => void;
+  selectedStaffId: string | null;
+  selectStaff: (id: string) => void;
+  clearStaffSelection: () => void;
   payDueId: string | null;
   openPay: (dueId: string) => void;
   closePay: () => void;
@@ -45,6 +48,9 @@ export const useUiStore = create<UiState>((set) => ({
   selectedTenantId: null,
   selectTenant: (id) => set({ selectedTenantId: id }),
   clearSelection: () => set({ selectedTenantId: null }),
+  selectedStaffId: null,
+  selectStaff: (id) => set({ selectedStaffId: id }),
+  clearStaffSelection: () => set({ selectedStaffId: null }),
   payDueId: null,
   openPay: (dueId) => set({ payDueId: dueId }),
   closePay: () => set({ payDueId: null }),

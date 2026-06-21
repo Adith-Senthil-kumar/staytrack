@@ -66,7 +66,8 @@ export interface UserDoc {
 }
 
 export type StaffRole = 'warden' | 'cook' | 'cleaner' | 'security' | 'manager' | 'other';
-export interface Staff { id: string; name: string; role: StaffRole; phone: string; idProof: string; joinDate: string; salary: number; advance?: number; leave?: { cl: number; sl: number }; }
+export interface StaffNote { date: string; text: string; type: 'praise' | 'complaint'; }
+export interface Staff { id: string; name: string; role: StaffRole; phone: string; idProof: string; joinDate: string; salary: number; advance?: number; leave?: { cl: number; sl: number }; notes?: StaffNote[]; }
 
 export type LeaveType = 'casual' | 'sick';
 export type LeaveStatus = 'pending' | 'approved' | 'rejected';

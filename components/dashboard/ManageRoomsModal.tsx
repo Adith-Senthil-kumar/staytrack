@@ -34,8 +34,8 @@ export function ManageRoomsModal({
   const floors = groupByFloor(rooms);
   const totalRooms = rooms.length;
 
-  const shBtn = (active: boolean) => `rounded-md border px-2.5 py-1.5 ${active ? 'border-accent bg-occ-bg' : 'border-border bg-surface'}`;
-  const shTxt = (active: boolean) => `text-[12px] font-sans-semibold ${active ? 'text-ok' : 'text-label'}`;
+  const shBtn = (active: boolean) => `rounded-md border px-2.5 py-1.5 ${active ? 'border-brand bg-brand' : 'border-border bg-surface'}`;
+  const shTxt = (active: boolean) => `text-[12px] font-sans-semibold ${active ? 'text-[#F4F1E7]' : 'text-label'}`;
 
   return (
     <RNModal visible={visible} transparent animationType="fade" onRequestClose={onClose}>

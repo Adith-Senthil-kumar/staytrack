@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import type { Room, FoodPreference } from '../../types';
 
 export type AddTenantData = {
@@ -21,6 +22,7 @@ export function AddTenantModal({
   const [sharing, setSharing] = useState<'single' | 'double'>('single');
   const [food, setFood] = useState<FoodPreference>('veg');
   const [rent, setRent] = useState('');
+  const [roomOpen, setRoomOpen] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -30,8 +32,9 @@ export function AddTenantModal({
     }
   }, [visible, presetRoomId, vacantRooms]);
 
-  const reset = () => { setName(''); setPhone(''); setRoomId(''); setSharing('single'); setFood('veg'); setRent(''); };
+  const reset = () => { setName(''); setPhone(''); setRoomId(''); setSharing('single'); setFood('veg'); setRent(''); setRoomOpen(false); };
   const close = () => { reset(); onClose(); };
+  const selectedRoom = vacantRooms.find((r) => r.id === roomId);
   const submit = () => {
     if (!name.trim() || !roomId) return;
     onAdd({ name: name.trim(), phone: phone.trim(), roomId, sharing, food, rent: Number(rent) || 0 });
@@ -40,8 +43,8 @@ export function AddTenantModal({
 
   const label = 'mb-1.5 text-[12px] font-sans-semibold text-label';
   const input = 'rounded-[9px] border border-border bg-field px-[13px] py-[11px] text-sm text-text';
-  const seg = (active: boolean) => `flex-1 flex-row items-center justify-center rounded-[9px] border py-[11px] ${active ? 'border-accent bg-occ-bg' : 'border-border bg-surface'}`;
-  const segTxt = (active: boolean) => `text-sm font-sans-semibold ${active ? 'text-ok' : 'text-label'}`;
+  const seg = (active: boolean) => `flex-1 flex-row items-center justify-center rounded-[9px] border py-[11px] ${active ? 'border-brand bg-brand' : 'border-border bg-surface'}`;
+  const segTxt = (active: boolean) => `text-sm font-sans-semibold ${active ? 'text-[#F4F1E7]' : 'text-label'}`;
   const canSubmit = !!name.trim() && !!roomId;
 
   return (
@@ -68,17 +71,29 @@ export function AddTenantModal({
               </View>
               <View className="flex-1">
                 <Text className={label}>Assign Room</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View className="flex-row gap-2">
-                    {vacantRooms.length === 0 ? (
-                      <Text className="py-2.5 text-[13px] text-soft">No vacant rooms</Text>
-                    ) : vacantRooms.map((r) => (
-                      <Pressable key={r.id} onPress={() => setRoomId(r.id)} className={`rounded-[9px] border px-3 py-[11px] ${roomId === r.id ? 'border-accent bg-occ-bg' : 'border-border bg-surface'}`}>
-                        <Text className={`font-mono text-[13px] ${roomId === r.id ? 'text-ok' : 'text-label'}`}>{r.number}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </ScrollView>
+                <View className="relative" style={{ zIndex: 20 }}>
+                  <Pressable onPress={() => setRoomOpen((o) => !o)} className="flex-row items-center rounded-[9px] border border-border bg-field px-[13px] py-[11px]">
+                    <Text numberOfLines={1} className={`flex-1 text-sm ${selectedRoom ? 'text-text' : 'text-soft'}`}>
+                      {selectedRoom ? `Room ${selectedRoom.number}` : 'Select vacant room…'}
+                    </Text>
+                    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9A9A8A" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><Path d="m6 9 6 6 6-6" /></Svg>
+                  </Pressable>
+                  {roomOpen && (
+                    <View className="absolute left-0 right-0 top-[48px] z-50 overflow-hidden rounded-[9px] border border-border bg-surface" style={{ elevation: 8, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 } }}>
+                      {vacantRooms.length === 0 ? (
+                        <Text className="px-3 py-2.5 text-[13px] text-soft">No vacant rooms</Text>
+                      ) : (
+                        <ScrollView style={{ maxHeight: 180 }}>
+                          {vacantRooms.map((r, i) => (
+                            <Pressable key={r.id} onPress={() => { setRoomId(r.id); setRoomOpen(false); }} className={`px-3 py-2.5 active:bg-surface-2 ${i < vacantRooms.length - 1 ? 'border-b border-border-3' : ''}`}>
+                              <Text className="text-[13.5px] text-text">Room {r.number} · Floor {r.floor === 1 ? 'G' : r.floor} · {r.type === 'double' ? 'Double' : 'Single'}</Text>
+                            </Pressable>
+                          ))}
+                        </ScrollView>
+                      )}
+                    </View>
+                  )}
+                </View>
               </View>
             </View>
 

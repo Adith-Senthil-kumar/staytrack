@@ -23,8 +23,11 @@ See `docs/superpowers/specs/2026-06-20-staytrack-mobile-app-design.md` and the
 plans in `docs/superpowers/plans/`.
 
 ## Status
-Foundation + auth + onboarding + Firestore data layer complete. Sign in → guided
-onboarding (property → rooms → tenants) → responsive shell. Typed repos + realtime
-hooks + owner-only security rules + client-side monthly dues generation are in place.
-Feature screens (Rooms/Tenants/Rent/Expenses) are next; connect a Firebase project
-(`.env` + deploy `firebase/firestore.rules`) to run with live data.
+v1 feature-complete: auth → onboarding → Rooms/Tenants/Rent/Expenses (all live on
+Firestore) + Manage Property. Connect a Firebase project (`.env`, enable Email/Password
+auth, create the owner user, deploy `firebase/firestore.rules`) and run `npx expo start`.
+
+## Build (EAS)
+- Android preview APK: `eas build -p android --profile preview`
+- iOS/Android production: `eas build --profile production`
+- Web: `npx expo export -p web` (deploy `dist/` to any static host)

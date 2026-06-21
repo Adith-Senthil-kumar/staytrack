@@ -38,6 +38,10 @@ type UiState = {
   showLogLeave: boolean;
   openLogLeave: () => void;
   closeLogLeave: () => void;
+  vendorModalId: string | 'new' | null;
+  openAddVendor: () => void;
+  openEditVendor: (id: string) => void;
+  closeVendor: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -78,4 +82,8 @@ export const useUiStore = create<UiState>((set) => ({
   showLogLeave: false,
   openLogLeave: () => set({ showLogLeave: true }),
   closeLogLeave: () => set({ showLogLeave: false }),
+  vendorModalId: null,
+  openAddVendor: () => set({ vendorModalId: 'new' }),
+  openEditVendor: (id) => set({ vendorModalId: id }),
+  closeVendor: () => set({ vendorModalId: null }),
 }));

@@ -108,3 +108,9 @@ export const ThumbsDownIcon = ({ size = 16, color = '#fff' }: IconProps) => (
     <Path d="M17 14V2M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z" />
   </Svg>
 );
+export const AlertTriangleIcon = ({ size = 16, color = '#fff' }: IconProps) => (
+  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+    <Path d="M12 9v4M12 17h.01" />
+  </Svg>
+);

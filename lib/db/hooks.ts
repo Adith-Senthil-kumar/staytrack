@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { onSnapshot, query, where } from 'firebase/firestore';
 import { useAuthStore } from '../../store/auth';
-import { roomsRef, tenantsRef, duesRef, expensesRef, userRef, staffRef, maintRef, ssRoomsRef, ssStaysRef, attendanceRef, scheduleRef, leaveRef } from './refs';
-import type { Room, Tenant, Due, Expense, UserDoc, Staff, MaintTicket, SSRoom, SSStay, Attendance, ScheduleEntry, LeaveRequest } from '../../types';
+import { roomsRef, tenantsRef, duesRef, expensesRef, userRef, staffRef, maintRef, ssRoomsRef, ssStaysRef, attendanceRef, scheduleRef, leaveRef, vendorsRef } from './refs';
+import type { Room, Tenant, Due, Expense, UserDoc, Staff, MaintTicket, SSRoom, SSStay, Attendance, ScheduleEntry, LeaveRequest, Vendor } from '../../types';
 
 function useCollection<T>(makeRef: ((uid: string) => any) | null) {
   const uid = useAuthStore((s) => s.user?.uid);
@@ -30,6 +30,7 @@ export function useSSStays() { const r = useCollection<SSStay>(ssStaysRef); retu
 export function useAttendance() { const r = useCollection<Attendance>(attendanceRef); return { attendance: r.data, loading: r.loading }; }
 export function useSchedule() { const r = useCollection<ScheduleEntry>(scheduleRef); return { schedule: r.data, loading: r.loading }; }
 export function useLeave() { const r = useCollection<LeaveRequest>(leaveRef); return { leave: r.data, loading: r.loading }; }
+export function useVendors() { const r = useCollection<Vendor>(vendorsRef); return { vendors: r.data, loading: r.loading }; }
 
 export function useDues(monthKey?: string) {
   const uid = useAuthStore((s) => s.user?.uid);

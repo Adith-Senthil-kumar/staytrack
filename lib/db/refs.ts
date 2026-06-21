@@ -3,7 +3,7 @@ import {
   type FirestoreDataConverter,
 } from 'firebase/firestore';
 import { db } from '../firebase';
-import type { Room, Tenant, Due, Expense, UserDoc } from '../../types';
+import type { Room, Tenant, Due, Expense, UserDoc, Staff } from '../../types';
 
 function converter<T>(): FirestoreDataConverter<T> {
   return {
@@ -23,3 +23,5 @@ export const duesRef = (uid: string): CollectionReference<Due> =>
   collection(db, 'users', uid, 'dues').withConverter(converter<Due>());
 export const expensesRef = (uid: string): CollectionReference<Expense> =>
   collection(db, 'users', uid, 'expenses').withConverter(converter<Expense>());
+export const staffRef = (uid: string): CollectionReference<Staff> =>
+  collection(db, 'users', uid, 'staff').withConverter(converter<Staff>());

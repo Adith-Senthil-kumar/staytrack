@@ -1,12 +1,13 @@
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { usePathname, useRouter } from 'expo-router';
 import { LogoMark } from '../brand/LogoMark';
-import { RoomsIcon, TenantsIcon, RentIcon, ExpensesIcon, LogoutIcon } from '../icons';
+import { RoomsIcon, TenantsIcon, RentIcon, ExpensesIcon, StaffIcon, LogoutIcon } from '../icons';
 import { signOutUser } from '../../lib/auth/actions';
 
 const NAV = [
   { href: '/(app)/rooms', label: 'Rooms', Icon: RoomsIcon },
   { href: '/(app)/tenants', label: 'Tenants', Icon: TenantsIcon },
+  { href: '/(app)/staff', label: 'Staff', Icon: StaffIcon },
   { href: '/(app)/rent', label: 'Rent Collection', Icon: RentIcon },
   { href: '/(app)/expenses', label: 'Expenses', Icon: ExpensesIcon },
 ] as const;

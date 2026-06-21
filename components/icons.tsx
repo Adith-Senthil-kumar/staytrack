@@ -51,3 +51,8 @@ export const ArrowRightIcon = ({ size = 16, color = '#fff' }: IconProps) => (
     <Path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><Path d="M10 17l5-5-5-5M15 12H3" />
   </Svg>
 );
+export const StaffIcon = ({ size = 18, color = '#fff' }: IconProps) => (
+  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><Circle cx={9} cy={7} r={4} /><Path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+  </Svg>
+);

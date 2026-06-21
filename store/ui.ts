@@ -17,6 +17,9 @@ type UiState = {
   showManage: boolean;
   openManage: () => void;
   closeManage: () => void;
+  showAddStaff: boolean;
+  openAddStaff: () => void;
+  closeAddStaff: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -36,4 +39,7 @@ export const useUiStore = create<UiState>((set) => ({
   showManage: false,
   openManage: () => set({ showManage: true }),
   closeManage: () => set({ showManage: false }),
+  showAddStaff: false,
+  openAddStaff: () => set({ showAddStaff: true }),
+  closeAddStaff: () => set({ showAddStaff: false }),
 }));

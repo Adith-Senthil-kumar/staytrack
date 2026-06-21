@@ -64,3 +64,6 @@ export interface UserDoc {
   property: Property | null;
   createdAt: string; // ISO
 }
+
+export type StaffRole = 'warden' | 'cook' | 'cleaner' | 'security' | 'manager' | 'other';
+export interface Staff { id: string; name: string; role: StaffRole; phone: string; idProof: string; joinDate: string; salary: number; }

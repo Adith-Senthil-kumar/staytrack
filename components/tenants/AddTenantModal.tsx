@@ -8,10 +8,10 @@ export type AddTenantData = {
 };
 
 export function AddTenantModal({
-  visible, vacantRooms, presetRoomId, onClose, onAdd,
+  visible, assignableRooms, presetRoomId, onClose, onAdd,
 }: {
   visible: boolean;
-  vacantRooms: Room[];
+  assignableRooms: Room[];
   presetRoomId: string | null;
   onClose: () => void;
   onAdd: (data: AddTenantData) => void;
@@ -29,15 +29,15 @@ export function AddTenantModal({
   useEffect(() => {
     if (visible) {
       setRoomId(presetRoomId ?? '');
-      const preset = presetRoomId ? vacantRooms.find((r) => r.id === presetRoomId) : null;
+      const preset = presetRoomId ? assignableRooms.find((r) => r.id === presetRoomId) : null;
       setSharing(preset?.type === 'double' ? 'double' : 'single');
     }
-  }, [visible, presetRoomId, vacantRooms]);
+  }, [visible, presetRoomId, assignableRooms]);
   useEffect(() => { if (!visible) setRoomOpen(false); }, [visible]);
 
   const reset = () => { setName(''); setPhone(''); setRoomId(''); setSharing('single'); setFood('veg'); setRent(''); setRoomOpen(false); };
   const close = () => { reset(); onClose(); };
-  const selectedRoom = vacantRooms.find((r) => r.id === roomId);
+  const selectedRoom = assignableRooms.find((r) => r.id === roomId);
   const submit = () => {
     if (!name.trim() || !roomId) return;
     onAdd({ name: name.trim(), phone: phone.trim(), roomId, sharing, food, rent: Number(rent) || 0 });
@@ -86,7 +86,7 @@ export function AddTenantModal({
                   <Text className={label}>Assign Room</Text>
                   <Pressable ref={roomBtnRef} onPress={openRoomDropdown} className="flex-row items-center rounded-[9px] border border-border bg-field px-[13px] py-[11px]">
                     <Text numberOfLines={1} className={`flex-1 text-sm ${selectedRoom ? 'text-text' : 'text-soft'}`}>
-                      {selectedRoom ? `Room ${selectedRoom.number}` : 'Select vacant room…'}
+                      {selectedRoom ? `Room ${selectedRoom.number}` : 'Select a room…'}
                     </Text>
                     <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9A9A8A" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ transform: [{ rotate: roomOpen ? '180deg' : '0deg' }] }}><Path d="m6 9 6 6 6-6" /></Svg>
                   </Pressable>
@@ -131,12 +131,12 @@ export function AddTenantModal({
               style={{ position: 'absolute', top: ddRect.top, left: ddRect.left, width: ddRect.width, maxHeight: 240, elevation: 12, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 18, shadowOffset: { width: 0, height: 10 } }}
               className="overflow-hidden rounded-[10px] border border-border bg-surface"
             >
-              {vacantRooms.length === 0 ? (
-                <Text className="px-3.5 py-3 text-[13px] text-soft">No vacant rooms available</Text>
+              {assignableRooms.length === 0 ? (
+                <Text className="px-3.5 py-3 text-[13px] text-soft">No rooms available</Text>
               ) : (
                 <ScrollView nestedScrollEnabled>
-                  {vacantRooms.map((r, i) => (
-                    <Pressable key={r.id} onPress={() => pickRoom(r.id)} className={`px-3.5 py-3 active:bg-surface-2 ${i < vacantRooms.length - 1 ? 'border-b border-border-3' : ''}`}>
+                  {assignableRooms.map((r, i) => (
+                    <Pressable key={r.id} onPress={() => pickRoom(r.id)} className={`px-3.5 py-3 active:bg-surface-2 ${i < assignableRooms.length - 1 ? 'border-b border-border-3' : ''}`}>
                       <Text className="text-[13.5px] text-text">Room {r.number} · Floor {r.floor === 1 ? 'G' : r.floor} · {r.type === 'double' ? 'Double' : 'Single'}</Text>
                     </Pressable>
                   ))}

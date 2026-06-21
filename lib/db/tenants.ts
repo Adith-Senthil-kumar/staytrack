@@ -18,10 +18,11 @@ export async function addTenant(uid: string, input: NewTenantInput, roomType: 's
   return ref;
 }
 
-export async function vacateTenant(uid: string, tenant: Tenant) {
+// freeRoom: mark the room vacant too. Pass false when roommates remain in a shared room.
+export async function vacateTenant(uid: string, tenant: Tenant, freeRoom = true) {
   const batch = writeBatch(db);
-  batch.update(doc(tenantsRef(uid), tenant.id), { status: 'vacated' });
-  if (tenant.roomId) batch.update(doc(roomsRef(uid), tenant.roomId), { status: 'vacant' });
+  batch.update(doc(tenantsRef(uid), tenant.id), { status: 'vacated', roomId: null });
+  if (tenant.roomId && freeRoom) batch.update(doc(roomsRef(uid), tenant.roomId), { status: 'vacant' });
   await batch.commit();
 }
 

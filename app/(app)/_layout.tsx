@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { View, Pressable, useWindowDimensions, ScrollView } from 'react-native';
 import { Redirect, Slot, usePathname } from 'expo-router';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
@@ -7,6 +7,7 @@ import { useUserDoc, useTenants, useDues, useRooms } from '../../lib/db/hooks';
 import { useUiStore } from '../../store/ui';
 import { ensureCurrentMonthDues } from '../../lib/db/duesEngine';
 import { addTenant } from '../../lib/db/tenants';
+import { roomCapacity } from '../../lib/domain/dashboard';
 import { monthKey } from '../../lib/domain/format';
 import { Sidebar } from '../../components/shell/Sidebar';
 import { TopBar } from '../../components/shell/TopBar';
@@ -46,6 +47,13 @@ export default function AppLayout() {
 
   useEffect(() => { if (wide) closeDrawer(); }, [wide, closeDrawer]);
 
+  // Rooms that still have an open slot (capacity by sharing type), excluding rooms under repair.
+  const assignableRooms = useMemo(() => {
+    const count = new Map<string, number>();
+    tenants.filter((t) => t.status === 'active' && t.roomId).forEach((t) => count.set(t.roomId!, (count.get(t.roomId!) ?? 0) + 1));
+    return rooms.filter((r) => r.status !== 'repair' && (count.get(r.id) ?? 0) < roomCapacity(r.type));
+  }, [rooms, tenants]);
+
   const drawerStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: withTiming(drawerOpen ? 0 : -252, { duration: 260 }) }],
   }));
@@ -76,7 +84,7 @@ export default function AppLayout() {
 
       <AddTenantModal
         visible={showAddTenant}
-        vacantRooms={rooms.filter((r) => r.status === 'vacant')}
+        assignableRooms={assignableRooms}
         presetRoomId={assignRoomId}
         onClose={closeAddTenant}
         onAdd={(d) => {

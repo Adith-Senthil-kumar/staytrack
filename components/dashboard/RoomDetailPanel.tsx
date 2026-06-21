@@ -4,6 +4,7 @@ import { initials, avatarColor } from '../../lib/domain/tenants';
 import { MoneyText } from '../ui/MoneyText';
 import { dueStatus } from '../../lib/domain/dues';
 import { monthName, monthKey } from '../../lib/domain/format';
+import { roomCapacity } from '../../lib/domain/dashboard';
 import { STATUS_UI } from '../../constants/roomStatus';
 import { ALL_DOCS } from '../../constants/documents';
 import { PhoneIcon, MessageIcon, CheckIcon } from '../icons';
@@ -127,10 +128,16 @@ export function RoomDetailPanel({
                       })}
                     </View>
 
-                    <Pressable onPress={() => onVacate(t)} className="mt-4 items-center rounded-[11px] border border-maint-bd bg-surface py-3 active:bg-bad-bg"><Text className="text-[13.5px] font-sans-semibold text-bad">Vacate Room</Text></Pressable>
+                    <Pressable onPress={() => onVacate(t)} className="mt-4 items-center rounded-[11px] border border-maint-bd bg-surface py-3 active:bg-bad-bg"><Text className="text-[13.5px] font-sans-semibold text-bad">{tenants.length > 1 ? `Vacate ${t.name.split(' ')[0]}` : 'Vacate Room'}</Text></Pressable>
                   </View>
                 );
               })}
+
+              {tenants.length > 0 && tenants.length < roomCapacity(room.type) && (
+                <Pressable onPress={() => onAssign(room.id)} className="mb-4 flex-row items-center justify-center gap-2 rounded-[12px] border border-dashed border-border bg-surface py-3 active:bg-surface-2">
+                  <Text className="text-[13px] font-sans-semibold text-brand">+ Add another tenant · {roomCapacity(room.type) - tenants.length} slot{roomCapacity(room.type) - tenants.length > 1 ? 's' : ''} left</Text>
+                </Pressable>
+              )}
 
               {tenants.length === 0 && (
                 <View className="items-center rounded-[14px] border border-dashed border-border bg-surface px-[22px] py-[34px]">

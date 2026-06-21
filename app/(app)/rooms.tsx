@@ -116,7 +116,12 @@ export default function Rooms() {
         onClose={clearRoomSelection}
         onAssign={(roomId) => { clearRoomSelection(); openAddTenant(roomId); }}
         onRecordPayment={(due) => { if (uid) recordPayment(uid, due.id, due.amountDue); }}
-        onVacate={(t) => { if (uid) { vacateTenant(uid, t); clearRoomSelection(); } }}
+        onVacate={(t) => {
+          if (!uid) return;
+          const others = tenantsInRoom.some((x) => x.id !== t.id && x.status === 'active');
+          vacateTenant(uid, t, !others);
+          if (!others) clearRoomSelection();
+        }}
         onToggleDoc={(t, label) => { if (uid) toggleTenantDocument(uid, t, label); }}
       />
 

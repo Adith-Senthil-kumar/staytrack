@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { View } from 'react-native';
 import { useRooms, useTenants, useDues, useUserDoc } from '../../lib/db/hooks';
 import { recordPayment } from '../../lib/db/dues';
-import { vacateTenant } from '../../lib/db/tenants';
+import { vacateTenant, toggleTenantDocument } from '../../lib/db/tenants';
 import { monthKey } from '../../lib/domain/format';
 import { tenantRentLabel } from '../../lib/domain/tenants';
 import { useUiStore } from '../../store/ui';
@@ -48,7 +48,13 @@ export default function Tenants() {
       <TenantDetailPanel tenant={selected} roomNumber={selRoom?.number ?? '—'} roomType={selRoom?.type ?? 'single'}
         due={selDue} rentDueDay={dueDay} onClose={clearSelection}
         onRecordPayment={() => { if (uid && selDue) recordPayment(uid, selDue.id, selDue.amountDue); }}
-        onVacate={() => { if (uid && selected) { vacateTenant(uid, selected); clearSelection(); } }} />
+        onToggleDoc={(t, label) => { if (uid) toggleTenantDocument(uid, t, label); }}
+        onVacate={() => {
+          if (!uid || !selected) return;
+          const others = tenants.some((x) => x.id !== selected.id && x.status === 'active' && x.roomId === selected.roomId);
+          vacateTenant(uid, selected, !others);
+          clearSelection();
+        }} />
     </View>
   );
 }

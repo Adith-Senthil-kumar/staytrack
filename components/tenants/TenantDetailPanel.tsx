@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Linking, useWindowDimensions } from 'react-native';
+import { View, Text, Pressable, Linking, useWindowDimensions, Modal as RNModal } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import { MoneyText } from '../ui/MoneyText';
@@ -17,9 +17,10 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
   const isDue = !!due && due.amountPaid < due.amountDue;
 
   return (
-    <>
-      {open && <Pressable onPress={onClose} className="absolute inset-0 z-40 bg-overlay" />}
-      <Animated.View style={[{ position: 'absolute', top: 0, bottom: 0, right: 0, width: panelW, zIndex: 50 }, style]} className="bg-bg">
+    <RNModal visible={open} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
+      <View style={{ flex: 1 }}>
+        <Pressable onPress={onClose} style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} className="bg-overlay" />
+        <Animated.View style={[{ position: 'absolute', top: 0, bottom: 0, right: 0, width: panelW }, style]} className="bg-bg">
         {tenant && (
           <View className="h-full">
             <View className="bg-brand px-6 pb-5 pt-6">
@@ -62,7 +63,8 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
             </View>
           </View>
         )}
-      </Animated.View>
-    </>
+        </Animated.View>
+      </View>
+    </RNModal>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Pressable, ScrollView, TextInput, Linking, useWindowDimensions } from 'react-native';
+import { View, Text, Pressable, ScrollView, TextInput, Linking, useWindowDimensions, Modal as RNModal } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import { formatINR, monthKey, monthName } from '../../lib/domain/format';
@@ -66,12 +66,13 @@ export function StaffDetailPanel({
   const sortedNotes = staff?.notes ? [...staff.notes].reverse() : [];
 
   return (
-    <>
-      {open && <Pressable onPress={onClose} className="absolute inset-0 z-40 bg-overlay" />}
-      <Animated.View
-        style={[{ position: 'absolute', top: 0, bottom: 0, right: 0, width: panelW, zIndex: 50 }, style]}
-        className="bg-bg"
-      >
+    <RNModal visible={open} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
+      <View style={{ flex: 1 }}>
+        <Pressable onPress={onClose} style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} className="bg-overlay" />
+        <Animated.View
+          style={[{ position: 'absolute', top: 0, bottom: 0, right: 0, width: panelW }, style]}
+          className="bg-bg"
+        >
         {staff && (
           <View className="h-full">
             {/* Brand header */}
@@ -277,7 +278,8 @@ export function StaffDetailPanel({
             </ScrollView>
           </View>
         )}
-      </Animated.View>
-    </>
+        </Animated.View>
+      </View>
+    </RNModal>
   );
 }

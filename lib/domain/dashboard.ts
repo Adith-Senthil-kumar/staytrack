@@ -28,3 +28,7 @@ export function statusCounts(rooms: Room[]) {
 }
 
 export const floorTag = (floor: number) => `${floor}F`;
+
+const ORDINALS = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'];
+// Floor 1 is the Ground floor; floor N (N>1) is the (N-1)th floor — matches the design.
+export const floorName = (floor: number) => (floor === 1 ? 'Ground' : ORDINALS[floor - 2] ?? `${floor - 1}th`);

@@ -22,10 +22,14 @@ export default function Tenants() {
   const selectedTenantId = useUiStore((s) => s.selectedTenantId);
   const selectTenant = useUiStore((s) => s.selectTenant);
   const clearSelection = useUiStore((s) => s.clearSelection);
+  const searchTerm = useUiStore((s) => s.searchTerm);
 
   const roomById = useMemo(() => new Map(rooms.map((r) => [r.id, r])), [rooms]);
   const dueByTenant = useMemo(() => new Map(dues.map((d) => [d.tenantId, d])), [dues]);
-  const active = tenants.filter((t) => t.status === 'active');
+  const term = searchTerm.trim().toLowerCase();
+  const active = tenants.filter((t) => t.status === 'active' &&
+    (!term || t.name.toLowerCase().includes(term) || t.phone.toLowerCase().includes(term) ||
+      (t.roomId ? roomById.get(t.roomId)?.number ?? '' : '').toLowerCase().includes(term)));
 
   const selected = tenants.find((t) => t.id === selectedTenantId) ?? null;
   const selRoom = selected?.roomId ? roomById.get(selected.roomId) : undefined;

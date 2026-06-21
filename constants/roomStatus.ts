@@ -7,6 +7,6 @@ export const STATUS_UI: Record<RoomStatus, {
   occupied: { tile: 'bg-occ-bg border-occ-bd', num: 'text-ink', line: 'text-text-2', sub: 'text-muted', dot: 'bg-brand', label: 'Occupied' },
   pending:  { tile: 'bg-pend-bg border-pend-bd', num: 'text-ink', line: 'text-text-2', sub: 'text-warn', dot: 'bg-warn', label: 'Pending' },
   reserved: { tile: 'bg-pend-bg border-pend-bd', num: 'text-ink', line: 'text-text-2', sub: 'text-warn', dot: 'bg-warn', label: 'Reserved' },
-  vacant:   { tile: 'bg-vac-bg border-vac-bd border-dashed', num: 'text-muted', line: 'text-soft', sub: 'text-soft', dot: 'bg-soft', label: 'Vacant' },
+  vacant:   { tile: 'bg-vac-bg border-vac-bd border-dashed', num: 'text-soft', line: 'text-soft', sub: 'text-st-vac', dot: 'bg-st-vac', label: 'Vacant' },
   repair:   { tile: 'bg-maint-bg border-maint-bd', num: 'text-ink', line: 'text-bad', sub: 'text-bad', dot: 'bg-bad', label: 'Repair' },
 };

@@ -1,5 +1,5 @@
 import { View, Text, type DimensionValue } from 'react-native';
-import { MoneyText } from '../ui/MoneyText';
+import { formatINR } from '../../lib/domain/format';
 import { STATUS_UI } from '../../constants/roomStatus';
 
 export function SidePanel({ collected, potential, outstanding, net, status, mess }: {
@@ -18,11 +18,11 @@ export function SidePanel({ collected, potential, outstanding, net, status, mess
     <View className="gap-4">
       <View className="rounded-[14px] bg-brand p-5">
         <Text className="text-[11.5px] font-sans-semibold uppercase tracking-wider text-[#6F9588]">This Month</Text>
-        <MoneyText amount={collected} className="mt-2 text-[30px] text-[#FBF8F0]" />
-        <Text className="mt-0.5 text-[12.5px] text-[#8FB0A5]">collected of {potential ? `₹${potential}` : '—'}</Text>
+        <Text className="mt-2 font-mono-semibold text-[30px]" style={{ color: '#FBF8F0' }}>{formatINR(collected)}</Text>
+        <Text className="mt-0.5 text-[12.5px] text-[#8FB0A5]">collected of {potential ? formatINR(potential) : '—'}</Text>
         <View className="my-4 h-px bg-[#ffffff1a]" />
-        <View className="mb-2 flex-row justify-between"><Text className="text-[13px] text-[#8FB0A5]">Outstanding</Text><MoneyText amount={outstanding} className="text-[13px] text-[#E7B45A]" /></View>
-        <View className="flex-row justify-between"><Text className="text-[13px] text-[#8FB0A5]">Net after expenses</Text><MoneyText amount={net} className="text-[13px] text-[#FBF8F0]" /></View>
+        <View className="mb-2 flex-row justify-between"><Text className="text-[13px] text-[#8FB0A5]">Outstanding</Text><Text className="font-mono-semibold text-[13px]" style={{ color: '#E7B45A' }}>{formatINR(outstanding)}</Text></View>
+        <View className="flex-row justify-between"><Text className="text-[13px] text-[#8FB0A5]">Net after expenses</Text><Text className="font-mono-semibold text-[13px]" style={{ color: '#FBF8F0' }}>{formatINR(net)}</Text></View>
       </View>
 
       <View className="rounded-[14px] border border-border bg-surface px-5 py-[18px]">

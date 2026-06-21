@@ -3,12 +3,14 @@ import { View, Pressable, useWindowDimensions, ScrollView } from 'react-native';
 import { Redirect, Slot, usePathname } from 'expo-router';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useAuthStore } from '../../store/auth';
-import { useUserDoc, useTenants, useDues } from '../../lib/db/hooks';
+import { useUserDoc, useTenants, useDues, useRooms } from '../../lib/db/hooks';
 import { useUiStore } from '../../store/ui';
 import { ensureCurrentMonthDues } from '../../lib/db/duesEngine';
+import { addTenant } from '../../lib/db/tenants';
 import { monthKey } from '../../lib/domain/format';
 import { Sidebar } from '../../components/shell/Sidebar';
 import { TopBar } from '../../components/shell/TopBar';
+import { AddTenantModal } from '../../components/tenants/AddTenantModal';
 
 const META: Record<string, { title: string; subtitle: string; action?: string }> = {
   rooms: { title: 'Rooms & Occupancy', subtitle: 'Live view of all your rooms', action: 'Add Tenant' },
@@ -30,7 +32,11 @@ export default function AppLayout() {
   const mk = monthKey(new Date());
   const { tenants } = useTenants();
   const { dues } = useDues(mk);
+  const { rooms } = useRooms();
   const uid = useAuthStore((s) => s.user?.uid);
+  const showAddTenant = useUiStore((s) => s.showAddTenant);
+  const assignRoomId = useUiStore((s) => s.assignRoomId);
+  const closeAddTenant = useUiStore((s) => s.closeAddTenant);
   useEffect(() => {
     if (uid && tenants.length) ensureCurrentMonthDues(uid, tenants, dues, mk).catch(() => {});
   }, [uid, tenants, dues, mk]);
@@ -64,6 +70,17 @@ export default function AppLayout() {
           <Sidebar onNavigate={closeDrawer} />
         </Animated.View>
       )}
+
+      <AddTenantModal
+        visible={showAddTenant}
+        vacantRooms={rooms.filter((r) => r.status === 'vacant')}
+        presetRoomId={assignRoomId}
+        onClose={closeAddTenant}
+        onAdd={(d) => {
+          if (uid) addTenant(uid, { name: d.name, phone: d.phone, roomId: d.roomId, rent: d.rent, deposit: 0, foodPreference: d.food }, d.sharing);
+          closeAddTenant();
+        }}
+      />
     </View>
   );
 }

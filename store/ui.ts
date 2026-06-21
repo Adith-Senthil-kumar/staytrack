@@ -48,6 +48,18 @@ type UiState = {
   ssReceiptStayId: string | null;
   openSSReceipt: (id: string) => void;
   closeSSReceipt: () => void;
+  showAddTenant: boolean;
+  assignRoomId: string | null;
+  openAddTenant: (roomId?: string) => void;
+  closeAddTenant: () => void;
+  showManageRooms: boolean;
+  openManageRooms: () => void;
+  closeManageRooms: () => void;
+  selectedRoomId: string | null;
+  selectRoom: (id: string) => void;
+  clearRoomSelection: () => void;
+  searchTerm: string;
+  setSearch: (t: string) => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -98,4 +110,16 @@ export const useUiStore = create<UiState>((set) => ({
   ssReceiptStayId: null,
   openSSReceipt: (id) => set({ ssReceiptStayId: id }),
   closeSSReceipt: () => set({ ssReceiptStayId: null }),
+  showAddTenant: false,
+  assignRoomId: null,
+  openAddTenant: (roomId) => set({ showAddTenant: true, assignRoomId: roomId ?? null }),
+  closeAddTenant: () => set({ showAddTenant: false, assignRoomId: null }),
+  showManageRooms: false,
+  openManageRooms: () => set({ showManageRooms: true }),
+  closeManageRooms: () => set({ showManageRooms: false }),
+  selectedRoomId: null,
+  selectRoom: (id) => set({ selectedRoomId: id }),
+  clearRoomSelection: () => set({ selectedRoomId: null }),
+  searchTerm: '',
+  setSearch: (t) => set({ searchTerm: t }),
 }));

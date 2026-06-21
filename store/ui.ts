@@ -11,6 +11,9 @@ type UiState = {
   payDueId: string | null;
   openPay: (dueId: string) => void;
   closePay: () => void;
+  showExpense: boolean;
+  openExpense: () => void;
+  closeExpense: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -24,4 +27,7 @@ export const useUiStore = create<UiState>((set) => ({
   payDueId: null,
   openPay: (dueId) => set({ payDueId: dueId }),
   closePay: () => set({ payDueId: null }),
+  showExpense: false,
+  openExpense: () => set({ showExpense: true }),
+  closeExpense: () => set({ showExpense: false }),
 }));

@@ -18,6 +18,6 @@ export function tenantRentLabel(due: Due | undefined, today: Date, rentDueDay: n
     case 'paid': return { label: 'Paid', tone: 'ok' };
     case 'overdue': return { label: 'Overdue', tone: 'bad' };
     case 'partial': return { label: 'Partial', tone: 'warn' };
-    default: return { label: 'Due', tone: 'warn' };
+    default: return { label: 'Due', tone: 'bad' };
   }
 }

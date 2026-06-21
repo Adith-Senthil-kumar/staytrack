@@ -55,8 +55,8 @@ export function AddTenantModal({
 
   const label = 'mb-1.5 text-[12px] font-sans-semibold text-label';
   const input = 'rounded-[9px] border border-border bg-field px-[13px] py-[11px] text-sm text-text';
-  const seg = (active: boolean) => `flex-1 flex-row items-center justify-center rounded-[9px] border py-[11px] ${active ? 'border-brand bg-brand' : 'border-border bg-surface'}`;
-  const segTxt = (active: boolean) => `text-sm font-sans-semibold ${active ? 'text-[#F4F1E7]' : 'text-label'}`;
+  const seg = (active: boolean) => `flex-1 flex-row items-center justify-center rounded-[9px] border px-3 py-[11px] ${active ? 'border-brand bg-brand' : 'border-border bg-surface'}`;
+  const segTxt = (active: boolean) => `text-[13.5px] font-sans-semibold ${active ? 'text-[#F4F1E7]' : 'text-label'}`;
   const canSubmit = !!name.trim() && !!roomId;
 
   return (
@@ -66,7 +66,7 @@ export function AddTenantModal({
           <View className="max-h-[92%] w-[560px] max-w-full overflow-hidden rounded-[18px] bg-surface">
             {/* Brand header */}
             <View className="bg-brand px-[26px] py-[22px]">
-              <Text className="text-[11.5px] font-sans-semibold uppercase tracking-wide text-[#6F9588]">Onboard New Tenant</Text>
+              <Text className="text-[11.5px] font-sans-semibold uppercase tracking-[1.4px] text-[#6F9588]">Onboard New Tenant</Text>
               <Text className="mt-1 font-serif text-[22px] text-[#FBF8F0]">Add Tenant</Text>
               <Pressable onPress={close} className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]">
                 <Text className="text-base text-[#DCE7E1]">✕</Text>
@@ -115,7 +115,7 @@ export function AddTenantModal({
 
             <View className="flex-row gap-3 border-t border-border px-[26px] py-3.5">
               <Pressable onPress={close} className="rounded-[10px] border border-border bg-surface px-5 py-3"><Text className="text-sm font-sans-semibold text-label">Cancel</Text></Pressable>
-              <Pressable onPress={submit} disabled={!canSubmit} className="flex-1 items-center rounded-[10px] bg-brand py-3" style={{ opacity: canSubmit ? 1 : 0.5 }}>
+              <Pressable onPress={submit} disabled={!canSubmit} className={`flex-1 items-center rounded-[10px] py-3 ${canSubmit ? 'bg-brand' : 'bg-disabled'}`}>
                 <Text className="text-sm font-sans-semibold text-[#F4F1E7]">Add Tenant</Text>
               </Pressable>
             </View>

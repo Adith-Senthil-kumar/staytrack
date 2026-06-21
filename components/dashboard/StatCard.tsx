@@ -1,4 +1,5 @@
 import { View, Text } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export function StatCard({ dot, title, children }: { dot: string; title: string; children: React.ReactNode }) {
   return (
@@ -12,10 +13,15 @@ export function StatCard({ dot, title, children }: { dot: string; title: string;
   );
 }
 
-export function ProgressBar({ pct, fill = 'bg-accent' }: { pct: number; fill?: string }) {
+export function ProgressBar({ pct, fill = 'bg-accent', gradient }: { pct: number; fill?: string; gradient?: [string, string] }) {
+  const width = `${Math.min(100, Math.max(0, pct))}%` as const;
   return (
     <View className="mt-3 h-1.5 overflow-hidden rounded-[4px] bg-track">
-      <View className={`h-full rounded-[4px] ${fill}`} style={{ width: `${Math.min(100, Math.max(0, pct))}%` }} />
+      {gradient ? (
+        <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ height: '100%', borderRadius: 4, width }} />
+      ) : (
+        <View className={`h-full rounded-[4px] ${fill}`} style={{ width }} />
+      )}
     </View>
   );
 }

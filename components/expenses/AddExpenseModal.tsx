@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from 'react-native';
 import { CATEGORY_UI, CATEGORY_KEYS } from '../../constants/expenseCategory';
+import { XIcon } from '../icons';
 import type { ExpenseCategory } from '../../types';
 
 export function AddExpenseModal({ visible, onClose, onAdd }: {
@@ -38,7 +39,7 @@ export function AddExpenseModal({ visible, onClose, onAdd }: {
               onPress={close}
               className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-[8px] border border-[#ffffff2e] bg-[#ffffff14] active:bg-[#ffffff28]"
             >
-              <Text className="text-base leading-none text-[#DCE7E1]">✕</Text>
+              <XIcon size={16} color="#DCE7E1" />
             </Pressable>
           </View>
 
@@ -88,7 +89,7 @@ export function AddExpenseModal({ visible, onClose, onAdd }: {
               </View>
 
               {/* Amount col */}
-              <View className="w-[140px]">
+              <View className="flex-1">
                 <Text className={label}>Amount (₹)</Text>
                 <TextInput
                   value={amount}

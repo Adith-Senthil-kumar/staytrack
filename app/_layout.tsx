@@ -14,6 +14,7 @@ import {
   IBMPlexSerif_700Bold,
 } from '@expo-google-fonts/ibm-plex-serif';
 import {
+  IBMPlexMono_400Regular,
   IBMPlexMono_500Medium,
   IBMPlexMono_600SemiBold,
 } from '@expo-google-fonts/ibm-plex-mono';
@@ -31,6 +32,7 @@ export default function RootLayout() {
     IBMPlexSans_700Bold,
     IBMPlexSerif_600SemiBold,
     IBMPlexSerif_700Bold,
+    IBMPlexMono_400Regular,
     IBMPlexMono_500Medium,
     IBMPlexMono_600SemiBold,
   });

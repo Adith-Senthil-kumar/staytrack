@@ -39,11 +39,8 @@ export function ScheduleTab({
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={{ minWidth: 620 }}>
           {/* Column header row */}
-          <View
-            className="flex-row items-center border-b border-border-2 px-5 py-3"
-            style={{ backgroundColor: 'var(--surface-2, #F5F3EC)' }}
-          >
-            <View style={{ width: 160 }}>
+          <View className="flex-row items-center border-b border-border-2 bg-surface-2 px-5 py-3">
+            <View style={{ flex: 1.4 }}>
               <Text className="text-[11px] font-sans-semibold uppercase tracking-[0.5px] text-muted-2">
                 Staff
               </Text>
@@ -69,7 +66,7 @@ export function ScheduleTab({
                 className={`flex-row items-center px-5 py-[10px] ${idx < staff.length - 1 ? 'border-b border-border-3' : ''}`}
               >
                 {/* Name + role */}
-                <View style={{ width: 160 }} className="pr-2">
+                <View style={{ flex: 1.4 }} className="pr-2">
                   <Text numberOfLines={1} className="text-[13px] font-sans-semibold text-text">
                     {member.name}
                   </Text>
@@ -82,25 +79,32 @@ export function ScheduleTab({
                 {WEEKDAYS.map((_, dayIdx) => {
                   const shift = shiftFor(member.id, dayIdx);
                   const ui = SHIFT_UI[shift];
+                  const cellBg: Record<Shift, string> = {
+                    morning: '#FAF0DD',
+                    evening: '#EAF1EC',
+                    night: '#F2EDDF',
+                    off: '#FBF9F2',
+                  };
+                  const letterColor = shift === 'off' ? '#9A9A8A' : ui.color;
                   return (
                     <Pressable
                       key={dayIdx}
                       onPress={() => onCycle(member.id, dayIdx, shift)}
-                      style={{ flex: 1 }}
-                      className="mx-1 items-center justify-center rounded-[7px] py-2"
+                      style={{
+                        flex: 1,
+                        backgroundColor: cellBg[shift],
+                        borderWidth: 1,
+                        borderColor: '#DED8C8',
+                      }}
+                      className="mx-1 items-center justify-center rounded-lg py-[7px]"
                       accessibilityLabel="Tap to change shift"
                     >
-                      <View
-                        className="h-9 w-9 items-center justify-center rounded-[7px]"
-                        style={{ backgroundColor: ui.color + '22' }}
+                      <Text
+                        className="font-mono text-[13px] font-semibold"
+                        style={{ color: letterColor }}
                       >
-                        <Text
-                          className="font-mono text-[13px] font-semibold"
-                          style={{ color: ui.color }}
-                        >
-                          {ui.letter}
-                        </Text>
-                      </View>
+                        {ui.letter}
+                      </Text>
                     </Pressable>
                   );
                 })}

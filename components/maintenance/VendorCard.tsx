@@ -23,7 +23,7 @@ export function VendorCard({
         className="h-12 w-12 items-center justify-center rounded-[12px]"
         style={{ backgroundColor: tradeInfo.color }}
       >
-        <Text className="text-[16px] font-sans-semibold text-[#FFFFFF]">{abbr}</Text>
+        <Text className="text-[16px] font-sans-semibold text-[#FBF8F0]">{abbr}</Text>
       </View>
 
       {/* Info */}

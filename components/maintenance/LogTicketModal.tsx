@@ -140,10 +140,10 @@ export function LogTicketModal({
                   <Pressable
                     key={p}
                     onPress={() => setPriority(p)}
-                    className="flex-1 items-center rounded-[9px] border py-[11px]"
+                    className="flex-1 items-center rounded-[8px] border px-1.5 py-[9px]"
                     style={{
                       borderColor: selected ? ui.color : undefined,
-                      backgroundColor: selected ? ui.color + '22' : undefined,
+                      backgroundColor: selected ? ui.color + '1F' : undefined,
                     }}
                   >
                     <Text

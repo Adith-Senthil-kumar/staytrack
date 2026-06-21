@@ -26,11 +26,11 @@ export function TopBar({ title, subtitle, actionLabel, showBurger }: {
         </Pressable>
       )}
       <View className="min-w-0 flex-1">
-        <Text numberOfLines={1} className="font-serif text-[19px] text-ink sm:text-2xl">{title}</Text>
+        <Text numberOfLines={1} className="font-serif text-2xl tracking-[-0.4px] text-ink">{title}</Text>
         {subtitle ? <Text numberOfLines={1} className="mt-0.5 hidden text-[13px] text-muted sm:flex">{subtitle}</Text> : null}
       </View>
       <View className="flex-row items-center gap-3.5">
-        <View className="hidden w-[240px] flex-row items-center gap-2 rounded-[9px] border border-border bg-surface px-3 py-2 lg:flex">
+        <View className="hidden w-[240px] flex-row items-center gap-2 rounded-[9px] border border-border bg-surface px-3 py-2 sm:flex">
           <SearchIcon size={16} color={softColor} />
           <TextInput value={searchTerm} onChangeText={setSearch} placeholder="Search room or tenant…" placeholderTextColor={softColor} className="flex-1 text-[13px] text-text" />
         </View>

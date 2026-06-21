@@ -34,7 +34,7 @@ export function TenantRow({ tenant, roomNumber, sharing, rent, onPress }: {
       <Text numberOfLines={1} style={{ flex: COL.phone }} className="font-mono text-[12.5px] text-label">{tenant.phone || '—'}</Text>
       <Text numberOfLines={1} style={{ flex: COL.room }} className="font-mono-semibold text-[13px] text-ink">{roomNumber}</Text>
       <Text numberOfLines={1} style={{ flex: COL.sharing }} className="text-[12.5px] capitalize text-label">{sharing}</Text>
-      <Text numberOfLines={1} style={{ flex: COL.rent }} className="font-mono text-[13px] text-text">{formatINR(tenant.rent)}</Text>
+      <Text numberOfLines={1} style={{ flex: COL.rent }} className="font-mono-medium text-[13px] text-text">{formatINR(tenant.rent)}</Text>
       <View style={{ flex: COL.status }}>
         <View className={`self-start flex-row items-center rounded-[20px] border px-[9px] py-[3px] ${pill.bg} ${pill.bd}`}>
           <Text className={`text-[11px] font-sans-semibold ${pill.txt}`}>{pill.label}</Text>

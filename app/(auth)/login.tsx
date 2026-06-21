@@ -29,12 +29,12 @@ export default function Login() {
           <View className="flex-row items-center gap-3">
             <LogoMark size={44} />
             <View>
-              <Text className="font-serif-bold text-[23px] text-[#FBF8F0]">StayTrack</Text>
+              <Text className="font-serif-bold text-[23px] tracking-[-0.3px] text-[#FBF8F0]">StayTrack</Text>
               <Text className="text-[11px] font-sans-semibold uppercase tracking-[1.6px] text-[#5E8579]">PG Manager</Text>
             </View>
           </View>
           <View className="max-w-[420px]">
-            <Text className="font-serif text-[34px] leading-[42px] text-[#FBF8F0]">Run your PG like a ledger, not a guessbook.</Text>
+            <Text className="font-serif text-[34px] leading-[42px] tracking-[-0.5px] text-[#FBF8F0]">Run your PG like a ledger, not a guessbook.</Text>
             <Text className="mt-4 text-[14.5px] leading-6 text-[#8FB0A5]">Rooms, tenants, rent and expenses — every rupee and every bed, tracked in one place.</Text>
           </View>
           <View className="flex-row gap-6">
@@ -50,7 +50,7 @@ export default function Login() {
           {!wide && (
             <View className="mb-7 flex-row items-center gap-3">
               <LogoMark size={40} />
-              <Text className="font-serif-bold text-[20px] text-[#FBF8F0]">StayTrack</Text>
+              <Text className="font-serif-bold text-[20px] tracking-[-0.3px] text-[#FBF8F0]">StayTrack</Text>
             </View>
           )}
           <Text className="font-serif text-2xl text-[#FBF8F0]">Sign in</Text>

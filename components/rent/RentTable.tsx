@@ -7,7 +7,7 @@ export function RentTable({ children, empty }: { children: React.ReactNode; empt
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
         <View className="min-w-[600px] grow">
           {/* Header: columns match design 2.2fr 0.8fr 1fr 1.2fr 1.6fr */}
-          <View className="flex-row items-center border-b border-border bg-surface-2 px-[22px] py-3">
+          <View className="flex-row items-center border-b border-border bg-surface-2 px-[22px] py-[13px]">
             <Text className={`flex-[2.2] pr-3.5 ${head}`}>Tenant</Text>
             <Text className={`flex-[0.8] pr-3.5 ${head}`}>Room</Text>
             <Text className={`flex-[1] pr-3.5 ${head}`}>Rent</Text>

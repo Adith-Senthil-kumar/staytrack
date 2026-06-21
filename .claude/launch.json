@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "dist", "-s", "-l", "4123"],
       "port": 4123
+    },
+    {
+      "name": "demo-web",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "EXPO_PUBLIC_DEMO=1 npx expo start --web --port 8090"],
+      "port": 8090
     }
   ]
 }

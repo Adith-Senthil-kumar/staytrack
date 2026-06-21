@@ -16,8 +16,8 @@ export function TicketCard({ ticket, onPress }: { ticket: MaintTicket; onPress: 
       <View className="mb-2 flex-row items-center justify-between gap-2">
         <Text className="font-mono-semibold text-[13px] text-text">Room {roomNumber}</Text>
         <View
-          className="rounded-[6px] px-2 py-0.5"
-          style={{ backgroundColor: pri.color + '22' }}
+          className="rounded-[20px] px-[9px] py-[3px]"
+          style={{ backgroundColor: pri.color + '1F', borderWidth: 1, borderColor: pri.color + '44' }}
         >
           <Text className="font-sans-semibold text-[11px]" style={{ color: pri.color }}>
             {pri.label}

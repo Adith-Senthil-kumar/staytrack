@@ -36,6 +36,8 @@ export function ReceiptModal({
 }) {
   if (!stay) return null;
 
+  const payMethod = (stay as { paymentMethod?: string }).paymentMethod;
+  const paidLabel = payMethod ? `Paid in full via ${payMethod}` : 'Paid in full';
   const receiptText = buildReceiptText(stay, propertyName);
   const handleShare = () => {
     Share.share({ message: receiptText });
@@ -47,7 +49,7 @@ export function ReceiptModal({
         <Pressable onPress={() => {}} className="w-[430px] max-w-full overflow-hidden rounded-[18px] bg-surface">
           {/* Amber short-stay header */}
           <View className="px-[26px] py-[22px]" style={{ backgroundColor: '#C7842A' }}>
-            <Text className="text-[11.5px] font-sans-semibold uppercase tracking-wide text-[#ffffffb3]">
+            <Text className="text-[11.5px] font-sans-semibold uppercase tracking-[1.4px] text-[#ffffffb3]">
               Receipt · {propertyName}
             </Text>
             <Text className="mt-1 font-serif text-[20px] text-[#FBF8F0]">{stay.guestName}</Text>
@@ -55,7 +57,7 @@ export function ReceiptModal({
             {/* Close button */}
             <Pressable
               onPress={onClose}
-              className="absolute right-[14px] top-[14px] h-[28px] w-[28px] items-center justify-center rounded-lg border border-[#ffffff40] bg-[#ffffff1f]"
+              className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff40] bg-[#ffffff1f]"
             >
               <Text className="text-[14px] font-sans-semibold text-[#FBF8F0]">✕</Text>
             </Pressable>
@@ -87,7 +89,7 @@ export function ReceiptModal({
             </View>
             <View className="mt-2 flex-row items-center gap-1.5">
               <CheckIcon size={13} color="#1E6F5C" />
-              <Text className="text-[12px] text-muted-2">Paid in full</Text>
+              <Text className="text-[12px] text-muted-2">{paidLabel}</Text>
             </View>
           </View>
 

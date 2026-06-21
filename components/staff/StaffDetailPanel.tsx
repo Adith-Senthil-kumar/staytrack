@@ -220,7 +220,7 @@ export function StaffDetailPanel({
                   onPress={() => handleNote('complaint')}
                   className="flex-1 flex-row items-center justify-center gap-1.5 rounded-lg border border-maint-bd bg-bad-bg py-2"
                 >
-                  <ThumbsDownIcon size={14} color="#B94040" />
+                  <ThumbsDownIcon size={14} color="#B5462F" />
                   <Text className="font-sans-semibold text-[12.5px] text-bad">Complaint</Text>
                 </Pressable>
               </View>
@@ -255,7 +255,7 @@ export function StaffDetailPanel({
                 onPress={() => onPayslip(staff.id)}
                 className="mt-1.5 flex-row items-center justify-center gap-2 rounded-[11px] border border-border bg-surface py-3"
               >
-                <FileTextIcon size={15} color="#3A5247" />
+                <FileTextIcon size={15} color="#13352C" />
                 <Text className="font-sans-semibold text-[13.5px] text-ink">Generate Payslip</Text>
               </Pressable>
 
@@ -272,7 +272,7 @@ export function StaffDetailPanel({
                   onPress={() => onRemove(staff.id)}
                   className="w-[46px] items-center justify-center rounded-[11px] border border-maint-bd bg-surface"
                 >
-                  <TrashIcon size={16} color="#B94040" />
+                  <TrashIcon size={16} color="#B5462F" />
                 </Pressable>
               </View>
 

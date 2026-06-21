@@ -98,7 +98,7 @@ export function RecordPaymentModal({ tenant, roomNumber, due, monthLabel, onClos
                     <Text className="text-[15px] font-sans-semibold text-[#FBF8F0]">{initials(tenant.name)}</Text>
                   </View>
                   <View>
-                    <Text className="font-serif text-lg font-semibold text-[#FBF8F0]">{tenant.name}</Text>
+                    <Text className="font-serif text-lg text-[#FBF8F0]">{tenant.name}</Text>
                     <Text className="text-[12.5px] text-[#8FB0A5]">Room {roomNumber} · {fmtMonthLabel(monthLabel)} rent</Text>
                   </View>
                 </View>
@@ -121,10 +121,10 @@ export function RecordPaymentModal({ tenant, roomNumber, due, monthLabel, onClos
                       <Pressable
                         key={m.key}
                         onPress={() => setMethod(m.key)}
-                        className={`flex-1 items-center gap-1 rounded-[10px] border py-3 ${active ? 'border-ok bg-occ-bg' : 'border-border bg-surface'}`}
+                        className={`flex-1 items-center gap-1.5 rounded-[10px] border px-2 py-[11px] ${active ? 'border-ok bg-occ-bg text-ink' : 'border-border bg-surface text-label'}`}
                       >
                         <m.Icon />
-                        <Text className={`text-[13px] font-sans-semibold ${active ? 'text-ok' : 'text-muted'}`}>{m.label}</Text>
+                        <Text className={`text-[13px] font-sans-semibold ${active ? 'text-ink' : 'text-label'}`}>{m.label}</Text>
                       </Pressable>
                     );
                   })}

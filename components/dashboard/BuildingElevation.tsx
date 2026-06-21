@@ -80,11 +80,11 @@ export function BuildingElevation({ floors, tenantByRoom, dueByTenant, subtitle,
 
         {floors.map((f) => (
           <View key={f.floor} className="flex-row items-stretch border-b border-border-2" style={{ minHeight: ROW_H }}>
-            <View className="justify-center pl-[42px]" style={{ width: 84 }}>
+            <View className="justify-center pl-[42px]" style={{ width: 58 }}>
               <Text numberOfLines={1} className="font-mono-semibold text-[15px] text-ink">{f.floor}F</Text>
               <Text numberOfLines={1} className="text-[10px] text-soft">{floorName(f.floor)}</Text>
             </View>
-            <View className="flex-1 justify-center py-3.5 pr-1">
+            <View className="flex-1 justify-center py-3.5 pr-1 pl-[18px]">
               {f.rooms.length === 0 ? (
                 <Text className="text-xs text-soft">No rooms on this floor yet — add them from Manage.</Text>
               ) : (

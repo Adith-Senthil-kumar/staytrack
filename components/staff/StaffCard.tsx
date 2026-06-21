@@ -30,11 +30,11 @@ export function StaffCard({
   const pct = attPct(attendance, staff.id);
 
   // Today chip styles
-  const chipColors: Record<AttendanceStatus, { bg: string; text: string; label: string }> = {
-    present: { bg: '#E6F4F1', text: '#1E6F5C', label: 'Present' },
-    late: { bg: '#FDF3E3', text: '#C67A1E', label: 'Late' },
-    absent: { bg: '#FDECEA', text: '#B5462F', label: 'Absent' },
-    leave: { bg: '#F2F2EF', text: '#85897C', label: 'On Leave' },
+  const chipColors: Record<AttendanceStatus, { bg: string; text: string; border: string; label: string }> = {
+    present: { bg: '#EAF1EC', text: '#1E6F5C', border: '#C7DAD0', label: 'Present' },
+    late: { bg: '#FAF0DD', text: '#C67A1E', border: '#E8C896', label: 'Late' },
+    absent: { bg: '#F7E7E1', text: '#B5462F', border: '#E2B8AC', label: 'Absent' },
+    leave: { bg: '#F2EDDF', text: '#85897C', border: '#DED8C8', label: 'Leave' },
   };
   const chip = todayStatus ? chipColors[todayStatus] : null;
 
@@ -56,8 +56,8 @@ export function StaffCard({
             {staff.name}
           </Text>
           <View
-            className="mt-1 self-start rounded px-1.5 py-0.5"
-            style={{ backgroundColor: role.color + '22' }}
+            className="mt-1 self-start rounded-[20px] px-[9px] py-[3px]"
+            style={{ backgroundColor: role.color + '1F', borderWidth: 1, borderColor: role.color + '40' }}
           >
             <Text className="text-[11px] font-sans-semibold" style={{ color: role.color }}>
               {role.label}
@@ -83,14 +83,20 @@ export function StaffCard({
       {/* Footer: today chip + attendance % */}
       <View className="mt-[13px] flex-row items-center justify-between border-t border-border-3 pt-[13px]">
         {chip ? (
-          <View className="rounded-full px-2.5 py-0.5" style={{ backgroundColor: chip.bg }}>
-            <Text className="text-[11.5px] font-sans-semibold" style={{ color: chip.text }}>
+          <View
+            className="rounded-[20px] px-[9px] py-[3px]"
+            style={{ backgroundColor: chip.bg, borderWidth: 1, borderColor: chip.border }}
+          >
+            <Text className="text-[11px] font-sans-semibold" style={{ color: chip.text }}>
               {chip.label}
             </Text>
           </View>
         ) : (
-          <View className="rounded-full bg-surface-2 px-2.5 py-0.5">
-            <Text className="text-[11.5px] font-sans-semibold text-soft">Not marked</Text>
+          <View
+            className="rounded-[20px] px-[9px] py-[3px]"
+            style={{ backgroundColor: '#F2EDDF', borderWidth: 1, borderColor: '#DED8C8' }}
+          >
+            <Text className="text-[11px] font-sans-semibold" style={{ color: '#9A9A8A' }}>Not marked</Text>
           </View>
         )}
         <Text className="text-[12px] text-muted-2">{pct}% attendance</Text>

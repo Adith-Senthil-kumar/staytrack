@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { View, Text, useWindowDimensions } from 'react-native';
+import { View, Text, Pressable, useWindowDimensions } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useRooms, useTenants, useDues, useExpenses, useUserDoc } from '../../lib/db/hooks';
 import { useUiStore } from '../../store/ui';
 import { useAuthStore } from '../../store/auth';
@@ -26,6 +27,7 @@ export default function Rooms() {
   const { expenses } = useExpenses();
   const { userDoc } = useUserDoc();
   const { width } = useWindowDimensions();
+  const router = useRouter();
   const wide = width >= 1000;
   const dueDay = userDoc?.property?.rentDueDay ?? 5;
 
@@ -70,14 +72,14 @@ export default function Rooms() {
 
   return (
     <View className="gap-[18px]">
-      <View className={wide ? 'flex-row gap-4' : 'flex-row flex-wrap gap-3'}>
+      <View className={wide ? 'flex-row gap-4' : 'flex-row flex-wrap gap-4'}>
         <StatCard dot="bg-brand" title="Occupancy">
           <View className="mt-3 flex-row items-baseline gap-1.5">
             <Text className="font-mono-semibold text-[30px] text-ink">{occ.occupied}</Text>
             <Text className="font-mono text-[15px] text-soft">/ {occ.total}</Text>
             <Text className="ml-auto font-mono-semibold text-sm text-ok">{occ.percent}%</Text>
           </View>
-          <ProgressBar pct={occ.percent} fill="bg-accent" />
+          <ProgressBar pct={occ.percent} gradient={['#1E6F5C', '#13352C']} />
         </StatCard>
         <StatCard dot="bg-accent" title={`Collected · ${monthName(mk)}`}>
           <MoneyText amount={col.collected} className="mt-3 text-[25px]" />
@@ -87,12 +89,15 @@ export default function Rooms() {
         <StatCard dot="bg-bad" title="Pending Dues">
           <MoneyText amount={col.pending} className="mt-3 text-[25px] text-bad" />
           <Text className="mt-0.5 text-xs text-soft">{col.overdueCount} tenants overdue</Text>
+          <Pressable onPress={() => router.push('/rent')}><Text className="mt-[9px] text-bad text-[12px] font-sans-semibold">Collect now →</Text></Pressable>
         </StatCard>
         <StatCard dot="bg-warn" title="Availability">
           <View className="mt-3 flex-row items-baseline gap-3.5">
             <Text className="font-mono-semibold text-[25px] text-ink">{occ.vacant}<Text className="text-xs text-soft"> vacant</Text></Text>
+            <View className="h-6 w-px bg-border" />
             <Text className="font-mono-semibold text-[25px] text-warn">{occ.pending}<Text className="text-xs text-soft"> pending</Text></Text>
           </View>
+          <Text className="mt-[9px] text-xs text-soft">Ready to assign</Text>
         </StatCard>
       </View>
 

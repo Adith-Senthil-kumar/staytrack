@@ -28,10 +28,6 @@ export function ResolutionLog({
       {/* LEFT — resolved tickets table */}
       <View className="lg:flex-1">
         <View className="overflow-hidden rounded-[14px] border border-border bg-surface">
-          <View className="border-b border-border px-[22px] py-3.5">
-            <Text className="font-serif text-base text-ink">Resolved Tickets</Text>
-          </View>
-
           {resolved.length === 0 ? (
             <View className="py-10 items-center">
               <Text className="text-[13px] text-soft">No resolved tickets yet.</Text>

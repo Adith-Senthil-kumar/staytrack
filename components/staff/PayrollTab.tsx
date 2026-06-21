@@ -32,10 +32,10 @@ export function PayrollTab({
           {/* Header row */}
           <View className="flex-row border-b border-border bg-surface-2 px-[22px] py-[13px]">
             <Text className={`${headerCell} flex-[2]`}>Staff</Text>
-            <Text className={`${headerCell} w-[100px]`}>Base</Text>
-            <Text className={`${headerCell} w-[80px]`}>Days</Text>
-            <Text className={`${headerCell} w-[100px]`}>Net Pay</Text>
-            <Text className={`${headerCell} w-[80px] text-right`}>Payslip</Text>
+            <Text className={headerCell} style={{ flex: 1 }}>Base</Text>
+            <Text className={headerCell} style={{ flex: 1 }}>Days</Text>
+            <Text className={headerCell} style={{ flex: 1 }}>Net Pay</Text>
+            <Text className={`${headerCell} text-right`} style={{ flex: 1.3 }}>Payslip</Text>
           </View>
 
           {/* Staff rows */}
@@ -70,22 +70,22 @@ export function PayrollTab({
                   </View>
 
                   {/* Base */}
-                  <Text className="w-[100px] font-mono text-[13px] text-text-2">
+                  <Text className="font-mono text-[13px] text-text-2" style={{ flex: 1 }}>
                     {formatINR(s.salary)}
                   </Text>
 
                   {/* Days worked */}
-                  <Text className="w-[80px] font-mono text-[13px] text-text-2">
+                  <Text className="font-mono text-[13px] text-text-2" style={{ flex: 1 }}>
                     {c.worked}/{WORKDAYS}
                   </Text>
 
                   {/* Net pay */}
-                  <Text className="w-[100px] font-mono-semibold text-[13.5px] text-ink">
+                  <Text className="font-mono-semibold text-[13.5px] text-ink" style={{ flex: 1 }}>
                     {formatINR(c.net)}
                   </Text>
 
                   {/* Payslip button */}
-                  <View className="w-[80px] items-end">
+                  <View className="items-end" style={{ flex: 1.3 }}>
                     <Pressable
                       onPress={() => onPayslip(s.id)}
                       className="rounded-lg border border-border bg-surface-2 px-[13px] py-[7px] active:bg-surface-3"

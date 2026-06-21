@@ -1,6 +1,21 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from 'react-native';
+import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import type { SSRoom } from '../../types';
+
+const PhotoIcon = ({ size = 16, color = '#5A5A4A' }: { size?: number; color?: string }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+    <Rect x={3} y={3} width={18} height={18} rx={2} />
+    <Circle cx={9} cy={9} r={2} />
+    <Path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21" />
+  </Svg>
+);
+
+const CheckTiny = ({ size = 13, color = '#FBF8F0' }: { size?: number; color?: string }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M20 6 9 17l-5-5" />
+  </Svg>
+);
 
 type IdType = 'aadhaar' | 'passport' | 'licence';
 type PayMethod = 'upi' | 'cash';
@@ -29,6 +44,7 @@ export function BookingModal({
   const [rate, setRate] = useState('');
   const [advance, setAdvance] = useState('');
   const [payMethod, setPayMethod] = useState<PayMethod>('upi');
+  const [idPhoto, setIdPhoto] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -50,7 +66,7 @@ export function BookingModal({
   const reset = () => {
     setGuestName(''); setPhone(''); setIdType('aadhaar');
     setRoomId(''); setCheckIn(today); setCheckOut('');
-    setRate(''); setAdvance(''); setPayMethod('upi');
+    setRate(''); setAdvance(''); setPayMethod('upi'); setIdPhoto(false);
   };
 
   const close = () => { reset(); onClose(); };
@@ -119,7 +135,7 @@ export function BookingModal({
 
             {/* ID Type */}
             <Text className={lbl}>ID Type</Text>
-            <View className="mb-4 flex-row gap-2.5">
+            <View className="mb-[11px] flex-row gap-2.5">
               <Pressable onPress={() => setIdType('aadhaar')} className={idBtn(idType === 'aadhaar')}>
                 <Text className={`text-[13.5px] font-sans-semibold ${idType === 'aadhaar' ? 'text-[#C7842A]' : 'text-label'}`}>Aadhaar</Text>
               </Pressable>
@@ -130,6 +146,18 @@ export function BookingModal({
                 <Text className={`text-[13.5px] font-sans-semibold ${idType === 'licence' ? 'text-[#C7842A]' : 'text-label'}`}>Driving Licence</Text>
               </Pressable>
             </View>
+
+            {/* Upload ID photo toggle */}
+            <Pressable
+              onPress={() => setIdPhoto((v) => !v)}
+              className="mb-4 flex-row items-center gap-2.5 rounded-[9px] border border-border bg-surface px-[13px] py-[11px]"
+            >
+              <View className={`h-5 w-5 items-center justify-center rounded-[5px] border ${idPhoto ? 'border-accent bg-accent' : 'border-border'}`}>
+                {idPhoto ? <CheckTiny size={13} color="#FBF8F0" /> : null}
+              </View>
+              <PhotoIcon size={16} color="#5A5A4A" />
+              <Text className="flex-1 text-[13.5px] font-sans-medium text-text-2">Upload ID photo (optional)</Text>
+            </Pressable>
 
             {/* Room selector */}
             <Text className={lbl}>Room</Text>
@@ -222,7 +250,7 @@ export function BookingModal({
           </ScrollView>
 
           {/* Footer */}
-          <View className="flex-row gap-3 border-t border-border px-[26px] py-[14px]" style={{ paddingBottom: 24 }}>
+          <View className="mt-3 flex-row gap-3 border-t border-border px-[26px] py-[14px]" style={{ paddingBottom: 24 }}>
             <Pressable
               onPress={close}
               className="rounded-[10px] border border-border bg-surface px-5 py-3 active:bg-surface-2"

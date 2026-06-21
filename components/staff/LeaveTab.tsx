@@ -12,10 +12,10 @@ function typeLabel(type: 'casual' | 'sick') {
 
 type Status = LeaveRequest['status'];
 
-function statusChipStyle(status: Status): { bg: string; text: string } {
-  if (status === 'approved') return { bg: '#E6F4F1', text: '#1E6F5C' };
-  if (status === 'rejected') return { bg: '#FDECEA', text: '#B5462F' };
-  return { bg: '#FDF3E3', text: '#C67A1E' };
+function statusChipStyle(status: Status): { bg: string; text: string; border: string } {
+  if (status === 'approved') return { bg: '#EAF1EC', text: '#1E6F5C', border: '#C7DAD0' };
+  if (status === 'rejected') return { bg: '#F7E7E1', text: '#B5462F', border: '#E2B8AC' };
+  return { bg: '#FAF0DD', text: '#C67A1E', border: '#E8C896' };
 }
 
 function capitalize(s: string) {
@@ -73,8 +73,8 @@ export function LeaveTab({
                       </Text>
                     </View>
                     <View
-                      className="rounded-full px-2.5 py-0.5"
-                      style={{ backgroundColor: chip.bg }}
+                      className="rounded-[20px] px-[9px] py-[3px]"
+                      style={{ backgroundColor: chip.bg, borderWidth: 1, borderColor: chip.border }}
                     >
                       <Text
                         className="text-[11px] font-sans-semibold"

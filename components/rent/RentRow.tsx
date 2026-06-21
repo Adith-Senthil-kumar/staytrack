@@ -60,7 +60,7 @@ export function RentRow({ tenant, roomNumber, rent, isDue, onCollect }: {
       <View className="flex-[1.6] flex-row items-center justify-end gap-2">
         {isDue && (
           <Pressable
-            className="h-[34px] w-[34px] flex-none items-center justify-center rounded-[8px] border border-border bg-surface active:bg-surface-2"
+            className="h-[34px] w-[34px] flex-none items-center justify-center rounded-[8px] border border-border bg-surface text-label active:bg-surface-2"
           >
             <BellIcon />
           </Pressable>

@@ -28,7 +28,7 @@ export function CheckoutModal({
   const balance = total;
 
   const pmBtn = (active: boolean) =>
-    `rounded-[8px] border px-4 py-[9px] ${active ? 'border-[#C7842A55] bg-[#C7842A1F]' : 'border-border bg-surface'}`;
+    `rounded-[8px] border px-4 py-[9px] ${active ? 'border-ok bg-occ-bg' : 'border-border bg-surface'}`;
 
   return (
     <RNModal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -80,10 +80,10 @@ export function CheckoutModal({
             <Text className="mb-2 mt-[14px] text-[12px] font-sans-semibold text-label">Collect balance via</Text>
             <View className="flex-row gap-2.5">
               <Pressable onPress={() => setPayMethod('upi')} className={pmBtn(payMethod === 'upi')}>
-                <Text className={`text-[13.5px] font-sans-semibold ${payMethod === 'upi' ? 'text-[#C7842A]' : 'text-label'}`}>UPI</Text>
+                <Text className={`text-[13.5px] font-sans-semibold ${payMethod === 'upi' ? 'text-ok' : 'text-label'}`}>UPI</Text>
               </Pressable>
               <Pressable onPress={() => setPayMethod('cash')} className={pmBtn(payMethod === 'cash')}>
-                <Text className={`text-[13.5px] font-sans-semibold ${payMethod === 'cash' ? 'text-[#C7842A]' : 'text-label'}`}>Cash</Text>
+                <Text className={`text-[13.5px] font-sans-semibold ${payMethod === 'cash' ? 'text-ok' : 'text-label'}`}>Cash</Text>
               </Pressable>
             </View>
           </View>

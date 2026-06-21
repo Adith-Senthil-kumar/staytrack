@@ -20,7 +20,7 @@
 
     --occ-bg: #EAF1EC;  --occ-bd: #C7DAD0;  --pend-bg: #FAF0DD; --pend-bd: #E8C896;
     --maint-bg: #F7E7E1; --maint-bd: #E2B8AC; --vac-bg: #FBFAF4; --bad-bg: #F6E5DF;
-    --due-bg: #F4D6CC;  --overlay: rgba(20,30,25,0.45);
+    --due-bg: #F4D6CC;  --overlay: rgba(20,30,25,0.5);
   }
 
   .dark:root {

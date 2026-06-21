@@ -22,20 +22,20 @@ export function MaintStatCards({ tickets }: { tickets: MaintTicket[] }) {
   return (
     <View className="mb-[22px] flex-row flex-wrap gap-3 sm:gap-4">
       <View className={card}>
-        <View className="flex-row items-center gap-2">{dot('#C67A1E')}<Text className="text-xs text-muted">Active tickets</Text></View>
-        <Text className="mt-2 font-mono-bold text-2xl text-text">{active}</Text>
+        <View className="flex-row items-center gap-2">{dot('#B5462F')}<Text className="text-xs text-muted">Active tickets</Text></View>
+        <Text className="mt-2 font-mono-semibold text-2xl text-ink">{active}</Text>
       </View>
       <View className={card}>
         <View className="flex-row items-center gap-2">{dot('#B5462F')}<Text className="text-xs text-muted">High priority</Text></View>
-        <Text className="mt-2 font-mono-bold text-2xl text-bad">{highPriority}</Text>
+        <Text className="mt-2 font-mono-semibold text-2xl text-bad">{highPriority}</Text>
       </View>
       <View className={card}>
         <View className="flex-row items-center gap-2">{dot('#1E6F5C')}<Text className="text-xs text-muted">Resolved · this month</Text></View>
-        <Text className="mt-2 font-mono-bold text-2xl text-ok">{resolvedThisMonth}</Text>
+        <Text className="mt-2 font-mono-semibold text-2xl text-ok">{resolvedThisMonth}</Text>
       </View>
       <View className={card}>
-        <View className="flex-row items-center gap-2">{dot('#7C6F5B')}<Text className="text-xs text-muted">Repair spend</Text></View>
-        <Text className="mt-2 font-mono-bold text-2xl text-text">{formatINR(repairSpend)}</Text>
+        <View className="flex-row items-center gap-2">{dot('#C67A1E')}<Text className="text-xs text-muted">Repair spend</Text></View>
+        <Text className="mt-2 font-mono-semibold text-2xl text-ink">{formatINR(repairSpend)}</Text>
       </View>
     </View>
   );

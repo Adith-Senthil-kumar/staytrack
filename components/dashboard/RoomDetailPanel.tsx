@@ -31,6 +31,11 @@ export function RoomDetailPanel({
   const style = useAnimatedStyle(() => ({ transform: [{ translateX: withTiming(open ? 0 : panelW, { duration: 280 }) }] }));
 
   const ui = room ? STATUS_UI[room.status] : null;
+  const chipTint = !room ? null
+    : room.status === 'occupied' ? { backgroundColor: 'rgba(126,187,168,0.18)', borderColor: 'rgba(126,187,168,0.4)', color: '#9CD3BE' }
+    : (room.status === 'reserved' || room.status === 'pending') ? { backgroundColor: 'rgba(214,167,96,0.18)', borderColor: 'rgba(214,167,96,0.42)', color: '#E8C896' }
+    : room.status === 'repair' ? { backgroundColor: 'rgba(226,153,140,0.18)', borderColor: 'rgba(226,153,140,0.42)', color: '#E2B8AC' }
+    : { backgroundColor: '#ffffff1f', borderColor: '#ffffff40', color: '#CFE0D8' };
   const occ = !room ? '' : room.type === 'double' ? 'Double sharing' : room.type === 'triple' ? 'Triple sharing' : 'Single occupancy';
   const title = !room ? ''
     : tenants.length ? (tenants.length === 1 ? tenants[0].name : `${tenants.length} Tenants`)
@@ -54,7 +59,7 @@ export function RoomDetailPanel({
               <Pressable onPress={onClose} style={{ zIndex: 10 }} className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"><Text className="text-base text-[#DCE7E1]">✕</Text></Pressable>
               <View className="flex-row items-center gap-2">
                 <Text className="font-mono text-[13px] text-[#9CC0B5]">Room {room.number}</Text>
-                {ui && <View className="rounded-full border border-[#ffffff40] px-2.5 py-[3px]" style={{ backgroundColor: '#ffffff1f' }}><Text className="text-[10.5px] font-sans-semibold uppercase tracking-[0.3px] text-[#CFE0D8]">{ui.label}</Text></View>}
+                {ui && chipTint && <View className="rounded-full border px-2.5 py-[3px]" style={{ backgroundColor: chipTint.backgroundColor, borderColor: chipTint.borderColor }}><Text className="text-[10.5px] font-sans-semibold uppercase tracking-[0.3px]" style={{ color: chipTint.color }}>{ui.label}</Text></View>}
               </View>
               <Text className="mt-1.5 font-serif text-[23px] text-[#FBF8F0]">{title}</Text>
               <Text className="mt-0.5 text-[13px] text-[#8FB0A5]">{sub}</Text>
@@ -80,9 +85,9 @@ export function RoomDetailPanel({
                       <View className="flex-1">
                         <Text className="text-base font-sans-bold text-text">{t.name}</Text>
                         <View className="mt-1 flex-row items-center gap-2">
-                          <Text className="text-[12.5px] font-sans-semibold" style={{ color: t.foodPreference === 'veg' ? '#1E6F5C' : '#B5462F' }}>{t.foodPreference === 'veg' ? 'Vegetarian' : 'Non-Veg'}</Text>
+                          <Text className={`text-[12.5px] font-sans-semibold ${t.foodPreference === 'veg' ? 'text-veg' : 'text-nonveg'}`}>{t.foodPreference === 'veg' ? 'Vegetarian' : 'Non-Veg'}</Text>
                           <View className="h-[3px] w-[3px] rounded-full bg-border" />
-                          <Text className="text-[12.5px] text-muted-2">{room.type} sharing</Text>
+                          <Text className="text-[12.5px] text-muted-2">{room.type.charAt(0).toUpperCase() + room.type.slice(1)} sharing</Text>
                         </View>
                       </View>
                     </View>

@@ -110,19 +110,25 @@ export function AttendanceTab({
                 <View className="flex-row gap-[7px]" style={{ flex: 2 }}>
                   {ATT_KEYS.map((k) => {
                     const isSelected = current === k;
+                    const activeBg: Record<AttendanceStatus, string> = {
+                      present: '#EAF1EC',
+                      late: '#FAF0DD',
+                      absent: '#F7E7E1',
+                      leave: '#F2EDDF',
+                    };
                     return (
                       <Pressable
                         key={k}
                         onPress={() => onMark(member.id, k)}
-                        className="flex-1 items-center rounded-[7px] border py-1.5"
+                        className="flex-1 items-center rounded-lg border py-[7px]"
                         style={{
-                          borderColor: isSelected ? ATT_UI[k].color : '#D9D8D0',
-                          backgroundColor: isSelected ? ATT_UI[k].color + '22' : undefined,
+                          borderColor: isSelected ? ATT_UI[k].color : '#DED8C8',
+                          backgroundColor: isSelected ? activeBg[k] : '#FBF9F2',
                         }}
                       >
                         <Text
-                          className="text-[11.5px] font-sans-semibold"
-                          style={{ color: isSelected ? ATT_UI[k].color : '#85897C' }}
+                          className="text-[12px] font-sans-semibold"
+                          style={{ color: isSelected ? ATT_UI[k].color : '#5C6157' }}
                         >
                           {ATT_UI[k].label}
                         </Text>

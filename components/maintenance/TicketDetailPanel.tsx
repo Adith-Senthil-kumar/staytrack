@@ -9,6 +9,7 @@ import {
   CheckIcon,
   PlayIcon,
   ImageIcon,
+  XIcon,
 } from '../icons';
 import type { MaintTicket, Vendor } from '../../types';
 
@@ -43,6 +44,12 @@ export function TicketDetailPanel({
   }, [ticket?.id]);
 
   const statusCol = ticket ? STATUS_COL.find((c) => c.key === ticket.status) : null;
+  const STATUS_CHIP: Record<MaintTicket['status'], { bg: string; text: string; border: string }> = {
+    open: { bg: '#F7E7E1', text: '#B5462F', border: '#E2B8AC' },
+    in_progress: { bg: '#FAF0DD', text: '#C67A1E', border: '#E8C896' },
+    done: { bg: '#EAF1EC', text: '#1E6F5C', border: '#C7DAD0' },
+  };
+  const statusChip = ticket ? STATUS_CHIP[ticket.status] : STATUS_CHIP.open;
   const priorityUi = ticket ? PRIORITY_UI[ticket.priority] : null;
   const assignedVendor = ticket?.vendorId ? vendors.find((x) => x.id === ticket.vendorId) : null;
 
@@ -76,7 +83,7 @@ export function TicketDetailPanel({
                   style={{ zIndex: 10 }}
                   className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"
                 >
-                  <Text className="text-base text-[#DCE7E1]">✕</Text>
+                  <XIcon size={16} color="#DCE7E1" />
                 </Pressable>
 
                 {/* Room + status + priority row */}
@@ -86,12 +93,16 @@ export function TicketDetailPanel({
                   </Text>
                   {statusCol && (
                     <View
-                      className="rounded px-2 py-0.5"
-                      style={{ backgroundColor: statusCol.color + '22' }}
+                      className="rounded-[20px] px-[9px] py-[3px]"
+                      style={{
+                        backgroundColor: statusChip.bg,
+                        borderWidth: 1,
+                        borderColor: statusChip.border,
+                      }}
                     >
                       <Text
                         className="font-sans-semibold text-[11px]"
-                        style={{ color: statusCol.color }}
+                        style={{ color: statusChip.text }}
                       >
                         {statusCol.label}
                       </Text>
@@ -99,8 +110,12 @@ export function TicketDetailPanel({
                   )}
                   {priorityUi && (
                     <View
-                      className="rounded px-2 py-0.5"
-                      style={{ backgroundColor: priorityUi.color + '22' }}
+                      className="rounded-[20px] px-[9px] py-[3px]"
+                      style={{
+                        backgroundColor: priorityUi.color + '1F',
+                        borderWidth: 1,
+                        borderColor: priorityUi.color + '44',
+                      }}
                     >
                       <Text
                         className="font-sans-semibold text-[11px]"

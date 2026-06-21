@@ -5,7 +5,7 @@ import type { Room } from '../../types';
 
 function TrashIcon() {
   return (
-    <Svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#B5462F" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    <Svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#9A9A8A" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
       <Path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><Path d="M10 11v6M14 11v6" />
     </Svg>
   );
@@ -15,7 +15,7 @@ const STATUS_CHIP: Record<string, { label: string; cls: string }> = {
   occupied: { label: 'Occupied', cls: 'bg-occ-bg border-occ-bd text-ok' },
   pending: { label: 'Pending', cls: 'bg-pend-bg border-pend-bd text-warn' },
   reserved: { label: 'Reserved', cls: 'bg-pend-bg border-pend-bd text-warn' },
-  vacant: { label: 'Vacant', cls: 'bg-vac-bg border-vac-bd text-st-vac' },
+  vacant: { label: 'Vacant', cls: 'bg-surface-2 border-border text-muted-2' },
   repair: { label: 'Repair', cls: 'bg-maint-bg border-maint-bd text-bad' },
 };
 
@@ -34,7 +34,7 @@ export function ManageRoomsModal({
   const floors = groupByFloor(rooms);
   const totalRooms = rooms.length;
 
-  const shBtn = (active: boolean) => `rounded-md border px-2.5 py-1.5 ${active ? 'border-brand bg-brand' : 'border-border bg-surface'}`;
+  const shBtn = (active: boolean) => `flex-1 items-center rounded-[7px] border px-1.5 py-[7px] ${active ? 'border-brand bg-brand' : 'border-border bg-surface'}`;
   const shTxt = (active: boolean) => `text-[12px] font-sans-semibold ${active ? 'text-[#F4F1E7]' : 'text-label'}`;
 
   return (
@@ -65,15 +65,17 @@ export function ManageRoomsModal({
                     const chip = STATUS_CHIP[r.status] ?? STATUS_CHIP.vacant;
                     return (
                       <View key={r.id} className="flex-row items-center gap-3 rounded-[10px] border border-border bg-surface px-3 py-2">
-                        <Text className="w-[46px] font-mono-semibold text-sm text-ink">{r.number}</Text>
-                        <View className="flex-row gap-1.5">
+                        <Text className="w-[54px] font-mono-semibold text-sm text-ink">{r.number}</Text>
+                        <View className="w-[158px] flex-row gap-1.5">
                           <Pressable onPress={() => onSetSharing(r.id, 'single')} className={shBtn(r.type === 'single')}><Text className={shTxt(r.type === 'single')}>Single</Text></Pressable>
                           <Pressable onPress={() => onSetSharing(r.id, 'double')} className={shBtn(r.type === 'double')}><Text className={shTxt(r.type === 'double')}>Double</Text></Pressable>
                         </View>
-                        <Pressable onPress={() => onToggleStatus(r)} disabled={r.status === 'occupied'} className={`flex-1 items-center rounded-md border py-1.5 ${chip.cls}`}>
-                          <Text className={`text-[12px] font-sans-semibold ${chip.cls.split(' ').pop()}`}>{chip.label}</Text>
-                        </Pressable>
-                        <Pressable onPress={() => onRemoveRoom(r.id)} className="h-8 w-8 items-center justify-center rounded-md border border-border active:bg-bad-bg"><TrashIcon /></Pressable>
+                        <View className="flex-1">
+                          <Pressable onPress={() => onToggleStatus(r)} disabled={r.status === 'occupied'} className={`self-start rounded-full border px-2.5 py-[3px] ${chip.cls}`}>
+                            <Text className={`text-[11px] font-sans-semibold ${chip.cls.split(' ').pop()}`}>{chip.label}</Text>
+                          </Pressable>
+                        </View>
+                        <Pressable onPress={() => onRemoveRoom(r.id)} className="h-8 w-[34px] items-center justify-center rounded-[7px] active:bg-bad-bg"><TrashIcon /></Pressable>
                       </View>
                     );
                   })}

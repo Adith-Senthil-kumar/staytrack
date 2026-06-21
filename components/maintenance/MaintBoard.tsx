@@ -22,8 +22,8 @@ export function MaintBoard({
             <View className="mb-3 flex-row items-center gap-2">
               <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: col.color }} />
               <Text className="flex-1 font-sans-semibold text-[13px] text-text">{col.label}</Text>
-              <View className="rounded-full bg-surface px-2 py-0.5">
-                <Text className="font-mono-semibold text-[12px] text-muted">{colTickets.length}</Text>
+              <View className="rounded-full border border-border bg-surface px-2 py-[1px]">
+                <Text className="font-mono-semibold text-[12px] text-muted-2">{colTickets.length}</Text>
               </View>
             </View>
             {colTickets.length === 0 ? (

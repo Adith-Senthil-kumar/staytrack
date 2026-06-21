@@ -36,8 +36,8 @@ export const DEMO_ROOMS: Room[] = [
 ];
 
 export const DEMO_TENANTS: Tenant[] = [
-  { id: 't1', name: 'Arjun Mehta', phone: '+91 90000 10001', roomId: 'r301', rent: 6000, deposit: 12000, joinDate: '2025-09-01', status: 'active', foodPreference: 'veg' },
-  { id: 't2', name: 'Rohit Sharma', phone: '+91 90000 10002', roomId: 'r301', rent: 6000, deposit: 12000, joinDate: '2025-10-15', status: 'active', foodPreference: 'nonveg' },
+  { id: 't1', name: 'Arjun Mehta', phone: '+91 90000 10001', roomId: 'r301', rent: 6000, deposit: 12000, joinDate: '2025-09-01', status: 'active', foodPreference: 'veg', documents: ['Aadhaar Card', 'PAN Card', 'Police Verification'] },
+  { id: 't2', name: 'Rohit Sharma', phone: '+91 90000 10002', roomId: 'r301', rent: 6000, deposit: 12000, joinDate: '2025-10-15', status: 'active', foodPreference: 'nonveg', documents: ['Aadhaar Card'] },
   { id: 't3', name: 'Karthik Iyer', phone: '+91 90000 10003', roomId: 'r302', rent: 8000, deposit: 16000, joinDate: '2025-06-01', status: 'active', foodPreference: 'veg' },
   { id: 't4', name: 'Sandeep Reddy', phone: '+91 90000 10004', roomId: 'r201', rent: 5000, deposit: 10000, joinDate: '2026-01-10', status: 'active', foodPreference: 'nonveg' },
   { id: 't5', name: 'Vivek Nair', phone: '+91 90000 10005', roomId: 'r201', rent: 5000, deposit: 10000, joinDate: '2026-02-01', status: 'active', foodPreference: 'veg' },

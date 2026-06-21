@@ -4,7 +4,7 @@ import { useRooms, useTenants, useDues, useExpenses, useUserDoc } from '../../li
 import { useUiStore } from '../../store/ui';
 import { useAuthStore } from '../../store/auth';
 import { addRoom, removeRoom, setRoomType, setRoomStatus } from '../../lib/db/rooms';
-import { vacateTenant } from '../../lib/db/tenants';
+import { vacateTenant, toggleTenantDocument } from '../../lib/db/tenants';
 import { recordPayment } from '../../lib/db/dues';
 import { occupancyStats, collectionStats, marginStats } from '../../lib/domain/stats';
 import { monthKey, monthName, formatINR } from '../../lib/domain/format';
@@ -117,6 +117,7 @@ export default function Rooms() {
         onAssign={(roomId) => { clearRoomSelection(); openAddTenant(roomId); }}
         onRecordPayment={(due) => { if (uid) recordPayment(uid, due.id, due.amountDue); }}
         onVacate={(t) => { if (uid) { vacateTenant(uid, t); clearRoomSelection(); } }}
+        onToggleDoc={(t, label) => { if (uid) toggleTenantDocument(uid, t, label); }}
       />
 
       <ManageRoomsModal

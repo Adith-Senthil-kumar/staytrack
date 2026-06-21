@@ -23,6 +23,7 @@ export interface Tenant {
   joinDate: string;   // ISO "2026-06-01"
   status: TenantStatus;
   foodPreference: FoodPreference;
+  documents?: string[]; // labels of docs on file (subset of ALL_DOCS)
 }
 
 // `status` is DERIVED via dueStatus(); only these fields are stored.

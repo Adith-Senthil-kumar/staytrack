@@ -79,6 +79,7 @@ export function StaffDetailPanel({
             <View className="bg-brand px-6 pb-5 pt-6" style={{ position: 'relative' }}>
               <Pressable
                 onPress={onClose}
+                style={{ zIndex: 10 }}
                 className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14] active:bg-[#ffffff28]"
               >
                 <XIcon size={16} color="#DCE7E1" />

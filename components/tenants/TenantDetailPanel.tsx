@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Linking, useWindowDimensions, Modal as RNModal } from 'react-native';
+import { View, Text, Pressable, Linking, ScrollView, useWindowDimensions, Modal as RNModal } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import { MoneyText } from '../ui/MoneyText';
@@ -24,13 +24,13 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
         {tenant && (
           <View style={{ height }} className="bg-surface-2">
             <View className="bg-brand px-6 pb-5 pt-6">
-              <Pressable onPress={onClose} className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"><Text className="text-base text-[#DCE7E1]">✕</Text></Pressable>
+              <Pressable onPress={onClose} style={{ zIndex: 10 }} className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"><Text className="text-base text-[#DCE7E1]">✕</Text></Pressable>
               <Text className="font-mono text-[13px] text-[#9CC0B5]">Room {roomNumber}</Text>
               <Text className="mt-1.5 font-serif text-[23px] text-[#FBF8F0]">{tenant.name}</Text>
               <Text className="mt-0.5 text-[13px] text-[#8FB0A5]">{roomType} sharing · {tenant.foodPreference === 'veg' ? 'Vegetarian' : 'Non-Veg'}</Text>
             </View>
 
-            <View className="flex-1 p-6">
+            <ScrollView className="flex-1" contentContainerClassName="p-6">
               <View className="rounded-[14px] border border-border bg-surface p-[18px]">
                 <View className="flex-row items-center gap-3">
                   <View className="h-12 w-12 items-center justify-center rounded-xl" style={{ backgroundColor: avatarColor(tenant.name) }}><Text className="text-lg font-sans-semibold text-[#FBF8F0]">{initials(tenant.name)}</Text></View>
@@ -60,7 +60,7 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
               {tenant.status === 'active' && (
                 <Pressable onPress={onVacate} className="mt-4 items-center rounded-[11px] border border-maint-bd bg-surface py-3 active:bg-bad-bg"><Text className="text-[13.5px] font-sans-semibold text-bad">Vacate Room</Text></Pressable>
               )}
-            </View>
+            </ScrollView>
           </View>
         )}
         </Animated.View>

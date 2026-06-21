@@ -27,3 +27,9 @@ export async function vacateTenant(uid: string, tenant: Tenant) {
 
 export const updateTenant = (uid: string, id: string, patch: Partial<Tenant>) =>
   updateDoc(doc(tenantsRef(uid), id), patch);
+
+export const toggleTenantDocument = (uid: string, tenant: Tenant, label: string) => {
+  const docs = tenant.documents ?? [];
+  const next = docs.includes(label) ? docs.filter((d) => d !== label) : [...docs, label];
+  return updateDoc(doc(tenantsRef(uid), tenant.id), { documents: next });
+};

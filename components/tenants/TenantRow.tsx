@@ -16,9 +16,9 @@ export function TenantRow({ tenant, roomNumber, rent, onPress }: {
       </View>
       <View className="w-[120px] min-w-0 flex-1">
         <Text numberOfLines={1} className="text-[13.5px] font-sans-semibold text-text">{tenant.name}</Text>
-        <Text className={`text-[11.5px] font-sans-medium ${tenant.foodPreference === 'veg' ? 'text-veg' : 'text-nonveg'}`}>{tenant.foodPreference === 'veg' ? 'Vegetarian' : 'Non-Veg'}</Text>
+        <Text numberOfLines={1} className={`text-[11.5px] font-sans-medium ${tenant.foodPreference === 'veg' ? 'text-veg' : 'text-nonveg'}`}>{tenant.foodPreference === 'veg' ? 'Vegetarian' : 'Non-Veg'}</Text>
       </View>
-      <Text className="hidden w-24 font-mono text-[12.5px] text-label md:flex">{tenant.phone || '—'}</Text>
+      <Text numberOfLines={1} className="w-24 font-mono text-[12.5px] text-label">{tenant.phone || '—'}</Text>
       <Text className="w-12 font-mono-semibold text-[13px] text-ink">{roomNumber}</Text>
       <Text className="w-16 font-mono text-[13px] text-text">{formatINR(tenant.rent)}</Text>
       <Text className={`w-16 text-[12px] font-sans-semibold ${vacated ? 'text-muted' : TONE[rent.tone]}`}>{vacated ? 'Vacated' : rent.label}</Text>

@@ -51,7 +51,7 @@ export default function AppLayout() {
       {wide && <Sidebar />}
       <View className="min-w-0 flex-1">
         <TopBar title={meta.title} subtitle={meta.subtitle} actionLabel={meta.action} showBurger={!wide} />
-        <ScrollView className="flex-1" contentContainerClassName="px-[34px] pb-[60px] pt-7">
+        <ScrollView className="flex-1" contentContainerClassName="px-4 pb-[60px] pt-7 sm:px-[34px]">
           <Slot />
         </ScrollView>
       </View>

@@ -35,7 +35,7 @@ export function StaffDetailPanel({
   onAddNote: (id: string, note: StaffNote) => void;
   onRemove: (id: string) => void;
 }) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const panelW = Math.min(width, 430);
   const open = !!staff;
   const style = useAnimatedStyle(() => ({
@@ -67,10 +67,10 @@ export function StaffDetailPanel({
 
   return (
     <RNModal visible={open} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
-      <View style={{ flex: 1 }}>
-        <Pressable onPress={onClose} style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} className="bg-overlay" />
+      <View style={{ width, height }}>
+        <Pressable onPress={onClose} style={{ position: 'absolute', top: 0, left: 0, width, height }} className="bg-overlay" />
         <Animated.View
-          style={[{ position: 'absolute', top: 0, bottom: 0, right: 0, width: panelW }, style]}
+          style={[{ position: 'absolute', top: 0, right: 0, width: panelW, height }, style]}
           className="bg-bg"
         >
         {staff && (

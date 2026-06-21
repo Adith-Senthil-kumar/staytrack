@@ -18,7 +18,7 @@ export function RoomDetailPanel({
   onRecordPayment: (due: Due) => void;
   onVacate: (tenant: Tenant) => void;
 }) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const panelW = Math.min(width, 430);
   const open = !!room;
   const style = useAnimatedStyle(() => ({ transform: [{ translateX: withTiming(open ? 0 : panelW, { duration: 280 }) }] }));
@@ -38,11 +38,11 @@ export function RoomDetailPanel({
 
   return (
     <RNModal visible={open} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
-      <View style={{ flex: 1 }}>
-        <Pressable onPress={onClose} style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} className="bg-overlay" />
-        <Animated.View style={[{ position: 'absolute', top: 0, bottom: 0, right: 0, width: panelW }, style]} className="bg-bg">
+      <View style={{ width, height }}>
+        <Pressable onPress={onClose} style={{ position: 'absolute', top: 0, left: 0, width, height }} className="bg-overlay" />
+        <Animated.View style={[{ position: 'absolute', top: 0, right: 0, width: panelW, height }, style]} className="bg-bg">
         {room && (
-          <View className="h-full">
+          <View style={{ height }}>
             <View className="bg-brand px-6 pb-5 pt-6">
               <Pressable onPress={onClose} className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"><Text className="text-base text-[#DCE7E1]">✕</Text></Pressable>
               <View className="flex-row items-center gap-2">
@@ -94,7 +94,7 @@ export function RoomDetailPanel({
               })}
 
               {tenants.length === 0 && (
-                <View className="items-center rounded-[14px] border border-dashed border-border px-[22px] py-[34px]">
+                <View className="items-center rounded-[14px] border border-dashed border-border bg-surface px-[22px] py-[34px]">
                   <Text className="text-center text-sm leading-[1.5] text-muted-2">
                     {room.status === 'repair' ? 'This room is blocked for repairs and not available for assignment right now.' : 'This room is empty and ready for a new tenant. Onboard someone to start collecting rent.'}
                   </Text>

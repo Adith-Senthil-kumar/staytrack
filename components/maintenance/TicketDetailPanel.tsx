@@ -29,7 +29,7 @@ export function TicketDetailPanel({
   onReopen: (id: string) => void;
   onCallVendor: (phone: string) => void;
 }) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const panelW = Math.min(width, 430);
   const open = !!ticket;
   const style = useAnimatedStyle(() => ({
@@ -54,17 +54,17 @@ export function TicketDetailPanel({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ width, height }}>
         {/* Overlay */}
         <Pressable
           onPress={onClose}
-          style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}
+          style={{ position: 'absolute', top: 0, left: 0, width, height }}
           className="bg-overlay"
         />
 
         {/* Slide-in panel */}
         <Animated.View
-          style={[{ position: 'absolute', top: 0, bottom: 0, right: 0, width: panelW }, style]}
+          style={[{ position: 'absolute', top: 0, right: 0, width: panelW, height }, style]}
           className="bg-bg"
         >
           {ticket && (

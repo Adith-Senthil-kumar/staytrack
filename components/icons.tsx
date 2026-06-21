@@ -1,5 +1,6 @@
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 
+
 type IconProps = { size?: number; color?: string };
 const base = (size: number) => ({ width: size, height: size, viewBox: '0 0 24 24' });
 
@@ -106,6 +107,23 @@ export const ThumbsUpIcon = ({ size = 16, color = '#fff' }: IconProps) => (
 export const ThumbsDownIcon = ({ size = 16, color = '#fff' }: IconProps) => (
   <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
     <Path d="M17 14V2M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z" />
+  </Svg>
+);
+export const PlayIcon = ({ size = 16, color = '#fff' }: IconProps) => (
+  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="m5 3 14 9-14 9V3z" />
+  </Svg>
+);
+export const ImageIcon = ({ size = 16, color = '#fff' }: IconProps) => (
+  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    <Rect x={3} y={3} width={18} height={18} rx={2} />
+    <Circle cx={9} cy={9} r={2} />
+    <Path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21" />
+  </Svg>
+);
+export const WrenchIcon = ({ size = 16, color = '#fff' }: IconProps) => (
+  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
   </Svg>
 );
 export const AlertTriangleIcon = ({ size = 16, color = '#fff' }: IconProps) => (

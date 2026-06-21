@@ -5,10 +5,10 @@ import type { MaintTicket, MaintStatus } from '../../types';
 
 export function MaintBoard({
   tickets,
-  onAdvance,
+  onSelect,
 }: {
   tickets: MaintTicket[];
-  onAdvance: (ticket: MaintTicket) => void;
+  onSelect: (ticket: MaintTicket) => void;
 }) {
   return (
     <View className="flex-row flex-wrap gap-4">
@@ -21,7 +21,7 @@ export function MaintBoard({
           >
             <View className="mb-3 flex-row items-center gap-2">
               <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: col.color }} />
-              <Text className="flex-1 text-[13px] font-sans-semibold text-text">{col.label}</Text>
+              <Text className="flex-1 font-sans-semibold text-[13px] text-text">{col.label}</Text>
               <View className="rounded-full bg-surface px-2 py-0.5">
                 <Text className="font-mono-semibold text-[12px] text-muted">{colTickets.length}</Text>
               </View>
@@ -31,7 +31,7 @@ export function MaintBoard({
             ) : (
               <View className="gap-2">
                 {colTickets.map((t) => (
-                  <TicketCard key={t.id} ticket={t} onPress={() => onAdvance(t)} />
+                  <TicketCard key={t.id} ticket={t} onPress={() => onSelect(t)} />
                 ))}
               </View>
             )}

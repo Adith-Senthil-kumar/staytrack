@@ -76,7 +76,7 @@ export interface LeaveRequest { id: string; staffId: string; type: LeaveType; fr
 export type MaintCategory = 'electrical' | 'plumbing' | 'furniture' | 'appliance' | 'cleaning' | 'other';
 export type MaintPriority = 'high' | 'medium' | 'low';
 export type MaintStatus = 'open' | 'in_progress' | 'done';
-export interface MaintTicket { id: string; roomNumber: string; category: MaintCategory; issue: string; priority: MaintPriority; status: MaintStatus; createdDate: string; cost: number; vendorId?: string | null; resolvedDate?: string | null; photoUri?: string | null; }
+export interface MaintTicket { id: string; roomNumber: string; category: MaintCategory; issue: string; priority: MaintPriority; status: MaintStatus; createdDate: string; cost: number; vendorId?: string | null; resolvedDate?: string | null; photo?: boolean; }
 
 export type VendorTrade = 'plumber' | 'electrician' | 'carpenter' | 'ac' | 'other';
 export interface Vendor { id: string; name: string; trade: VendorTrade; phone: string; jobs: number; }

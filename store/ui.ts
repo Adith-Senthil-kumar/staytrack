@@ -42,6 +42,9 @@ type UiState = {
   openAddVendor: () => void;
   openEditVendor: (id: string) => void;
   closeVendor: () => void;
+  selectedTicketId: string | null;
+  selectTicket: (id: string) => void;
+  clearTicketSelection: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -86,4 +89,7 @@ export const useUiStore = create<UiState>((set) => ({
   openAddVendor: () => set({ vendorModalId: 'new' }),
   openEditVendor: (id) => set({ vendorModalId: id }),
   closeVendor: () => set({ vendorModalId: null }),
+  selectedTicketId: null,
+  selectTicket: (id) => set({ selectedTicketId: id }),
+  clearTicketSelection: () => set({ selectedTicketId: null }),
 }));

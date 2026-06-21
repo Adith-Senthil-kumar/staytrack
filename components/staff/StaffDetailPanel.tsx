@@ -74,7 +74,7 @@ export function StaffDetailPanel({
           className="bg-bg"
         >
         {staff && (
-          <View className="h-full">
+          <View className="h-full bg-surface-2">
             {/* Brand header */}
             <View className="bg-brand px-6 pb-5 pt-6" style={{ position: 'relative' }}>
               <Pressable

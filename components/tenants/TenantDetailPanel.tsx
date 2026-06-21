@@ -22,7 +22,7 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
         <Pressable onPress={onClose} style={{ position: 'absolute', top: 0, left: 0, width, height }} className="bg-overlay" />
         <Animated.View style={[{ position: 'absolute', top: 0, right: 0, width: panelW, height }, style]} className="bg-bg">
         {tenant && (
-          <View style={{ height }}>
+          <View style={{ height }} className="bg-surface-2">
             <View className="bg-brand px-6 pb-5 pt-6">
               <Pressable onPress={onClose} className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"><Text className="text-base text-[#DCE7E1]">✕</Text></Pressable>
               <Text className="font-mono text-[13px] text-[#9CC0B5]">Room {roomNumber}</Text>

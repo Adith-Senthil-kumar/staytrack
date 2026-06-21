@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, useWindowDimensions } from 'react-native';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
 import { useSSRooms, useSSStays, useUserDoc } from '../../lib/db/hooks';
@@ -19,6 +19,11 @@ export default function ShortStay() {
   const { stays } = useSSStays();
   const { userDoc } = useUserDoc();
   const propertyName = userDoc?.property?.name ?? 'PG';
+  const { width } = useWindowDimensions();
+  // Pad the last row with invisible fillers so a lone card keeps its column
+  // width instead of stretching full-width (flex `grow` would expand it).
+  const roomCols = width >= 1024 ? 4 : 2;
+  const roomFillers = (roomCols - (rooms.length % roomCols)) % roomCols;
 
   const ssAddRoomOpen = useUiStore((s) => s.ssAddRoomOpen);
   const openSSAddRoom = useUiStore((s) => s.openSSAddRoom);
@@ -119,6 +124,9 @@ export default function ShortStay() {
                 onClean={() => { if (uid) cleanSSRoom(uid, room.id); }}
               />
             </View>
+          ))}
+          {Array.from({ length: roomFillers }).map((_, i) => (
+            <View key={`filler-${i}`} className="grow basis-[47%] lg:basis-[23%]" />
           ))}
         </View>
       )}

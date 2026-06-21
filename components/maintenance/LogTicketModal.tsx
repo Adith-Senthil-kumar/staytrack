@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from 'react-native';
 import { MAINT_CATEGORY, MAINT_CATEGORY_KEYS, PRIORITY_UI } from '../../constants/maintenance';
-import { CheckIcon, ImageIcon } from '../icons';
+import { CheckIcon, ImageIcon, XIcon } from '../icons';
 import { SelectField } from '../ui/SelectField';
 import type { MaintCategory, MaintPriority, Vendor, Room } from '../../types';
 
@@ -72,9 +72,10 @@ export function LogTicketModal({
           <View className="bg-brand px-[26px] py-[22px]" style={{ position: 'relative' }}>
             <Pressable
               onPress={() => { reset(); onClose(); }}
-              className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"
+              style={{ zIndex: 10 }}
+              className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14] active:bg-[#ffffff28]"
             >
-              <Text className="text-base text-[#DCE7E1]">✕</Text>
+              <XIcon size={16} color="#DCE7E1" />
             </Pressable>
             <Text className="text-[11.5px] font-sans-semibold uppercase tracking-[1.4px] text-[#6F9588]">
               New Complaint

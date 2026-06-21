@@ -36,8 +36,8 @@ export function ScheduleTab({
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{ minWidth: 620 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
+        <View className="min-w-[620px] grow">
           {/* Column header row */}
           <View className="flex-row items-center border-b border-border-2 bg-surface-2 px-5 py-3">
             <View style={{ flex: 1.4 }}>

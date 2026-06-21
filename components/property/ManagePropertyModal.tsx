@@ -40,7 +40,7 @@ export function ManagePropertyModal({ visible, onClose }: { visible: boolean; on
       <Pressable onPress={onClose} className="flex-1 items-center justify-center bg-overlay p-6">
         <Pressable onPress={() => {}} className="max-h-[90%] w-full max-w-[680px] overflow-hidden rounded-[18px] bg-surface">
           <View className="relative bg-brand px-[26px] py-[22px]">
-            <Pressable onPress={onClose} className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]">
+            <Pressable onPress={onClose} style={{ zIndex: 10 }} className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14] active:bg-[#ffffff28]">
               <XIcon size={16} color="#DCE7E1" />
             </Pressable>
             <Text className="text-[11.5px] font-sans-semibold uppercase tracking-[1.4px] text-[#6F9588]">Property Setup</Text>

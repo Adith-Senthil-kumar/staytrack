@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, useWindowDimensions } from 'react-native';
 import { useStaff, useAttendance, useSchedule, useLeave, useUserDoc } from '../../lib/db/hooks';
 import { addStaff, updateStaff, removeStaff } from '../../lib/db/staff';
 import { addLeave, setLeaveStatus } from '../../lib/db/leave';
@@ -37,6 +37,11 @@ export default function Staff() {
   const { staff } = useStaff();
   const { attendance } = useAttendance();
   const { schedule } = useSchedule();
+  const { width } = useWindowDimensions();
+  // Pad the last roster row with invisible fillers so a lone card keeps its
+  // column width instead of stretching (flex `grow` would otherwise expand it).
+  const rosterCols = width >= 1024 ? 3 : 2;
+  const rosterFillers = (rosterCols - (staff.length % rosterCols)) % rosterCols;
   const { leave } = useLeave();
   const { userDoc } = useUserDoc();
   const showAddStaff = useUiStore((s) => s.showAddStaff);
@@ -98,6 +103,9 @@ export default function Staff() {
                   attendance={attendance}
                   onPress={() => selectStaff(s.id)}
                 />
+              ))}
+              {Array.from({ length: rosterFillers }).map((_, i) => (
+                <View key={`filler-${i}`} className="grow basis-[47%] lg:basis-[31%]" />
               ))}
             </View>
           )}

@@ -27,8 +27,8 @@ export function PayrollTab({
 
   return (
     <View className="overflow-hidden rounded-[14px] border border-border bg-surface shadow-sm">
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{ minWidth: 560 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
+        <View className="min-w-[560px] grow">
           {/* Header row */}
           <View className="flex-row border-b border-border bg-surface-2 px-[22px] py-[13px]">
             <Text className={`${headerCell} flex-[2]`}>Staff</Text>

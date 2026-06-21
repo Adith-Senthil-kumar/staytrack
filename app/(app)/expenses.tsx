@@ -41,7 +41,7 @@ export default function Expenses() {
           <ExpenseLedger expenses={monthExpenses} total={expTotal} monthLabel={mk} onRecord={openExpense}
             onDelete={(id) => uid && removeExpense(uid, id)} />
         </View>
-        <View className="w-[270px] grow">
+        <View className="w-[270px] shrink-0 grow-0">
           <CategoryBreakdown rows={cats} />
         </View>
       </View>

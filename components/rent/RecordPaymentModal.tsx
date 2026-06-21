@@ -85,6 +85,7 @@ export function RecordPaymentModal({ tenant, roomNumber, due, monthLabel, onClos
                 {/* Close button */}
                 <Pressable
                   onPress={onClose}
+                  style={{ zIndex: 10 }}
                   className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-[8px] border border-[#ffffff2e] bg-[#ffffff14] active:bg-[#ffffff28]"
                 >
                   <CloseIcon />

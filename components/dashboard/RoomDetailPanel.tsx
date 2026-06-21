@@ -24,9 +24,17 @@ export function RoomDetailPanel({
   const style = useAnimatedStyle(() => ({ transform: [{ translateX: withTiming(open ? 0 : panelW, { duration: 280 }) }] }));
 
   const ui = room ? STATUS_UI[room.status] : null;
-  const title = !room ? '' : tenants.length ? (tenants.length === 1 ? tenants[0].name : `${tenants.length} tenants`)
-    : room.status === 'repair' ? 'Under Repair' : room.status === 'reserved' || room.status === 'pending' ? 'Reserved' : 'Vacant Room';
-  const sub = !room ? '' : tenants.length ? `${room.type} sharing` : room.status === 'repair' ? 'Maintenance in progress' : 'Ready to assign';
+  const occ = !room ? '' : room.type === 'double' ? 'Double sharing' : room.type === 'triple' ? 'Triple sharing' : 'Single occupancy';
+  const title = !room ? ''
+    : tenants.length ? (tenants.length === 1 ? tenants[0].name : `${tenants.length} Tenants`)
+    : room.status === 'repair' ? 'Under Maintenance'
+    : (room.status === 'reserved' || room.status === 'pending') ? 'Reserved'
+    : 'Vacant Room';
+  const sub = !room ? ''
+    : tenants.length ? occ
+    : room.status === 'repair' ? `${occ} · temporarily blocked`
+    : (room.status === 'reserved' || room.status === 'pending') ? `${occ} · awaiting check-in`
+    : `${occ} · ready to assign`;
 
   return (
     <RNModal visible={open} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
@@ -39,7 +47,7 @@ export function RoomDetailPanel({
               <Pressable onPress={onClose} className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"><Text className="text-base text-[#DCE7E1]">✕</Text></Pressable>
               <View className="flex-row items-center gap-2">
                 <Text className="font-mono text-[13px] text-[#9CC0B5]">Room {room.number}</Text>
-                {ui && <View className="rounded px-2 py-0.5" style={{ backgroundColor: '#ffffff1f' }}><Text className="text-[11px] font-sans-semibold text-[#DCE7E1]">{ui.label}</Text></View>}
+                {ui && <View className="rounded-full border border-[#ffffff40] px-2.5 py-[3px]" style={{ backgroundColor: '#ffffff1f' }}><Text className="text-[10.5px] font-sans-semibold uppercase tracking-[0.3px] text-[#CFE0D8]">{ui.label}</Text></View>}
               </View>
               <Text className="mt-1.5 font-serif text-[23px] text-[#FBF8F0]">{title}</Text>
               <Text className="mt-0.5 text-[13px] text-[#8FB0A5]">{sub}</Text>
@@ -88,7 +96,7 @@ export function RoomDetailPanel({
               {tenants.length === 0 && (
                 <View className="items-center rounded-[14px] border border-dashed border-border px-[22px] py-[34px]">
                   <Text className="text-center text-sm leading-[1.5] text-muted-2">
-                    {room.status === 'repair' ? 'This room is under maintenance.' : 'This room is empty — assign a tenant to fill it.'}
+                    {room.status === 'repair' ? 'This room is blocked for repairs and not available for assignment right now.' : 'This room is empty and ready for a new tenant. Onboard someone to start collecting rent.'}
                   </Text>
                   {room.status !== 'repair' && (
                     <Pressable onPress={() => onAssign(room.id)} className="mt-4 rounded-[9px] bg-brand px-4 py-2.5 active:bg-brand-hover"><Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">+ Assign a Tenant</Text></Pressable>

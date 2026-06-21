@@ -71,31 +71,30 @@ export function AddTenantModal({
               </View>
               <View className="flex-1">
                 <Text className={label}>Assign Room</Text>
-                <View className="relative" style={{ zIndex: 20 }}>
-                  <Pressable onPress={() => setRoomOpen((o) => !o)} className="flex-row items-center rounded-[9px] border border-border bg-field px-[13px] py-[11px]">
-                    <Text numberOfLines={1} className={`flex-1 text-sm ${selectedRoom ? 'text-text' : 'text-soft'}`}>
-                      {selectedRoom ? `Room ${selectedRoom.number}` : 'Select vacant room…'}
-                    </Text>
-                    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9A9A8A" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><Path d="m6 9 6 6 6-6" /></Svg>
-                  </Pressable>
-                  {roomOpen && (
-                    <View className="absolute left-0 right-0 top-[48px] z-50 overflow-hidden rounded-[9px] border border-border bg-surface" style={{ elevation: 8, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 } }}>
-                      {vacantRooms.length === 0 ? (
-                        <Text className="px-3 py-2.5 text-[13px] text-soft">No vacant rooms</Text>
-                      ) : (
-                        <ScrollView style={{ maxHeight: 180 }}>
-                          {vacantRooms.map((r, i) => (
-                            <Pressable key={r.id} onPress={() => { setRoomId(r.id); setRoomOpen(false); }} className={`px-3 py-2.5 active:bg-surface-2 ${i < vacantRooms.length - 1 ? 'border-b border-border-3' : ''}`}>
-                              <Text className="text-[13.5px] text-text">Room {r.number} · Floor {r.floor === 1 ? 'G' : r.floor} · {r.type === 'double' ? 'Double' : 'Single'}</Text>
-                            </Pressable>
-                          ))}
-                        </ScrollView>
-                      )}
-                    </View>
-                  )}
-                </View>
+                <Pressable onPress={() => setRoomOpen((o) => !o)} className="flex-row items-center rounded-[9px] border border-border bg-field px-[13px] py-[11px]">
+                  <Text numberOfLines={1} className={`flex-1 text-sm ${selectedRoom ? 'text-text' : 'text-soft'}`}>
+                    {selectedRoom ? `Room ${selectedRoom.number}` : 'Select vacant room…'}
+                  </Text>
+                  <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9A9A8A" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ transform: [{ rotate: roomOpen ? '180deg' : '0deg' }] }}><Path d="m6 9 6 6 6-6" /></Svg>
+                </Pressable>
               </View>
             </View>
+
+            {roomOpen && (
+              <View className="mb-4 overflow-hidden rounded-[9px] border border-border bg-surface">
+                {vacantRooms.length === 0 ? (
+                  <Text className="px-3.5 py-3 text-[13px] text-soft">No vacant rooms available</Text>
+                ) : (
+                  <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled>
+                    {vacantRooms.map((r, i) => (
+                      <Pressable key={r.id} onPress={() => { setRoomId(r.id); setRoomOpen(false); }} className={`px-3.5 py-3 active:bg-surface-2 ${i < vacantRooms.length - 1 ? 'border-b border-border-3' : ''}`}>
+                        <Text className="text-[13.5px] text-text">Room {r.number} · Floor {r.floor === 1 ? 'G' : r.floor} · {r.type === 'double' ? 'Double' : 'Single'}</Text>
+                      </Pressable>
+                    ))}
+                  </ScrollView>
+                )}
+              </View>
+            )}
 
             <Text className={label}>Sharing Type</Text>
             <View className="mb-4 flex-row gap-2.5">

@@ -3,7 +3,7 @@ import { initials, avatarColor } from '../../lib/domain/tenants';
 import { calcPayroll, monthRecords, WORKDAYS } from '../../lib/domain/payroll';
 import { formatINR, monthKey, monthName } from '../../lib/domain/format';
 import { STAFF_ROLE_UI } from '../../constants/staffRole';
-import { PaperPlaneIcon } from '../icons';
+import { PaperPlaneIcon, XIcon } from '../icons';
 import type { Staff, Attendance } from '../../types';
 
 const now = new Date();
@@ -65,36 +65,40 @@ export function PayslipModal({
         <Pressable
           onPress={() => {}}
           className="w-[440px] max-w-full overflow-hidden rounded-[18px] bg-surface"
+          style={{ boxShadow: '0 24px 70px rgba(0,0,0,0.4)' } as never}
         >
           {/* Brand header */}
           <View className="bg-brand px-[26px] py-[22px]">
+            {/* Close button */}
+            <Pressable
+              onPress={onClose}
+              className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14] active:bg-[#ffffff28]"
+            >
+              <XIcon size={16} color="#DCE7E1" />
+            </Pressable>
+
             <View className="flex-row items-start justify-between">
-              <View className="flex-1">
-                <Text className="text-[11.5px] font-sans-semibold uppercase tracking-wide text-[#6F9588]">
-                  PAYSLIP · {currentMonthName.toUpperCase()} {currentYear}
+              <View className="flex-1 pr-4">
+                <Text className="text-[11.5px] font-sans-semibold uppercase tracking-[1.4px] text-[#6F9588]">
+                  Payslip · {currentMonthName} {currentYear}
                 </Text>
-                <Text className="mt-1.5 font-serif text-[20px] text-[#FBF8F0]">{staff.name}</Text>
-                <Text className="mt-0.5 text-[12px] text-[#8FB0A5]">
+                <Text className="mt-[3px] font-serif text-[20px] text-[#FBF8F0]">
+                  {staff.name}
+                </Text>
+                <Text className="text-[12px] text-[#8FB0A5]">
                   {roleUi.label} · {propertyName}
                 </Text>
               </View>
               {/* Avatar top-right */}
               <View
-                className="h-[46px] w-[46px] items-center justify-center rounded-full"
-                style={{ backgroundColor: avatarColor(staff.name) + 'bb' }}
+                className="h-[46px] w-[46px] items-center justify-center rounded-xl"
+                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
               >
-                <Text className="text-[14px] font-sans-semibold text-[#FBF8F0]">
+                <Text className="text-base font-sans-semibold text-[#FBF8F0]">
                   {initials(staff.name)}
                 </Text>
               </View>
             </View>
-            {/* Close button */}
-            <Pressable
-              onPress={onClose}
-              className="absolute right-[14px] top-[14px] h-[28px] w-[28px] items-center justify-center rounded-full border border-[#ffffff2e] bg-[#ffffff14]"
-            >
-              <Text className="text-[14px] font-sans-semibold text-[#FBF8F0]">✕</Text>
-            </Pressable>
           </View>
 
           {/* Body rows */}
@@ -115,7 +119,7 @@ export function PayslipModal({
 
             {/* Days worked */}
             <View className="flex-row justify-between border-b border-border-3 py-[9px]">
-              <Text className="text-[13px] text-muted-2">Days worked ({c.worked} / {WORKDAYS})</Text>
+              <Text className="text-[13px] text-muted-2">Days worked</Text>
               <Text className="font-mono text-[13px] text-text-2">
                 {c.worked} / {WORKDAYS}
               </Text>
@@ -138,9 +142,11 @@ export function PayslipModal({
             </View>
 
             {/* Net Payable */}
-            <View className="flex-row items-center justify-between pt-3.5">
+            <View className="flex-row items-center justify-between pt-[14px]">
               <Text className="text-sm font-sans-bold text-ink">Net Payable</Text>
-              <Text className="font-mono-semibold text-2xl text-ink">{formatINR(c.net)}</Text>
+              <Text className="font-mono text-[24px] font-semibold text-ink">
+                {formatINR(c.net)}
+              </Text>
             </View>
           </View>
 
@@ -148,15 +154,15 @@ export function PayslipModal({
           <View className="flex-row gap-3 px-[26px] pb-6">
             <Pressable
               onPress={handleShare}
-              className="rounded-[10px] border border-border bg-surface px-4 py-3"
+              className="flex-none rounded-[10px] border border-border bg-surface px-4 py-3 active:bg-surface-2"
             >
               <Text className="text-[13.5px] font-sans-semibold text-label">Print / PDF</Text>
             </Pressable>
             <Pressable
               onPress={handleShare}
-              className="flex-1 flex-row items-center justify-center gap-2 rounded-[10px] bg-accent py-3"
+              className="flex-1 flex-row items-center justify-center gap-2 rounded-[10px] bg-accent py-3 active:opacity-80"
             >
-              <PaperPlaneIcon size={15} color="#F4F1E7" />
+              <PaperPlaneIcon size={16} color="#F4F1E7" />
               <Text className="text-sm font-sans-semibold text-[#F4F1E7]">Share on WhatsApp</Text>
             </Pressable>
           </View>

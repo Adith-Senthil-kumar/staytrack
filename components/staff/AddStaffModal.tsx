@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, Modal as RNModal } from 'react-native';
 import { STAFF_ROLE_UI, STAFF_ROLE_KEYS } from '../../constants/staffRole';
+import { XIcon } from '../icons';
 import type { Staff, StaffRole } from '../../types';
 
 export function AddStaffModal({
@@ -71,13 +72,27 @@ export function AddStaffModal({
   };
 
   const isEdit = !!initial;
-  const input = 'rounded-[9px] border border-border bg-field px-3.5 py-3 text-sm text-text';
+  const canSubmit = !!name.trim() && !!Number(salary);
+
+  const label = 'mb-1.5 text-[12px] font-sans-semibold text-label';
+  const input = 'rounded-[9px] border border-border bg-field px-[13px] py-[11px] text-sm text-text';
 
   return (
     <RNModal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable onPress={onClose} className="flex-1 items-center justify-center bg-overlay p-6">
-        <Pressable onPress={() => {}} className="max-h-[92%] w-full max-w-[540px] overflow-hidden rounded-[18px] bg-surface">
+        <Pressable
+          onPress={() => {}}
+          className="max-h-[92%] w-full max-w-[540px] overflow-hidden rounded-[18px] bg-surface"
+          style={{ boxShadow: '0 24px 70px rgba(0,0,0,0.4)' } as never}
+        >
+          {/* Brand header */}
           <View className="bg-brand px-[26px] py-[22px]">
+            <Pressable
+              onPress={onClose}
+              className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14] active:bg-[#ffffff28]"
+            >
+              <XIcon size={16} color="#DCE7E1" />
+            </Pressable>
             <Text className="text-[11.5px] font-sans-semibold uppercase tracking-[1.4px] text-[#6F9588]">
               {isEdit ? 'Edit Member' : 'New Member'}
             </Text>
@@ -85,44 +100,111 @@ export function AddStaffModal({
               {isEdit ? 'Edit Staff' : 'Add Staff'}
             </Text>
           </View>
-          <ScrollView className="px-[26px] py-6">
-            <Text className="mb-1.5 text-xs font-sans-semibold text-label">Full Name</Text>
-            <TextInput value={name} onChangeText={setName} placeholder="e.g. Suresh Babu" placeholderTextColor="#9A9A8A" className={`mb-4 ${input}`} />
-            <Text className="mb-1.5 text-xs font-sans-semibold text-label">Role</Text>
-            <View className="mb-4 flex-row flex-wrap gap-2">
-              {STAFF_ROLE_KEYS.map((k) => (
-                <Pressable key={k} onPress={() => setRole(k)} className={`rounded-lg border px-3 py-2 ${role === k ? 'border-accent bg-occ-bg' : 'border-border bg-surface'}`}>
-                  <Text className={`text-[13px] font-sans-semibold ${role === k ? 'text-ok' : 'text-muted'}`}>{STAFF_ROLE_UI[k].label}</Text>
-                </Pressable>
-              ))}
+
+          <ScrollView contentContainerClassName="px-[26px] pb-2 pt-6">
+            {/* Full Name */}
+            <Text className={label}>Full Name</Text>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="e.g. Suresh Babu"
+              placeholderTextColor="#9A9A8A"
+              className={`mb-4 ${input}`}
+            />
+
+            {/* Role + Phone — 2-col grid */}
+            <View className="mb-4 flex-row gap-3.5">
+              <View className="flex-1">
+                <Text className={label}>Role</Text>
+                {/* Chip picker for Role (native; no <select>) */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View className="flex-row gap-1.5">
+                    {STAFF_ROLE_KEYS.map((k) => (
+                      <Pressable
+                        key={k}
+                        onPress={() => setRole(k)}
+                        className={`rounded-[9px] border px-3 py-[11px] ${
+                          role === k ? 'border-accent bg-occ-bg' : 'border-border bg-surface'
+                        }`}
+                      >
+                        <Text
+                          className={`text-[13px] font-sans-semibold ${
+                            role === k ? 'text-ok' : 'text-label'
+                          }`}
+                        >
+                          {STAFF_ROLE_UI[k].label}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </ScrollView>
+              </View>
+              <View className="flex-1">
+                <Text className={label}>Phone</Text>
+                <TextInput
+                  value={phone}
+                  onChangeText={setPhone}
+                  placeholder="+91 98xxx xxxxx"
+                  keyboardType="phone-pad"
+                  placeholderTextColor="#9A9A8A"
+                  className={`font-mono ${input}`}
+                />
+              </View>
             </View>
-            <View className="mb-4 flex-row gap-3">
+
+            {/* ID Proof + Date of Joining — 2-col grid */}
+            <View className="mb-4 flex-row gap-3.5">
               <View className="flex-1">
-                <Text className="mb-1.5 text-xs font-sans-semibold text-label">Phone</Text>
-                <TextInput value={phone} onChangeText={setPhone} placeholder="+91 98xxx" keyboardType="phone-pad" placeholderTextColor="#9A9A8A" className={`font-mono ${input}`} />
+                <Text className={label}>ID Proof</Text>
+                <TextInput
+                  value={idProof}
+                  onChangeText={setIdProof}
+                  placeholder="Aadhaar / PAN no."
+                  placeholderTextColor="#9A9A8A"
+                  className={input}
+                />
               </View>
               <View className="flex-1">
-                <Text className="mb-1.5 text-xs font-sans-semibold text-label">Salary (₹)</Text>
-                <TextInput value={salary} onChangeText={setSalary} placeholder="12000" keyboardType="number-pad" placeholderTextColor="#9A9A8A" className={`font-mono ${input}`} />
+                <Text className={label}>Date of Joining</Text>
+                <TextInput
+                  value={joinDate}
+                  onChangeText={setJoinDate}
+                  placeholder="e.g. 20 Jun 2026"
+                  placeholderTextColor="#9A9A8A"
+                  className={input}
+                />
               </View>
             </View>
-            <View className="flex-row gap-3">
-              <View className="flex-1">
-                <Text className="mb-1.5 text-xs font-sans-semibold text-label">ID Proof</Text>
-                <TextInput value={idProof} onChangeText={setIdProof} placeholder="Aadhaar / PAN" placeholderTextColor="#9A9A8A" className={input} />
-              </View>
-              <View className="flex-1">
-                <Text className="mb-1.5 text-xs font-sans-semibold text-label">Date of Joining</Text>
-                <TextInput value={joinDate} onChangeText={setJoinDate} placeholder="2026-06-20" placeholderTextColor="#9A9A8A" className={input} />
-              </View>
-            </View>
+
+            {/* Monthly Salary */}
+            <Text className={label}>Monthly Salary (₹)</Text>
+            <TextInput
+              value={salary}
+              onChangeText={setSalary}
+              placeholder="12000"
+              keyboardType="number-pad"
+              placeholderTextColor="#9A9A8A"
+              className={`mb-1.5 font-mono ${input}`}
+            />
           </ScrollView>
+
+          {/* Footer */}
           <View className="flex-row gap-3 border-t border-border px-[26px] py-3.5">
-            <Pressable onPress={onClose} className="rounded-[10px] border border-border bg-surface px-5 py-3 active:bg-surface-2">
+            <Pressable
+              onPress={onClose}
+              className="rounded-[10px] border border-border bg-surface px-5 py-3 active:bg-surface-2"
+            >
               <Text className="text-sm font-sans-semibold text-label">Cancel</Text>
             </Pressable>
-            <Pressable onPress={submit} className="flex-1 items-center rounded-[10px] bg-brand py-3 active:bg-brand-hover">
-              <Text className="text-sm font-sans-semibold text-[#F4F1E7]">{isEdit ? 'Save Changes' : 'Add Staff'}</Text>
+            <Pressable
+              onPress={submit}
+              disabled={!canSubmit}
+              className="flex-1 items-center rounded-[10px] bg-brand py-3 active:bg-brand-hover"
+              style={{ opacity: canSubmit ? 1 : 0.5 }}
+            >
+              <Text className="text-sm font-sans-semibold text-[#F4F1E7]">
+                {isEdit ? 'Save Changes' : 'Add Staff'}
+              </Text>
             </Pressable>
           </View>
         </Pressable>

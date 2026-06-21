@@ -14,9 +14,12 @@ import { AddTenantModal } from '../../components/tenants/AddTenantModal';
 
 const META: Record<string, { title: string; subtitle: string; action?: string }> = {
   rooms: { title: 'Rooms & Occupancy', subtitle: 'Live view of all your rooms', action: 'Add Tenant' },
-  tenants: { title: 'Tenants', subtitle: 'Everyone staying with you', action: 'Add Tenant' },
-  rent: { title: 'Rent Collection', subtitle: 'Dues and payments this month' },
-  expenses: { title: 'Expenses & Margin', subtitle: 'Where the money goes' },
+  tenants: { title: 'Tenants', subtitle: 'Everyone on record', action: 'Add Tenant' },
+  'short-stay': { title: 'Short-Stay Rooms', subtitle: 'Walk-in, day-by-day stays', action: 'Add Tenant' },
+  staff: { title: 'Staff Management', subtitle: 'Your team & attendance', action: 'Add Tenant' },
+  rent: { title: 'Rent Collection', subtitle: 'Dues & payments this month', action: 'Add Tenant' },
+  expenses: { title: 'Revenue & Expenses', subtitle: 'Where the money goes', action: 'Add Tenant' },
+  maintenance: { title: 'Maintenance & Complaints', subtitle: 'Tickets & repairs', action: 'Add Tenant' },
 };
 
 export default function AppLayout() {

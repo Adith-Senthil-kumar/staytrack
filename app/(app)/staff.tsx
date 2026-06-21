@@ -56,20 +56,33 @@ export default function Staff() {
 
   return (
     <View>
-      <SubTabBar tabs={TABS} active={tab} onChange={setTab} />
+      <SubTabBar
+        tabs={TABS}
+        active={tab}
+        onChange={setTab}
+        action={
+          tab === 'roster' ? (
+            <Pressable
+              onPress={openAddStaff}
+              className="flex-row items-center gap-1.5 rounded-[9px] bg-brand px-3.5 py-[9px] active:bg-brand-hover"
+            >
+              <PlusIcon size={15} color="#F4F1E7" />
+              <Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">Add Staff</Text>
+            </Pressable>
+          ) : tab === 'leave' ? (
+            <Pressable
+              onPress={openLogLeave}
+              className="flex-row items-center gap-1.5 rounded-[9px] bg-brand px-3.5 py-[9px] active:bg-brand-hover"
+            >
+              <PlusIcon size={15} color="#F4F1E7" />
+              <Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">Log Leave</Text>
+            </Pressable>
+          ) : undefined
+        }
+      />
 
       {tab === 'roster' && (
         <>
-          <View className="mb-4 flex-row items-center justify-between">
-            <ThemedText variant="label">{staff.length} members</ThemedText>
-            <Pressable
-              onPress={openAddStaff}
-              className="flex-row items-center gap-1.5 rounded-[9px] bg-brand px-3.5 py-2 active:bg-brand-hover"
-            >
-              <PlusIcon size={14} color="#F4F1E7" />
-              <Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">Add Staff</Text>
-            </Pressable>
-          </View>
           {staff.length === 0 ? (
             <View className="items-center rounded-[14px] border border-dashed border-border py-16">
               <ThemedText variant="body" className="text-muted">
@@ -79,7 +92,12 @@ export default function Staff() {
           ) : (
             <View className="flex-row flex-wrap gap-4">
               {staff.map((s) => (
-                <StaffCard key={s.id} staff={s} onPress={() => selectStaff(s.id)} />
+                <StaffCard
+                  key={s.id}
+                  staff={s}
+                  attendance={attendance}
+                  onPress={() => selectStaff(s.id)}
+                />
               ))}
             </View>
           )}
@@ -107,23 +125,12 @@ export default function Staff() {
       )}
 
       {tab === 'leave' && (
-        <>
-          <View className="mb-4 flex-row justify-end">
-            <Pressable
-              onPress={openLogLeave}
-              className="flex-row items-center gap-1.5 rounded-[9px] bg-brand px-3.5 py-2 active:bg-brand-hover"
-            >
-              <PlusIcon size={14} color="#F4F1E7" />
-              <Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">Log Leave</Text>
-            </Pressable>
-          </View>
-          <LeaveTab
-            staff={staff}
-            leave={leave}
-            onApprove={(id) => { if (uid) setLeaveStatus(uid, id, 'approved'); }}
-            onReject={(id) => { if (uid) setLeaveStatus(uid, id, 'rejected'); }}
-          />
-        </>
+        <LeaveTab
+          staff={staff}
+          leave={leave}
+          onApprove={(id) => { if (uid) setLeaveStatus(uid, id, 'approved'); }}
+          onReject={(id) => { if (uid) setLeaveStatus(uid, id, 'rejected'); }}
+        />
       )}
 
       {tab === 'payroll' && (

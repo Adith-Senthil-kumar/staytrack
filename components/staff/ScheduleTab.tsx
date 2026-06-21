@@ -1,5 +1,6 @@
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { SHIFT_UI, WEEKDAYS } from '../../constants/staffMeta';
+import { STAFF_ROLE_UI } from '../../constants/staffRole';
 import type { Staff, ScheduleEntry, Shift } from '../../types';
 
 export function ScheduleTab({
@@ -15,50 +16,69 @@ export function ScheduleTab({
     schedule.find((s) => s.staffId === staffId && s.day === day)?.shift ?? 'off';
 
   return (
-    <View>
-      {/* Legend */}
-      <View className="mb-4 flex-row flex-wrap gap-4">
-        {(Object.keys(SHIFT_UI) as Shift[]).map((s) => (
-          <View key={s} className="flex-row items-center gap-1.5">
-            <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: SHIFT_UI[s].color }} />
-            <Text className="text-[12px] font-sans-medium text-muted">{SHIFT_UI[s].label}</Text>
+    <View className="overflow-hidden rounded-[14px] border border-border bg-surface shadow-sm">
+      {/* Card header: title + legend */}
+      <View className="flex-row items-center justify-between border-b border-border-2 px-5 py-[14px]">
+        <Text className="font-serif text-base font-semibold text-ink">Weekly Duty Roster</Text>
+        <View className="flex-row gap-[13px]">
+          <View className="flex-row items-center gap-[5px]">
+            <View className="h-2.5 w-2.5 rounded-[3px]" style={{ backgroundColor: SHIFT_UI.morning.color }} />
+            <Text className="text-[11.5px] text-muted">Morning</Text>
           </View>
-        ))}
+          <View className="flex-row items-center gap-[5px]">
+            <View className="h-2.5 w-2.5 rounded-[3px]" style={{ backgroundColor: SHIFT_UI.evening.color }} />
+            <Text className="text-[11.5px] text-muted">Evening</Text>
+          </View>
+          <View className="flex-row items-center gap-[5px]">
+            <View className="h-2.5 w-2.5 rounded-[3px]" style={{ backgroundColor: SHIFT_UI.night.color }} />
+            <Text className="text-[11.5px] text-muted">Night</Text>
+          </View>
+        </View>
       </View>
 
-      {/* Grid */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{ minWidth: 640 }}>
-          {/* Header row */}
-          <View className="mb-1 flex-row items-center gap-1">
+        <View style={{ minWidth: 620 }}>
+          {/* Column header row */}
+          <View
+            className="flex-row items-center border-b border-border-2 px-5 py-3"
+            style={{ backgroundColor: 'var(--surface-2, #F5F3EC)' }}
+          >
             <View style={{ width: 160 }}>
-              <Text className="text-[12px] font-sans-semibold text-muted">Staff</Text>
+              <Text className="text-[11px] font-sans-semibold uppercase tracking-[0.5px] text-muted-2">
+                Staff
+              </Text>
             </View>
             {WEEKDAYS.map((day) => (
-              <View key={day} className="h-9 flex-1 items-center justify-center">
-                <Text className="text-[12px] font-sans-semibold text-muted">{day}</Text>
+              <View key={day} style={{ flex: 1 }} className="items-center">
+                <Text className="text-[11px] font-sans-semibold uppercase tracking-[0.5px] text-muted-2">
+                  {day}
+                </Text>
               </View>
             ))}
           </View>
 
           {/* Staff rows */}
           {staff.length === 0 ? (
-            <View className="items-center rounded-[14px] border border-dashed border-border py-12">
+            <View className="items-center py-12">
               <Text className="text-sm text-muted">No staff members yet.</Text>
             </View>
           ) : (
-            staff.map((member) => (
-              <View key={member.id} className="mb-1 flex-row items-center gap-1">
+            staff.map((member, idx) => (
+              <View
+                key={member.id}
+                className={`flex-row items-center px-5 py-[10px] ${idx < staff.length - 1 ? 'border-b border-border-3' : ''}`}
+              >
                 {/* Name + role */}
-                <View style={{ width: 160 }} className="pr-3">
+                <View style={{ width: 160 }} className="pr-2">
                   <Text numberOfLines={1} className="text-[13px] font-sans-semibold text-text">
                     {member.name}
                   </Text>
-                  <Text numberOfLines={1} className="text-[11px] text-muted">
-                    {member.role}
+                  <Text numberOfLines={1} className="text-[11px] text-muted-2">
+                    {STAFF_ROLE_UI[member.role].label}
                   </Text>
                 </View>
-                {/* 7 day cells */}
+
+                {/* 7 day shift cells */}
                 {WEEKDAYS.map((_, dayIdx) => {
                   const shift = shiftFor(member.id, dayIdx);
                   const ui = SHIFT_UI[shift];
@@ -66,12 +86,21 @@ export function ScheduleTab({
                     <Pressable
                       key={dayIdx}
                       onPress={() => onCycle(member.id, dayIdx, shift)}
-                      className="h-9 flex-1 items-center justify-center rounded-md"
-                      style={{ backgroundColor: ui.color + '22' }}
+                      style={{ flex: 1 }}
+                      className="mx-1 items-center justify-center rounded-[7px] py-2"
+                      accessibilityLabel="Tap to change shift"
                     >
-                      <Text className="text-[13px] font-sans-semibold" style={{ color: ui.color }}>
-                        {ui.letter}
-                      </Text>
+                      <View
+                        className="h-9 w-9 items-center justify-center rounded-[7px]"
+                        style={{ backgroundColor: ui.color + '22' }}
+                      >
+                        <Text
+                          className="font-mono text-[13px] font-semibold"
+                          style={{ color: ui.color }}
+                        >
+                          {ui.letter}
+                        </Text>
+                      </View>
                     </Pressable>
                   );
                 })}

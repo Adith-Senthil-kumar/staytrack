@@ -35,7 +35,7 @@ export default function Expenses() {
 
   return (
     <View>
-      <ExpenseStatCards collected={col.collected} shortStay={0} expenses={expTotal} net={margin.profit} marginPct={margin.marginPercent} />
+      <ExpenseStatCards collected={col.collected} shortStay={0} expenses={expTotal} net={margin.profit} marginPct={margin.marginPercent} monthLabel={mk} />
       <View className="flex-row flex-wrap items-start gap-4">
         <View className="min-w-[280px] flex-1">
           <ExpenseLedger expenses={monthExpenses} total={expTotal} monthLabel={mk} onRecord={openExpense}

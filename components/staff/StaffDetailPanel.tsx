@@ -12,6 +12,7 @@ import {
   TrashIcon,
   ThumbsUpIcon,
   ThumbsDownIcon,
+  XIcon,
 } from '../icons';
 import type { Staff, Attendance, LeaveRequest, StaffNote } from '../../types';
 
@@ -77,9 +78,9 @@ export function StaffDetailPanel({
             <View className="bg-brand px-6 pb-5 pt-6" style={{ position: 'relative' }}>
               <Pressable
                 onPress={onClose}
-                className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"
+                className="absolute right-[18px] top-[18px] h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14] active:bg-[#ffffff28]"
               >
-                <Text className="text-base text-[#DCE7E1]">✕</Text>
+                <XIcon size={16} color="#DCE7E1" />
               </Pressable>
               <View className="flex-row items-center gap-3">
                 <View
@@ -116,19 +117,19 @@ export function StaffDetailPanel({
 
               {/* 2-col info grid */}
               <View className="mb-4 flex-row gap-2.5">
-                <View className="flex-1 rounded-[10px] border border-border bg-surface px-3 py-3">
+                <View className="flex-1 rounded-[10px] border border-border bg-surface px-[13px] py-3">
                   <Text className="font-sans-semibold text-[11px] uppercase tracking-wide text-soft">
                     ID PROOF
                   </Text>
-                  <Text className="font-mono mt-1 text-[13.5px] text-text-2">
+                  <Text className="font-mono mt-[5px] text-[13.5px] text-text-2">
                     {staff.idProof || '—'}
                   </Text>
                 </View>
-                <View className="flex-1 rounded-[10px] border border-border bg-surface px-3 py-3">
+                <View className="flex-1 rounded-[10px] border border-border bg-surface px-[13px] py-3">
                   <Text className="font-sans-semibold text-[11px] uppercase tracking-wide text-soft">
                     MONTHLY SALARY
                   </Text>
-                  <Text className="font-mono-semibold mt-1 text-base text-ink">
+                  <Text className="font-mono-semibold mt-[4px] text-base text-ink">
                     {formatINR(staff.salary)}
                   </Text>
                 </View>

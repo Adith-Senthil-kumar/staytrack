@@ -23,86 +23,92 @@ export function PayrollTab({
 
   const totalNet = calcs.reduce((sum, { c }) => sum + c.net, 0);
 
-  const headerCell = 'text-[11px] font-sans-semibold uppercase tracking-wide text-muted-2';
+  const headerCell = 'text-[11px] font-sans-semibold uppercase tracking-[0.6px] text-muted-2';
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View style={{ minWidth: 560 }}>
-        {/* Header row */}
-        <View className="flex-row border-b border-border bg-surface-2 px-[22px] py-3">
-          <Text className={`${headerCell} flex-1`}>Staff</Text>
-          <Text className={`${headerCell} w-[110px]`}>Base</Text>
-          <Text className={`${headerCell} w-[90px]`}>Days</Text>
-          <Text className={`${headerCell} w-[110px]`}>Net Pay</Text>
-          <Text className={`${headerCell} w-[80px] text-right`}>Payslip</Text>
-        </View>
-
-        {/* Staff rows */}
-        {staff.length === 0 ? (
-          <View className="items-center py-10">
-            <Text className="text-sm text-muted-2">No staff members yet.</Text>
+    <View className="overflow-hidden rounded-[14px] border border-border bg-surface shadow-sm">
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View style={{ minWidth: 560 }}>
+          {/* Header row */}
+          <View className="flex-row border-b border-border bg-surface-2 px-[22px] py-[13px]">
+            <Text className={`${headerCell} flex-[2]`}>Staff</Text>
+            <Text className={`${headerCell} w-[100px]`}>Base</Text>
+            <Text className={`${headerCell} w-[80px]`}>Days</Text>
+            <Text className={`${headerCell} w-[100px]`}>Net Pay</Text>
+            <Text className={`${headerCell} w-[80px] text-right`}>Payslip</Text>
           </View>
-        ) : (
-          calcs.map(({ s, c }, idx) => {
-            const roleUi = STAFF_ROLE_UI[s.role];
-            return (
-              <View
-                key={s.id}
-                className={`flex-row items-center px-[22px] py-3.5 ${idx < calcs.length - 1 ? 'border-b border-border-3' : ''}`}
-              >
-                {/* Staff cell */}
-                <View className="flex-1 flex-row items-center gap-2.5">
-                  <View
-                    className="h-[34px] w-[34px] items-center justify-center rounded-full"
-                    style={{ backgroundColor: avatarColor(s.name) }}
-                  >
-                    <Text className="text-[11px] font-sans-semibold text-[#FBF8F0]">
-                      {initials(s.name)}
-                    </Text>
+
+          {/* Staff rows */}
+          {staff.length === 0 ? (
+            <View className="items-center py-10">
+              <Text className="text-sm text-muted-2">No staff members yet.</Text>
+            </View>
+          ) : (
+            calcs.map(({ s, c }, idx) => {
+              const roleUi = STAFF_ROLE_UI[s.role];
+              return (
+                <View
+                  key={s.id}
+                  className={`flex-row items-center px-[22px] py-3 ${idx < calcs.length - 1 ? 'border-b border-border-3' : ''}`}
+                >
+                  {/* Staff cell */}
+                  <View className="flex-[2] flex-row items-center gap-[11px] min-w-0">
+                    <View
+                      className="h-[34px] w-[34px] flex-none items-center justify-center rounded-[9px]"
+                      style={{ backgroundColor: avatarColor(s.name) }}
+                    >
+                      <Text className="text-[12px] font-sans-semibold text-[#FBF8F0]">
+                        {initials(s.name)}
+                      </Text>
+                    </View>
+                    <View className="min-w-0">
+                      <Text numberOfLines={1} className="text-[13.5px] font-sans-semibold text-text">
+                        {s.name}
+                      </Text>
+                      <Text className="text-[11.5px] text-muted-2">{roleUi.label}</Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text className="text-[13.5px] font-sans-semibold text-text">{s.name}</Text>
-                    <Text className="text-[11.5px] text-muted-2">{roleUi.label}</Text>
+
+                  {/* Base */}
+                  <Text className="w-[100px] font-mono text-[13px] text-text-2">
+                    {formatINR(s.salary)}
+                  </Text>
+
+                  {/* Days worked */}
+                  <Text className="w-[80px] font-mono text-[13px] text-text-2">
+                    {c.worked}/{WORKDAYS}
+                  </Text>
+
+                  {/* Net pay */}
+                  <Text className="w-[100px] font-mono-semibold text-[13.5px] text-ink">
+                    {formatINR(c.net)}
+                  </Text>
+
+                  {/* Payslip button */}
+                  <View className="w-[80px] items-end">
+                    <Pressable
+                      onPress={() => onPayslip(s.id)}
+                      className="rounded-lg border border-border bg-surface-2 px-[13px] py-[7px] active:bg-surface-3"
+                    >
+                      <Text className="text-[12.5px] font-sans-semibold text-ink">Payslip</Text>
+                    </Pressable>
                   </View>
                 </View>
+              );
+            })
+          )}
 
-                {/* Base */}
-                <Text className="w-[110px] font-mono text-[13px] text-text-2">
-                  {formatINR(s.salary)}
-                </Text>
-
-                {/* Days */}
-                <Text className="w-[90px] font-mono text-[13px] text-text-2">
-                  {c.worked}/{WORKDAYS}
-                </Text>
-
-                {/* Net pay */}
-                <Text className="w-[110px] font-mono-semibold text-[13px] text-ink">
-                  {formatINR(c.net)}
-                </Text>
-
-                {/* Payslip button */}
-                <View className="w-[80px] items-end">
-                  <Pressable
-                    onPress={() => onPayslip(s.id)}
-                    className="rounded-lg border border-border bg-surface-2 px-3 py-[7px]"
-                  >
-                    <Text className="text-[12.5px] font-sans-semibold text-ink">Payslip</Text>
-                  </Pressable>
-                </View>
-              </View>
-            );
-          })
-        )}
-
-        {/* Footer total row */}
-        <View className="flex-row items-center justify-between border-t border-border bg-surface-2 px-[22px] py-3.5">
-          <Text className="text-[12.5px] font-sans-semibold text-text-2">
-            Total monthly payroll
-          </Text>
-          <Text className="font-mono-semibold text-[14px] text-ink">{formatINR(totalNet)}</Text>
+          {/* Footer total row */}
+          <View className="flex-row items-center justify-between border-t border-border bg-surface-2 px-[22px] py-[14px]">
+            <Text className="text-[13px] font-sans-semibold text-ink">
+              Total monthly payroll
+            </Text>
+            <Text className="font-mono text-[13px] font-semibold text-ink">
+              {formatINR(totalNet)}
+            </Text>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }

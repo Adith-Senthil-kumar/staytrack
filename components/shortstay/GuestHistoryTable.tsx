@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { useState } from 'react';
+import { View, Text, ScrollView, TextInput, Pressable } from 'react-native';
 import { formatINR } from '../../lib/domain/format';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import type { SSStay } from '../../types';
@@ -10,47 +11,101 @@ export function GuestHistoryTable({
   stays: SSStay[];
   onReceipt: (stay: SSStay) => void;
 }) {
-  const head = 'text-[11px] font-sans-semibold uppercase tracking-wide text-muted-2';
+  const [search, setSearch] = useState('');
+
+  const filtered = search.trim()
+    ? stays.filter(
+        (s) =>
+          s.guestName.toLowerCase().includes(search.toLowerCase()) ||
+          s.roomNumber.toLowerCase().includes(search.toLowerCase()) ||
+          s.checkIn.includes(search) ||
+          s.checkOut.includes(search),
+      )
+    : stays;
+
+  const head = 'text-[11px] font-sans-semibold uppercase tracking-[0.6px] text-muted-2';
 
   return (
     <View className="overflow-hidden rounded-[14px] border border-border bg-surface">
+      {/* Table header with title + search */}
+      <View className="flex-row items-center justify-between gap-3.5 border-b border-border-2 px-5 py-[15px]">
+        <Text className="font-serif text-[16px] font-semibold text-ink">Guest History</Text>
+        <View className="flex-row items-center gap-2 rounded-[9px] border border-border bg-field px-[11px] py-[7px]" style={{ width: 250 }}>
+          {/* Search icon */}
+          <Text className="text-[13px] text-soft">🔍</Text>
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Search guest, room or date…"
+            placeholderTextColor="#9A9A8A"
+            className="flex-1 text-[13px] text-text"
+          />
+        </View>
+      </View>
+
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
-        <View className="min-w-[620px] grow">
-          <View className="flex-row gap-3.5 border-b border-border bg-surface-2 px-[22px] py-3">
-            <Text className={`flex-1 ${head}`}>Guest</Text>
-            <Text className={`w-16 ${head}`}>Room</Text>
-            <Text className={`w-[140px] ${head}`}>Stay</Text>
-            <Text className={`w-14 ${head}`}>Nights</Text>
-            <Text className={`w-24 ${head}`}>Paid</Text>
-            <Text className={`w-20 ${head}`}>Receipt</Text>
+        <View className="min-w-[660px] grow">
+          {/* Column headers per design line 867–868 — 2fr 0.7fr 1.5fr 0.8fr 1fr 1fr */}
+          <View className="flex-row items-center gap-3.5 border-b border-border bg-surface-2 px-5 py-3">
+            <Text className={`${head}`} style={{ flex: 2 }}>Guest</Text>
+            <Text className={`${head}`} style={{ flex: 0.7 }}>Room</Text>
+            <Text className={`${head}`} style={{ flex: 1.5 }}>Stay</Text>
+            <Text className={`${head}`} style={{ flex: 0.8 }}>Nights</Text>
+            <Text className={`${head}`} style={{ flex: 1 }}>Paid</Text>
+            <Text className={`${head} text-right`} style={{ flex: 1 }}>Receipt</Text>
           </View>
-          {stays.length === 0 ? (
-            <Text className="px-[22px] py-12 text-center text-[13.5px] text-soft">No guests yet.</Text>
+
+          {filtered.length === 0 ? (
+            <Text className="px-5 py-10 text-center text-[13px] text-soft">
+              {search.trim() ? 'No guests match your search.' : 'No guests yet.'}
+            </Text>
           ) : (
-            stays.map((stay) => {
+            filtered.map((stay) => {
               const bg = avatarColor(stay.guestName);
               const ini = initials(stay.guestName);
               return (
-                <View key={stay.id} className="flex-row items-center gap-3.5 border-b border-border px-[22px] py-3.5">
-                  <View className="flex-1 flex-row items-center gap-2.5">
+                <View
+                  key={stay.id}
+                  className="flex-row items-center gap-3.5 border-b border-border-3 px-5 py-3 active:bg-surface-3"
+                >
+                  {/* Guest column with avatar — rounded-[9px] per design line 873 */}
+                  <View className="flex-row items-center gap-[11px]" style={{ flex: 2, minWidth: 0 }}>
                     <View
-                      className="h-8 w-8 items-center justify-center rounded-full"
+                      className="h-8 w-8 shrink-0 items-center justify-center rounded-[9px]"
                       style={{ backgroundColor: bg }}
                     >
-                      <Text className="text-[12px] font-sans-bold text-[#FBF8F0]">{ini}</Text>
+                      <Text className="text-[12px] font-sans-semibold text-[#FBF8F0]">{ini}</Text>
                     </View>
                     <Text className="text-[13.5px] font-sans-semibold text-text" numberOfLines={1}>{stay.guestName}</Text>
                   </View>
-                  <Text className="w-16 font-mono-semibold text-[13px] text-muted">#{stay.roomNumber}</Text>
-                  <Text className="w-[140px] text-[12px] text-muted">{stay.checkIn} → {stay.checkOut}</Text>
-                  <Text className="w-14 font-mono-semibold text-[13px] text-text">{stay.nights}N</Text>
-                  <Text className="w-24 font-mono-semibold text-[13px] text-ok">{formatINR(stay.total)}</Text>
-                  <View className="w-20 items-start">
+
+                  {/* Room — amber color per design line 876 */}
+                  <Text className="font-mono-semibold text-[13px]" style={{ flex: 0.7, color: '#C7842A' }}>
+                    {stay.roomNumber}
+                  </Text>
+
+                  {/* Stay range — mono, text-2 per design line 877 */}
+                  <Text className="font-mono text-[12px] text-text-2" style={{ flex: 1.5 }}>
+                    {stay.checkIn} → {stay.checkOut}
+                  </Text>
+
+                  {/* Nights — muted-2 per design line 878 */}
+                  <Text className="text-[12.5px] text-muted-2" style={{ flex: 0.8 }}>
+                    {stay.nights}N
+                  </Text>
+
+                  {/* Paid — mono, ink per design line 879 */}
+                  <Text className="font-mono-semibold text-[13px] text-ink" style={{ flex: 1 }}>
+                    {formatINR(stay.total)}
+                  </Text>
+
+                  {/* Receipt button per design line 880 */}
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
                     <Pressable
                       onPress={() => onReceipt(stay)}
-                      className="rounded-[7px] border border-border bg-surface-2 px-2.5 py-1.5 active:bg-surface"
+                      className="rounded-[8px] border border-border bg-surface-2 px-3 py-[6px] active:bg-surface-3"
                     >
-                      <Text className="text-[11px] font-sans-semibold text-muted">Receipt</Text>
+                      <Text className="text-[12px] font-sans-semibold text-ink">Receipt</Text>
                     </Pressable>
                   </View>
                 </View>

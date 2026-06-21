@@ -11,26 +11,37 @@ export function SSStatCards({ rooms, stays }: { rooms: SSRoom[]; stays: SSStay[]
     .filter((s) => s.createdAt.startsWith(mk))
     .reduce((sum, s) => sum + s.total, 0);
 
-  const card = 'min-w-0 grow basis-[47%] rounded-[14px] border border-border bg-surface p-[18px] sm:basis-0';
-  const dot = (c: string) => <View className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: c }} />;
+  const card = 'min-w-0 grow basis-[47%] rounded-[14px] border border-border bg-surface px-[18px] py-4 sm:basis-0';
 
   return (
-    <View className="mb-[22px] flex-row flex-wrap gap-3 sm:gap-4">
+    <View className="mb-[22px] flex-row flex-wrap gap-4">
       <View className={card}>
-        <View className="flex-row items-center gap-2">{dot('#C7842A')}<Text className="text-xs text-muted">Available</Text></View>
-        <Text className="mt-2 font-mono-bold text-2xl" style={{ color: '#C7842A' }}>{available}</Text>
+        <View className="flex-row items-center gap-2">
+          <View className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: '#C7842A' }} />
+          <Text className="text-[12px] text-muted">Available</Text>
+        </View>
+        <Text className="mt-[6px] font-mono-semibold text-[26px]" style={{ color: '#C7842A' }}>{available}</Text>
       </View>
       <View className={card}>
-        <View className="flex-row items-center gap-2">{dot('#2A3730')}<Text className="text-xs text-muted">Occupied</Text></View>
-        <Text className="mt-2 font-mono-bold text-2xl text-text">{occupied}</Text>
+        <View className="flex-row items-center gap-2">
+          <View className="h-2 w-2 rounded-[2px] bg-bad" />
+          <Text className="text-[12px] text-muted">Occupied</Text>
+        </View>
+        <Text className="mt-[6px] font-mono-semibold text-[26px] text-ink">{occupied}</Text>
       </View>
       <View className={card}>
-        <View className="flex-row items-center gap-2">{dot('#7C6F5B')}<Text className="text-xs text-muted">Cleaning pending</Text></View>
-        <Text className="mt-2 font-mono-bold text-2xl text-muted">{cleaning}</Text>
+        <View className="flex-row items-center gap-2">
+          <View className="h-2 w-2 rounded-[2px] bg-soft" />
+          <Text className="text-[12px] text-muted">Cleaning pending</Text>
+        </View>
+        <Text className="mt-[6px] font-mono-semibold text-[26px] text-muted-2">{cleaning}</Text>
       </View>
       <View className={card}>
-        <View className="flex-row items-center gap-2">{dot('#1E6F5C')}<Text className="text-xs text-muted">Short-stay income</Text></View>
-        <Text className="mt-2 font-mono-bold text-2xl text-ok">{formatINR(income)}</Text>
+        <View className="flex-row items-center gap-2">
+          <View className="h-2 w-2 rounded-[2px] bg-ok" />
+          <Text className="text-[12px] text-muted">Short-stay income</Text>
+        </View>
+        <Text className="mt-[6px] font-mono-semibold text-[26px] text-ok">{formatINR(income)}</Text>
       </View>
     </View>
   );

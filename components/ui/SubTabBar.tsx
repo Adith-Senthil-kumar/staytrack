@@ -1,21 +1,25 @@
+import { ReactNode } from 'react';
 import { ScrollView, Pressable, Text, View } from 'react-native';
 
 export function SubTabBar<T extends string>({
   tabs,
   active,
   onChange,
+  action,
 }: {
   tabs: { key: T; label: string }[];
   active: T;
   onChange: (k: T) => void;
+  action?: ReactNode;
 }) {
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      className="mb-6 border-b border-border"
-    >
-      <View className="flex-row gap-5">
+    <View className="mb-6 flex-row items-center border-b border-border">
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexDirection: 'row', gap: 20 }}
+      >
         {tabs.map((t) => {
           const isActive = t.key === active;
           return (
@@ -31,7 +35,8 @@ export function SubTabBar<T extends string>({
             </Pressable>
           );
         })}
-      </View>
-    </ScrollView>
+      </ScrollView>
+      {action && <View className="ml-auto pb-2 pl-4">{action}</View>}
+    </View>
   );
 }

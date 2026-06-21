@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useRooms, useTenants, useDues, useUserDoc } from '../../lib/db/hooks';
 import { recordPayment } from '../../lib/db/dues';
 import { collectionStats } from '../../lib/domain/stats';
-import { monthKey } from '../../lib/domain/format';
+import { monthKey, monthName } from '../../lib/domain/format';
 import { tenantRentLabel } from '../../lib/domain/tenants';
 import { useUiStore } from '../../store/ui';
 import { useAuthStore } from '../../store/auth';
@@ -41,7 +41,7 @@ export default function Rent() {
 
   return (
     <View>
-      <RentStatCards collected={col.collected} outstanding={col.pending} billed={col.billed} overdueCount={col.overdueCount} />
+      <RentStatCards collected={col.collected} outstanding={col.pending} billed={col.billed} overdueCount={col.overdueCount} monthLabel={monthName(mk)} />
       <RentTable empty={active.length === 0}>
         {active.map((t) => {
           const due = dueByTenant.get(t.id);

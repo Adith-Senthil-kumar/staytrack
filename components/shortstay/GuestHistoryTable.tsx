@@ -3,7 +3,13 @@ import { formatINR } from '../../lib/domain/format';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import type { SSStay } from '../../types';
 
-export function GuestHistoryTable({ stays }: { stays: SSStay[] }) {
+export function GuestHistoryTable({
+  stays,
+  onReceipt,
+}: {
+  stays: SSStay[];
+  onReceipt: (stay: SSStay) => void;
+}) {
   const head = 'text-[11px] font-sans-semibold uppercase tracking-wide text-muted-2';
 
   return (
@@ -40,7 +46,10 @@ export function GuestHistoryTable({ stays }: { stays: SSStay[] }) {
                   <Text className="w-14 font-mono-semibold text-[13px] text-text">{stay.nights}N</Text>
                   <Text className="w-24 font-mono-semibold text-[13px] text-ok">{formatINR(stay.total)}</Text>
                   <View className="w-20 items-start">
-                    <Pressable className="rounded-[7px] border border-border bg-surface-2 px-2.5 py-1.5 active:bg-surface">
+                    <Pressable
+                      onPress={() => onReceipt(stay)}
+                      className="rounded-[7px] border border-border bg-surface-2 px-2.5 py-1.5 active:bg-surface"
+                    >
                       <Text className="text-[11px] font-sans-semibold text-muted">Receipt</Text>
                     </Pressable>
                   </View>

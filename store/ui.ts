@@ -45,6 +45,9 @@ type UiState = {
   selectedTicketId: string | null;
   selectTicket: (id: string) => void;
   clearTicketSelection: () => void;
+  ssReceiptStayId: string | null;
+  openSSReceipt: (id: string) => void;
+  closeSSReceipt: () => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
@@ -92,4 +95,7 @@ export const useUiStore = create<UiState>((set) => ({
   selectedTicketId: null,
   selectTicket: (id) => set({ selectedTicketId: id }),
   clearTicketSelection: () => set({ selectedTicketId: null }),
+  ssReceiptStayId: null,
+  openSSReceipt: (id) => set({ ssReceiptStayId: id }),
+  closeSSReceipt: () => set({ ssReceiptStayId: null }),
 }));

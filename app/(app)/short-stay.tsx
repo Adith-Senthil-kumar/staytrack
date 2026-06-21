@@ -1,18 +1,21 @@
 import { View, Text, Pressable } from 'react-native';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
-import { useSSRooms, useSSStays } from '../../lib/db/hooks';
+import { useSSRooms, useSSStays, useUserDoc } from '../../lib/db/hooks';
 import { addSSRoom, bookSSRoom, checkoutSSRoom, cleanSSRoom } from '../../lib/db/shortstay';
 import { SSStatCards } from '../../components/shortstay/SSStatCards';
 import { SSRoomCard } from '../../components/shortstay/SSRoomCard';
 import { AddSSRoomModal } from '../../components/shortstay/AddSSRoomModal';
 import { BookingModal } from '../../components/shortstay/BookingModal';
 import { GuestHistoryTable } from '../../components/shortstay/GuestHistoryTable';
+import { ReceiptModal } from '../../components/shortstay/ReceiptModal';
 
 export default function ShortStay() {
   const uid = useAuthStore((s) => s.user?.uid);
   const { rooms } = useSSRooms();
   const { stays } = useSSStays();
+  const { userDoc } = useUserDoc();
+  const propertyName = userDoc?.property?.name ?? 'PG';
 
   const ssAddRoomOpen = useUiStore((s) => s.ssAddRoomOpen);
   const openSSAddRoom = useUiStore((s) => s.openSSAddRoom);
@@ -20,6 +23,9 @@ export default function ShortStay() {
   const bookingRoomId = useUiStore((s) => s.bookingRoomId);
   const openBooking = useUiStore((s) => s.openBooking);
   const closeBooking = useUiStore((s) => s.closeBooking);
+  const ssReceiptStayId = useUiStore((s) => s.ssReceiptStayId);
+  const openSSReceipt = useUiStore((s) => s.openSSReceipt);
+  const closeSSReceipt = useUiStore((s) => s.closeSSReceipt);
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -84,7 +90,7 @@ export default function ShortStay() {
 
       {/* Guest history */}
       <Text className="mb-3 text-[15px] font-sans-semibold text-text">Guest History</Text>
-      <GuestHistoryTable stays={stays} />
+      <GuestHistoryTable stays={stays} onReceipt={(stay) => openSSReceipt(stay.id)} />
 
       {/* Modals */}
       <AddSSRoomModal
@@ -97,6 +103,12 @@ export default function ShortStay() {
         roomNumber={bookingRoom?.number ?? ''}
         onClose={closeBooking}
         onConfirm={handleConfirmBooking}
+      />
+      <ReceiptModal
+        visible={!!ssReceiptStayId}
+        stay={ssReceiptStayId ? stays.find((s) => s.id === ssReceiptStayId) ?? null : null}
+        propertyName={propertyName}
+        onClose={closeSSReceipt}
       />
     </View>
   );

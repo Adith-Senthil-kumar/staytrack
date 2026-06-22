@@ -6,6 +6,7 @@ import { addRoom, removeRoom } from '../../lib/db/rooms';
 import { useRooms } from '../../lib/db/hooks';
 import { Stepper } from '../../components/onboarding/Stepper';
 import { ThemedText } from '../../components/ui/ThemedText';
+import { toPaise, formatINR } from '../../lib/domain/format';
 import type { RoomType } from '../../types';
 
 export default function RoomsStep() {
@@ -19,7 +20,7 @@ export default function RoomsStep() {
 
   const add = async () => {
     if (!uid || !number.trim()) return;
-    await addRoom(uid, { number: number.trim(), floor: Number(floor) || 1, type, baseRent: Number(rent) || 0, status: 'vacant' });
+    await addRoom(uid, { number: number.trim(), floor: Number(floor) || 1, type, baseRent: toPaise(Number(rent) || 0), status: 'vacant' });
     setNumber(''); setRent('');
   };
 
@@ -54,7 +55,7 @@ export default function RoomsStep() {
         {rooms.map((r) => (
           <View key={r.id} className="mb-2 flex-row items-center gap-3 rounded-[10px] border border-border bg-surface px-3 py-2.5">
             <Text className="font-mono-semibold text-sm text-ink">{r.number}</Text>
-            <Text className="text-xs text-muted">F{r.floor} · {r.type} · ₹{r.baseRent}</Text>
+            <Text className="text-xs text-muted">F{r.floor} · {r.type} · {formatINR(r.baseRent)}</Text>
             <Pressable onPress={() => uid && removeRoom(uid, r.id)} className="ml-auto"><Text className="text-xs font-sans-semibold text-bad">Remove</Text></Pressable>
           </View>
         ))}

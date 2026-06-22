@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, Modal as RNModal } from 'react-native';
 import { STAFF_ROLE_UI, STAFF_ROLE_KEYS } from '../../constants/staffRole';
+import { toPaise, toRupees } from '../../lib/domain/format';
 import { SelectField } from '../ui/SelectField';
 import { XIcon } from '../icons';
 import type { Staff, StaffRole } from '../../types';
@@ -32,7 +33,7 @@ export function AddStaffModal({
       setPhone(initial.phone);
       setIdProof(initial.idProof);
       setJoinDate(initial.joinDate);
-      setSalary(String(initial.salary));
+      setSalary(String(toRupees(initial.salary)));
     } else {
       setName('');
       setRole('cook');
@@ -56,7 +57,7 @@ export function AddStaffModal({
         phone: phone.trim(),
         idProof: idProof.trim(),
         joinDate: joinDate.trim() || initial.joinDate,
-        salary: Number(salary),
+        salary: toPaise(Number(salary)),
       });
     } else {
       onAdd({

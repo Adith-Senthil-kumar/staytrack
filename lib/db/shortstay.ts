@@ -10,7 +10,7 @@ export const addSSRoom = (uid: string, number: string, dailyRate: number) =>
 export const removeSSRoom = (uid: string, id: string) => deleteDoc(doc(ssRoomsRef(uid), id));
 
 export type BookingInput = {
-  guestName: string; phone?: string; checkIn: string; checkOut: string;
+  guestName: string; phone?: string; checkIn: string; checkInTime?: string; checkOut: string;
   rate: number; advance: number; payMethod: PaymentMethod; idType: string;
   idPhotoUrl?: string | null;
 };
@@ -18,7 +18,7 @@ export type BookingInput = {
 export const bookSSRoom = (uid: string, id: string, b: BookingInput) =>
   updateDoc(doc(ssRoomsRef(uid), id), {
     status: 'occupied', guestName: b.guestName, phone: b.phone ?? null,
-    checkIn: b.checkIn, checkOut: b.checkOut,
+    checkIn: b.checkIn, checkInTime: b.checkInTime ?? null, checkOut: b.checkOut,
     rate: b.rate, advance: b.advance, payMethod: b.payMethod, idType: b.idType,
     idPhotoUrl: b.idPhotoUrl ?? null,
   });
@@ -36,7 +36,7 @@ export async function checkoutSSRoom(uid: string, room: SSRoom, paymentMethod: P
   batch.set(doc(ssStaysRef(uid)), stayData);
   // Clear all booking fields when the room frees up.
   batch.update(doc(ssRoomsRef(uid), room.id), {
-    status: 'cleaning', guestName: null, checkIn: null, checkOut: null,
+    status: 'cleaning', guestName: null, checkIn: null, checkInTime: null, checkOut: null,
     phone: null, rate: null, advance: null, payMethod: null, idType: null, idPhotoUrl: null,
   });
   await batch.commit();

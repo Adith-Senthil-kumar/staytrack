@@ -7,6 +7,7 @@ import { completeOnboarding } from '../../lib/db/user';
 import { useRooms, useTenants } from '../../lib/db/hooks';
 import { Stepper } from '../../components/onboarding/Stepper';
 import { ThemedText } from '../../components/ui/ThemedText';
+import { toPaise, formatINR } from '../../lib/domain/format';
 import type { FoodPreference } from '../../types';
 
 export default function TenantsStep() {
@@ -17,7 +18,6 @@ export default function TenantsStep() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [roomId, setRoomId] = useState('');
-  const [sharing, setSharing] = useState<'single' | 'double'>('single');
   const [food, setFood] = useState<FoodPreference>('veg');
   const [rent, setRent] = useState('');
 
@@ -26,7 +26,7 @@ export default function TenantsStep() {
 
   const add = async () => {
     if (!uid || !name.trim() || !roomId) return;
-    await addTenant(uid, { name: name.trim(), phone: phone.trim(), roomId, rent: Number(rent) || 0, deposit: 0, foodPreference: food }, sharing);
+    await addTenant(uid, { name: name.trim(), phone: phone.trim(), roomId, rent: toPaise(Number(rent) || 0), deposit: 0, foodPreference: food });
     setName(''); setPhone(''); setRoomId(''); setRent('');
   };
 
@@ -58,8 +58,6 @@ export default function TenantsStep() {
             </View>
           </ScrollView>
           <View className="mb-3 flex-row gap-2">
-            <Pressable onPress={() => setSharing('single')} className={seg(sharing === 'single')}><Text className={`text-[13px] font-sans-semibold ${sharing === 'single' ? 'text-ok' : 'text-muted'}`}>Single</Text></Pressable>
-            <Pressable onPress={() => setSharing('double')} className={seg(sharing === 'double')}><Text className={`text-[13px] font-sans-semibold ${sharing === 'double' ? 'text-ok' : 'text-muted'}`}>Double</Text></Pressable>
             <Pressable onPress={() => setFood('veg')} className={seg(food === 'veg')}><Text className="text-[13px] font-sans-semibold text-veg">● Veg</Text></Pressable>
             <Pressable onPress={() => setFood('nonveg')} className={seg(food === 'nonveg')}><Text className="text-[13px] font-sans-semibold text-nonveg">● Non-Veg</Text></Pressable>
           </View>
@@ -71,7 +69,7 @@ export default function TenantsStep() {
         {tenants.map((t) => (
           <View key={t.id} className="mb-2 mt-2 flex-row items-center gap-3 rounded-[10px] border border-border bg-surface px-3 py-2.5">
             <Text className="text-sm font-sans-semibold text-ink">{t.name}</Text>
-            <Text className="text-xs text-muted">₹{t.rent} · {t.foodPreference}</Text>
+            <Text className="text-xs text-muted">{formatINR(t.rent)} · {t.foodPreference}</Text>
           </View>
         ))}
       </ScrollView>

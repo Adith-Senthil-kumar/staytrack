@@ -1,5 +1,7 @@
-import { View, Text, Pressable, Modal as RNModal, Share } from 'react-native';
+import { View, Text, Pressable, Modal as RNModal, Linking } from 'react-native';
 import { formatINR } from '../../lib/domain/format';
+import { printReceipt } from '../../lib/receipt/printReceipt';
+import { receiptHtml } from '../../lib/receipt/receiptHtml';
 import { CheckIcon, PaperPlaneIcon } from '../icons';
 import type { SSStay } from '../../types';
 
@@ -40,9 +42,10 @@ export function ReceiptModal({
 
   const paidLabel = stay.paymentMethod ? `Paid in full via ${stay.paymentMethod}` : 'Paid in full';
   const receiptText = buildReceiptText(stay, propertyName);
-  const handleShare = () => {
-    Share.share({ message: receiptText });
-  };
+  // Web → browser print dialog (Save as PDF) of the receipt HTML; native → share text.
+  const handlePrint = () => { printReceipt({ html: receiptHtml(stay, propertyName), text: receiptText }); };
+  // wa.me opens WhatsApp (native app or web) prefilled with the receipt text.
+  const handleWhatsApp = () => { Linking.openURL(`https://wa.me/?text=${encodeURIComponent(receiptText)}`); };
 
   return (
     <RNModal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -97,14 +100,14 @@ export function ReceiptModal({
           {/* Footer buttons */}
           <View className="flex-row gap-3 px-[26px] pb-6">
             <Pressable
-              onPress={handleShare}
-              className="rounded-[10px] border border-border bg-surface px-4 py-3"
+              onPress={handlePrint}
+              className="rounded-[10px] border border-border bg-surface px-4 py-3 active:bg-surface-2"
             >
               <Text className="text-[13.5px] font-sans-semibold text-label">Print / PDF</Text>
             </Pressable>
             <Pressable
-              onPress={handleShare}
-              className="flex-1 flex-row items-center justify-center gap-2 rounded-[10px] bg-accent py-3"
+              onPress={handleWhatsApp}
+              className="flex-1 flex-row items-center justify-center gap-2 rounded-[10px] bg-accent py-3 active:bg-accent-hover"
             >
               <PaperPlaneIcon size={15} color="#F4F1E7" />
               <Text className="text-sm font-sans-semibold text-[#F4F1E7]">Share on WhatsApp</Text>

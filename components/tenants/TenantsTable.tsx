@@ -1,8 +1,22 @@
 import { View, Text, ScrollView } from 'react-native';
 import { COL } from './TenantRow';
+import { useNarrow } from '../../lib/ui/useNarrow';
 
 export function TenantsTable({ children, empty }: { children: React.ReactNode; empty: boolean }) {
   const head = 'text-[11px] font-sans-semibold uppercase tracking-[0.6px] text-muted-2';
+  const narrow = useNarrow();
+  const emptyMsg = <Text className="px-[22px] py-12 text-center text-[13.5px] text-soft">No tenants yet — add them from onboarding or the dashboard.</Text>;
+
+  // Mobile: a plain vertical list of cards (rows render themselves as cards) — no
+  // horizontal scroll, no fixed min-width.
+  if (narrow) {
+    return (
+      <View className="overflow-hidden rounded-[14px] border border-border bg-surface">
+        {empty ? emptyMsg : children}
+      </View>
+    );
+  }
+
   return (
     <View className="overflow-hidden rounded-[14px] border border-border bg-surface">
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
@@ -15,7 +29,7 @@ export function TenantsTable({ children, empty }: { children: React.ReactNode; e
             <Text style={{ flex: COL.rent }} className={head}>Rent</Text>
             <Text style={{ flex: COL.status }} className={head}>Status</Text>
           </View>
-          {empty ? <Text className="px-[22px] py-12 text-center text-[13.5px] text-soft">No tenants yet — add them from onboarding or the dashboard.</Text> : children}
+          {empty ? emptyMsg : children}
         </View>
       </ScrollView>
     </View>

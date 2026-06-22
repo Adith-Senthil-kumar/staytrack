@@ -1,7 +1,20 @@
 import { View, Text, ScrollView } from 'react-native';
+import { useNarrow } from '../../lib/ui/useNarrow';
 
 export function RentTable({ children, empty }: { children: React.ReactNode; empty: boolean }) {
   const head = 'text-[11px] font-sans-semibold uppercase tracking-[0.6px] text-muted-2';
+  const narrow = useNarrow();
+  const emptyMsg = <Text className="px-[22px] py-12 text-center text-[13.5px] text-soft">No dues for this month yet.</Text>;
+
+  // Mobile: plain vertical list of cards — no horizontal scroll.
+  if (narrow) {
+    return (
+      <View className="overflow-hidden rounded-[14px] border border-border bg-surface shadow-sm">
+        {empty ? emptyMsg : children}
+      </View>
+    );
+  }
+
   return (
     <View className="overflow-hidden rounded-[14px] border border-border bg-surface shadow-sm">
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
@@ -14,9 +27,7 @@ export function RentTable({ children, empty }: { children: React.ReactNode; empt
             <Text className={`flex-[1.2] pr-3.5 ${head}`}>Status</Text>
             <Text className={`flex-[1.6] text-right ${head}`}>Action</Text>
           </View>
-          {empty ? (
-            <Text className="px-[22px] py-12 text-center text-[13.5px] text-soft">No dues for this month yet.</Text>
-          ) : children}
+          {empty ? emptyMsg : children}
         </View>
       </ScrollView>
     </View>

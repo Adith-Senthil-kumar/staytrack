@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { onSnapshot, query, where } from 'firebase/firestore';
+import { onSnapshot, query, where, orderBy, limit } from 'firebase/firestore';
 import { useAuthStore } from '../../store/auth';
-import { roomsRef, tenantsRef, duesRef, expensesRef, userRef, staffRef, maintRef, ssRoomsRef, ssStaysRef, attendanceRef, scheduleRef, leaveRef, vendorsRef } from './refs';
+import { roomsRef, tenantsRef, duesRef, expensesRef, userRef, staffRef, maintRef, ssRoomsRef, ssStaysRef, attendanceRef, scheduleRef, leaveRef, vendorsRef, tenantDocsRef } from './refs';
 import type { Room, Tenant, Due, Expense, UserDoc, Staff, MaintTicket, SSRoom, SSStay, Attendance, ScheduleEntry, LeaveRequest, Vendor } from '../../types';
 import { DEMO, DEMO_USERDOC, DEMO_ROOMS, DEMO_TENANTS, DEMO_DUES, DEMO_EXPENSES, DEMO_STAFF, DEMO_TICKETS, DEMO_SSROOMS, DEMO_SSSTAYS, DEMO_ATTENDANCE, DEMO_SCHEDULE, DEMO_LEAVE, DEMO_VENDORS } from '../dev/demo';
 
@@ -38,11 +38,13 @@ function useCollection<T>(makeRef: ((uid: string) => any) | null, demo?: T[]) {
 
 export function useRooms() { const r = useCollection<Room>(roomsRef, DEMO_ROOMS); return { rooms: r.data, loading: r.loading }; }
 export function useTenants() { const r = useCollection<Tenant>(tenantsRef, DEMO_TENANTS); return { tenants: r.data, loading: r.loading }; }
-export function useExpenses() { const r = useCollection<Expense>(expensesRef, DEMO_EXPENSES); return { expenses: r.data, loading: r.loading }; }
+// Expenses & stays grow without bound over months; cap the live listener to the
+// most recent N (ordered by an existing field, so no prod migration is needed).
+export function useExpenses() { const r = useCollection<Expense>((uid) => query(expensesRef(uid), orderBy('date', 'desc'), limit(300)), DEMO_EXPENSES); return { expenses: r.data, loading: r.loading }; }
 export function useStaff() { const r = useCollection<Staff>(staffRef, DEMO_STAFF); return { staff: r.data, loading: r.loading }; }
 export function useMaintenance() { const r = useCollection<MaintTicket>(maintRef, DEMO_TICKETS); return { tickets: r.data, loading: r.loading }; }
 export function useSSRooms() { const r = useCollection<SSRoom>(ssRoomsRef, DEMO_SSROOMS); return { rooms: r.data, loading: r.loading }; }
-export function useSSStays() { const r = useCollection<SSStay>(ssStaysRef, DEMO_SSSTAYS); return { stays: r.data, loading: r.loading }; }
+export function useSSStays() { const r = useCollection<SSStay>((uid) => query(ssStaysRef(uid), orderBy('createdAt', 'desc'), limit(200)), DEMO_SSSTAYS); return { stays: r.data, loading: r.loading }; }
 export function useAttendance() { const r = useCollection<Attendance>(attendanceRef, DEMO_ATTENDANCE); return { attendance: r.data, loading: r.loading }; }
 export function useSchedule() { const r = useCollection<ScheduleEntry>(scheduleRef, DEMO_SCHEDULE); return { schedule: r.data, loading: r.loading }; }
 export function useLeave() { const r = useCollection<LeaveRequest>(leaveRef, DEMO_LEAVE); return { leave: r.data, loading: r.loading }; }
@@ -88,4 +90,22 @@ export function useUserDoc() {
     return unsub;
   }, [uid]);
   return { userDoc, loading };
+}
+
+// A tenant's KYC scans, read from the documents subcollection and merged with any
+// legacy inline `documentPhotos` (pre-migration) so older tenants still display.
+// Returns a { label → photo } map. In DEMO mode it's just the seeded inline map.
+export function useTenantDocuments(tenantId: string | null | undefined, legacy?: Record<string, string>): Record<string, string> {
+  const uid = useAuthStore((s) => s.user?.uid);
+  const [sub, setSub] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (DEMO || !uid || !tenantId) { setSub({}); return; }
+    const unsub = onSnapshot(tenantDocsRef(uid, tenantId), (snap) => {
+      const m: Record<string, string> = {};
+      snap.docs.forEach((d) => { const x = d.data(); if (x?.label && x?.photo) m[x.label] = x.photo; });
+      setSub(m);
+    });
+    return unsub;
+  }, [uid, tenantId]);
+  return { ...(legacy ?? {}), ...sub }; // subcollection wins over legacy inline
 }

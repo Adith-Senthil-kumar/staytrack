@@ -1,19 +1,19 @@
 import { View, Text, Pressable, Linking, ScrollView, useWindowDimensions, Modal as RNModal } from 'react-native';
-import { Image } from 'expo-image';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import { MoneyText } from '../ui/MoneyText';
 import { dueStatus } from '../../lib/domain/dues';
 import { monthName, monthKey } from '../../lib/domain/format';
-import { ALL_DOCS } from '../../constants/documents';
-import { PhoneIcon, MessageIcon, CheckIcon } from '../icons';
+import { DocumentChecklist } from './DocumentChecklist';
+import { PhoneIcon, MessageIcon, TrashIcon } from '../icons';
 import type { Tenant, Due } from '../../types';
 
 const MONTH = monthName(monthKey(new Date()));
 
-export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDay, onClose, onEdit, onRecordPayment, onVacate, onToggleDoc }: {
+export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDay, onClose, onEdit, onRecordPayment, onVacate, onDelete, onAddDoc, onRemoveDoc }: {
   tenant: Tenant | null; roomNumber: string; roomType: string; due: Due | undefined; rentDueDay: number;
-  onClose: () => void; onEdit?: () => void; onRecordPayment: () => void; onVacate: () => void; onToggleDoc: (tenant: Tenant, label: string) => void;
+  onClose: () => void; onEdit?: () => void; onRecordPayment: () => void; onVacate: () => void; onDelete: () => void;
+  onAddDoc: (tenant: Tenant, label: string) => void; onRemoveDoc: (tenant: Tenant, label: string) => void;
 }) {
   const { width, height } = useWindowDimensions();
   const panelW = Math.min(width, 420);
@@ -21,7 +21,6 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
   const style = useAnimatedStyle(() => ({ transform: [{ translateX: withTiming(open ? 0 : panelW, { duration: 260 }) }] }));
   const status = due ? dueStatus(due, new Date(), rentDueDay) : undefined;
   const isDue = !!due && due.amountPaid < due.amountDue;
-  const docs = tenant?.documents ?? [];
   const payLabel = status === 'paid' ? `Paid · ${MONTH}`
     : status === 'overdue' ? `Overdue · ${MONTH}`
     : status === 'partial' ? `Partial · ${MONTH}`
@@ -93,29 +92,13 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
                 <View className="mt-[13px] flex-row justify-between border-t border-dashed border-border pt-[13px]"><Text className="text-[12.5px] text-muted-2">Checked in</Text><Text className="font-mono text-[12.5px] text-text-2">{tenant.joinDate}</Text></View>
                 <View className="mt-2 flex-row justify-between"><Text className="text-[12.5px] text-muted-2">Security deposit</Text><MoneyText amount={tenant.deposit} className="text-[12.5px] text-text-2" /></View>
 
-                <View className="mt-4">
-                  <View className="mb-2 flex-row items-center justify-between">
-                    <Text className="text-[11px] font-sans-semibold uppercase tracking-wide text-muted-2">Documents · tap to toggle</Text>
-                    <Text className={`font-mono-semibold text-[12px] ${docs.length === ALL_DOCS.length ? 'text-ok' : 'text-warn'}`}>{docs.length}/{ALL_DOCS.length}</Text>
-                  </View>
-                  {ALL_DOCS.map((d) => {
-                    const has = docs.includes(d);
-                    const scan = tenant.documentPhotos?.[d];
-                    return (
-                      <Pressable key={d} onPress={() => onToggleDoc(tenant, d)} className="flex-row items-center gap-2.5 rounded-md px-1 py-[5px] active:bg-field-hover">
-                        <View className={`h-[18px] w-[18px] items-center justify-center rounded-[5px] border ${has ? 'border-accent bg-accent' : 'border-border bg-surface-2'}`}>{has && <CheckIcon size={11} color="#FBF8F0" />}</View>
-                        <Text className={`flex-1 text-[13px] ${has ? 'text-text-2' : 'text-soft'}`}>{d}</Text>
-                        {scan && <Image source={{ uri: scan }} style={{ width: 30, height: 22, borderRadius: 4 }} contentFit="cover" />}
-                        <Text className={`text-[11.5px] font-sans-medium ${has ? 'text-ok' : 'text-warn'}`}>{has ? 'On file' : 'Tap to add'}</Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
+                <DocumentChecklist tenant={tenant} onAdd={onAddDoc} onRemove={onRemoveDoc} />
               </View>
 
               {tenant.status === 'active' && (
                 <Pressable onPress={onVacate} className="mt-4 items-center rounded-[11px] border border-maint-bd bg-surface py-3 active:bg-bad-bg"><Text className="text-[13.5px] font-sans-semibold text-bad">Vacate Room</Text></Pressable>
               )}
+              <Pressable onPress={onDelete} className="mt-2.5 flex-row items-center justify-center gap-2 rounded-[11px] bg-bad-bg py-3 active:opacity-80"><TrashIcon size={14} color="#B5462F" /><Text className="text-[13px] font-sans-semibold text-bad">Delete tenant permanently</Text></Pressable>
             </ScrollView>
           </View>
         )}

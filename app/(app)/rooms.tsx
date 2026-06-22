@@ -4,13 +4,14 @@ import { useRouter } from 'expo-router';
 import { useRooms, useTenants, useDues, useExpenses, useUserDoc } from '../../lib/db/hooks';
 import { useUiStore } from '../../store/ui';
 import { useAuthStore } from '../../store/auth';
+import { confirmAction, notify } from '../../store/confirm';
 import { addRoom, removeRoom, setRoomType, setRoomStatus } from '../../lib/db/rooms';
-import { vacateTenant, setTenantDocument, removeTenantDocument } from '../../lib/db/tenants';
+import { vacateTenant, assignTenantToRoom, setTenantDocument, removeTenantDocument } from '../../lib/db/tenants';
 import { pickAndUploadPhoto } from '../../lib/storage/photos';
 import { recordPayment } from '../../lib/db/dues';
 import { occupancyStats, collectionStats, marginStats } from '../../lib/domain/stats';
-import { monthKey, monthName, formatINR } from '../../lib/domain/format';
-import { groupByFloor, messCounts, statusCounts } from '../../lib/domain/dashboard';
+import { monthKey, monthName, formatINR, toPaise } from '../../lib/domain/format';
+import { groupByFloor, messCounts, statusCounts, roomCapacity } from '../../lib/domain/dashboard';
 import { StatCard, ProgressBar } from '../../components/dashboard/StatCard';
 import { FilterBar, type StatusFilter } from '../../components/dashboard/FilterBar';
 import { BuildingElevation } from '../../components/dashboard/BuildingElevation';
@@ -52,6 +53,7 @@ export default function Rooms() {
   const sc = statusCounts(rooms);
 
   const tenantByRoom = useMemo(() => { const m = new Map<string, (typeof tenants)[0]>(); tenants.filter((t) => t.status === 'active' && t.roomId).forEach((t) => m.set(t.roomId!, t)); return m; }, [tenants]);
+  const countByRoom = useMemo(() => { const m = new Map<string, number>(); tenants.filter((t) => t.status === 'active' && t.roomId).forEach((t) => m.set(t.roomId!, (m.get(t.roomId!) ?? 0) + 1)); return m; }, [tenants]);
   const dueByTenant = useMemo(() => { const m = new Map<string, (typeof dues)[0]>(); dues.forEach((d) => m.set(d.tenantId, d)); return m; }, [dues]);
 
   const term = searchTerm.trim().toLowerCase();
@@ -65,6 +67,8 @@ export default function Rooms() {
 
   const selectedRoom = rooms.find((r) => r.id === selectedRoomId) ?? null;
   const tenantsInRoom = selectedRoom ? tenants.filter((t) => t.status === 'active' && t.roomId === selectedRoom.id) : [];
+  // Tenants on record but not in any room (e.g. previously vacated) — can be re-placed.
+  const unassignedTenants = useMemo(() => tenants.filter((t) => !t.roomId), [tenants]);
 
   const nextRoomNumber = (f: number) => {
     const onFloor = rooms.filter((r) => r.floor === f);
@@ -117,10 +121,12 @@ export default function Rooms() {
       <RoomDetailPanel
         room={selectedRoom}
         tenants={tenantsInRoom}
+        unassignedTenants={unassignedTenants}
         dueByTenant={dueByTenant}
         rentDueDay={dueDay}
         onClose={clearRoomSelection}
         onAssign={(roomId) => { clearRoomSelection(); openAddTenant(roomId); }}
+        onAssignExisting={(t) => { if (uid && selectedRoom) assignTenantToRoom(uid, t, selectedRoom.id); }}
         onRecordPayment={(due) => { if (uid) recordPayment(uid, due.id, due.amountDue); }}
         onVacate={(t) => {
           if (!uid) return;
@@ -128,25 +134,34 @@ export default function Rooms() {
           vacateTenant(uid, t, !others);
           if (!others) clearRoomSelection();
         }}
-        onToggleDoc={async (t, label) => {
+        onAddDoc={async (t, label) => {
           if (!uid) return;
-          if ((t.documents ?? []).includes(label)) {
-            await removeTenantDocument(uid, t, label);
-          } else {
-            const url = await pickAndUploadPhoto(uid, `tenants/${t.id}/${label.replace(/\s+/g, '_')}`);
-            if (url) await setTenantDocument(uid, t, label, url);
-          }
+          const url = await pickAndUploadPhoto(uid, `tenants/${t.id}/${label.replace(/\s+/g, '_')}`);
+          if (url) await setTenantDocument(uid, t, label, url);
         }}
+        onRemoveDoc={(t, label) => { if (uid) removeTenantDocument(uid, t, label); }}
       />
 
       <ManageRoomsModal
         visible={showManageRooms}
         rooms={rooms}
         onClose={closeManageRooms}
-        onAddRoom={(f) => { if (uid) addRoom(uid, { number: nextRoomNumber(f), floor: f, type: 'single', baseRent: 8000, status: 'vacant' }); }}
-        onAddFloor={() => { if (uid) { const top = rooms.length ? Math.max(...rooms.map((r) => r.floor)) + 1 : 1; addRoom(uid, { number: `${top}01`, floor: top, type: 'single', baseRent: 8000, status: 'vacant' }); } }}
-        onRemoveRoom={(id) => { if (uid) removeRoom(uid, id); }}
-        onSetSharing={(id, sharing) => { if (uid) setRoomType(uid, id, sharing); }}
+        onAddRoom={(f) => { if (uid) addRoom(uid, { number: nextRoomNumber(f), floor: f, type: 'single', baseRent: toPaise(8000), status: 'vacant' }); }}
+        onAddFloor={() => { if (uid) { const top = rooms.length ? Math.max(...rooms.map((r) => r.floor)) + 1 : 1; addRoom(uid, { number: `${top}01`, floor: top, type: 'single', baseRent: toPaise(8000), status: 'vacant' }); } }}
+        onRemoveRoom={(id) => {
+          if (!uid) return;
+          const n = countByRoom.get(id) ?? 0;
+          if (n > 0) { notify('Room is occupied', `This room has ${n} tenant${n > 1 ? 's' : ''}. Vacate ${n > 1 ? 'them' : 'the tenant'} before removing it.`); return; }
+          const room = rooms.find((r) => r.id === id);
+          confirmAction({ title: 'Remove this room?', message: `Room ${room?.number ?? ''} will be deleted from your property.`, confirmLabel: 'Remove', danger: true, onConfirm: () => removeRoom(uid, id) });
+        }}
+        onSetSharing={(id, sharing) => {
+          if (!uid) return;
+          const n = countByRoom.get(id) ?? 0;
+          const cap = roomCapacity(sharing);
+          if (n > cap) { notify('Too many tenants', `This room has ${n} tenants — ${sharing} sharing allows only ${cap}. Vacate ${n - cap} before changing it.`); return; }
+          setRoomType(uid, id, sharing);
+        }}
         onToggleStatus={(r) => { if (uid && r.status !== 'occupied') setRoomStatus(uid, r.id, r.status === 'repair' ? 'vacant' : 'repair'); }}
       />
     </View>

@@ -1,4 +1,4 @@
-import { addDoc, deleteDoc, doc, updateDoc, increment } from 'firebase/firestore';
+import { addDoc, deleteDoc, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { maintRef, vendorsRef } from './refs';
 import { addExpense } from './expenses';
 import type { MaintTicket, MaintStatus } from '../../types';
@@ -25,7 +25,7 @@ export async function resolveTicket(
   vendorName: string,
 ) {
   const today = new Date().toISOString().slice(0, 10);
-  await updateDoc(doc(maintRef(uid), ticket.id), { status: 'done', cost, resolvedDate: today });
+  await updateDoc(doc(maintRef(uid), ticket.id), { status: 'done', cost, resolvedDate: serverTimestamp() });
   await addExpense(uid, {
     category: 'repairs',
     amount: cost,

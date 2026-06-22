@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { View, Text, Pressable, useWindowDimensions } from 'react-native';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
+import { confirmAction, notify } from '../../store/confirm';
 import { useSSRooms, useSSStays, useUserDoc } from '../../lib/db/hooks';
 import { addSSRoom, bookSSRoom, checkoutSSRoom, cleanSSRoom, removeSSRoom } from '../../lib/db/shortstay';
 import { uploadPhoto } from '../../lib/storage/photos';
 import { SSStatCards } from '../../components/shortstay/SSStatCards';
 import { SSRoomCard } from '../../components/shortstay/SSRoomCard';
+import { SSRoomDetailModal } from '../../components/shortstay/SSRoomDetailModal';
 import { AddSSRoomModal } from '../../components/shortstay/AddSSRoomModal';
 import { BookingModal } from '../../components/shortstay/BookingModal';
 import { CheckoutModal } from '../../components/shortstay/CheckoutModal';
@@ -37,9 +39,10 @@ export default function ShortStay() {
   const openSSReceipt = useUiStore((s) => s.openSSReceipt);
   const closeSSReceipt = useUiStore((s) => s.closeSSReceipt);
 
-  // Local state: walk-in modal open + checkout modal
+  // Local state: walk-in modal open + checkout modal + detail view
   const [bookingOpen, setBookingOpen] = useState(false);
   const [checkoutRoom, setCheckoutRoom] = useState<SSRoom | null>(null);
+  const [detailRoom, setDetailRoom] = useState<SSRoom | null>(null);
 
   // Auto-number: next free S-N
   const nextSSNumber = () => {
@@ -58,7 +61,7 @@ export default function ShortStay() {
     addSSRoom(uid, num, data.dailyRate);
   };
 
-  const handleConfirmBooking = async (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkOut: string; rate: number; advance: number; payMethod: PaymentMethod; idType: string; idPhotoUri: string | null }) => {
+  const handleConfirmBooking = async (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkInTime: string; checkOut: string; rate: number; advance: number; payMethod: PaymentMethod; idType: string; idPhotoUri: string | null }) => {
     if (!uid) return;
     const { idPhotoUri, ...rest } = data;
     let idPhotoUrl: string | null = null;
@@ -127,8 +130,22 @@ export default function ShortStay() {
                 room={room}
                 onBook={() => openBooking(room.id)}
                 onCheckout={() => setCheckoutRoom(room)}
+                onView={() => setDetailRoom(room)}
                 onClean={() => { if (uid) cleanSSRoom(uid, room.id); }}
-                onRemove={() => { if (uid) removeSSRoom(uid, room.id); }}
+                onRemove={() => {
+                  if (!uid) return;
+                  if (room.status === 'occupied') {
+                    notify('Room is occupied', `${room.guestName ?? 'A guest'} is checked in. Check them out before removing this room.`);
+                    return;
+                  }
+                  confirmAction({
+                    title: 'Remove this room?',
+                    message: `Short-stay room ${room.number} will be deleted. Guest history stays intact.`,
+                    confirmLabel: 'Remove',
+                    danger: true,
+                    onConfirm: () => removeSSRoom(uid, room.id),
+                  });
+                }}
               />
             </View>
           ))}
@@ -153,6 +170,11 @@ export default function ShortStay() {
         presetRoomId={presetId}
         onClose={handleCloseBooking}
         onConfirm={handleConfirmBooking}
+      />
+      <SSRoomDetailModal
+        room={detailRoom}
+        onClose={() => setDetailRoom(null)}
+        onCheckout={(room) => { setDetailRoom(null); setCheckoutRoom(room); }}
       />
       <CheckoutModal
         visible={!!checkoutRoom}

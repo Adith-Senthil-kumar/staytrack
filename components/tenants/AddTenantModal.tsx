@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { toPaise } from '../../lib/domain/format';
 import type { Room, FoodPreference } from '../../types';
 
 export type AddTenantData = {
-  name: string; phone: string; roomId: string; sharing: 'single' | 'double'; food: FoodPreference; rent: number;
+  name: string; phone: string; roomId: string; food: FoodPreference; rent: number;
 };
+
+const typeLabel = (t: Room['type']) => (t === 'double' ? 'Double' : t === 'triple' ? 'Triple' : 'Single');
 
 export function AddTenantModal({
   visible, assignableRooms, presetRoomId, onClose, onAdd,
@@ -19,7 +22,6 @@ export function AddTenantModal({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [roomId, setRoomId] = useState('');
-  const [sharing, setSharing] = useState<'single' | 'double'>('single');
   const [food, setFood] = useState<FoodPreference>('veg');
   const [rent, setRent] = useState('');
   const [roomOpen, setRoomOpen] = useState(false);
@@ -27,20 +29,16 @@ export function AddTenantModal({
   const roomBtnRef = useRef<View>(null);
 
   useEffect(() => {
-    if (visible) {
-      setRoomId(presetRoomId ?? '');
-      const preset = presetRoomId ? assignableRooms.find((r) => r.id === presetRoomId) : null;
-      setSharing(preset?.type === 'double' ? 'double' : 'single');
-    }
-  }, [visible, presetRoomId, assignableRooms]);
+    if (visible) setRoomId(presetRoomId ?? '');
+  }, [visible, presetRoomId]);
   useEffect(() => { if (!visible) setRoomOpen(false); }, [visible]);
 
-  const reset = () => { setName(''); setPhone(''); setRoomId(''); setSharing('single'); setFood('veg'); setRent(''); setRoomOpen(false); };
+  const reset = () => { setName(''); setPhone(''); setRoomId(''); setFood('veg'); setRent(''); setRoomOpen(false); };
   const close = () => { reset(); onClose(); };
   const selectedRoom = assignableRooms.find((r) => r.id === roomId);
   const submit = () => {
     if (!name.trim() || !roomId) return;
-    onAdd({ name: name.trim(), phone: phone.trim(), roomId, sharing, food, rent: Number(rent) || 0 });
+    onAdd({ name: name.trim(), phone: phone.trim(), roomId, food, rent: toPaise(Number(rent) || 0) });
     reset();
   };
 
@@ -94,9 +92,11 @@ export function AddTenantModal({
               </View>
 
               <Text className={label}>Sharing Type</Text>
-              <View className="mb-4 flex-row gap-2.5">
-                <Pressable onPress={() => setSharing('single')} className={seg(sharing === 'single')}><Text className={segTxt(sharing === 'single')}>Single</Text></Pressable>
-                <Pressable onPress={() => setSharing('double')} className={seg(sharing === 'double')}><Text className={segTxt(sharing === 'double')}>Double</Text></Pressable>
+              <View className="mb-4 rounded-[9px] border border-border bg-surface-2 px-[13px] py-[11px]">
+                <Text className="text-sm text-text-2">
+                  {selectedRoom ? `${typeLabel(selectedRoom.type)} sharing` : 'Pick a room — its sharing applies'}
+                  <Text className="text-soft"> · set by the room</Text>
+                </Text>
               </View>
 
               <Text className={label}>Food Preference</Text>

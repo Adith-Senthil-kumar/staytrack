@@ -3,6 +3,8 @@ import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from '
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import type { SSRoom } from '../../types';
 import { SelectField } from '../ui/SelectField';
+import { DateTimeField } from '../ui/DateTimeField';
+import { toPaise, toRupees, formatINR } from '../../lib/domain/format';
 import { pickImage } from '../../lib/storage/photos';
 
 const PhotoIcon = ({ size = 16, color = '#5A5A4A' }: { size?: number; color?: string }) => (
@@ -33,7 +35,7 @@ export function BookingModal({
   availableRooms: SSRoom[];
   presetRoomId: string | null;
   onClose: () => void;
-  onConfirm: (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkOut: string; rate: number; advance: number; payMethod: PayMethod; idType: IdType; idPhotoUri: string | null }) => void;
+  onConfirm: (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkInTime: string; checkOut: string; rate: number; advance: number; payMethod: PayMethod; idType: IdType; idPhotoUri: string | null }) => void;
 }) {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -42,6 +44,7 @@ export function BookingModal({
   const [idType, setIdType] = useState<IdType>('aadhaar');
   const [roomId, setRoomId] = useState('');
   const [checkIn, setCheckIn] = useState(today);
+  const [checkInTime, setCheckInTime] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [rate, setRate] = useState('');
   const [advance, setAdvance] = useState('');
@@ -54,7 +57,7 @@ export function BookingModal({
       setCheckIn(today);
       // pre-fill rate from preset room
       const preRoom = presetRoomId ? availableRooms.find((r) => r.id === presetRoomId) : availableRooms[0];
-      setRate(preRoom ? String(preRoom.dailyRate) : '');
+      setRate(preRoom ? String(toRupees(preRoom.dailyRate)) : '');
     }
   }, [visible, presetRoomId]);
 
@@ -62,12 +65,12 @@ export function BookingModal({
   const handleRoomChange = (id: string) => {
     setRoomId(id);
     const r = availableRooms.find((rm) => rm.id === id);
-    if (r) setRate(String(r.dailyRate));
+    if (r) setRate(String(toRupees(r.dailyRate)));
   };
 
   const reset = () => {
     setGuestName(''); setPhone(''); setIdType('aadhaar');
-    setRoomId(''); setCheckIn(today); setCheckOut('');
+    setRoomId(''); setCheckIn(today); setCheckInTime(''); setCheckOut('');
     setRate(''); setAdvance(''); setPayMethod('upi'); setIdPhotoUri(null);
   };
 
@@ -77,7 +80,7 @@ export function BookingModal({
 
   const submit = () => {
     if (!canSubmit) return;
-    onConfirm({ roomId, guestName: guestName.trim(), phone: phone.trim(), checkIn, checkOut, rate: Number(rate) || 0, advance: Number(advance) || 0, payMethod, idType, idPhotoUri });
+    onConfirm({ roomId, guestName: guestName.trim(), phone: phone.trim(), checkIn, checkInTime, checkOut, rate: toPaise(Number(rate) || 0), advance: toPaise(Number(advance) || 0), payMethod, idType, idPhotoUri });
     reset();
     onClose();
   };
@@ -175,41 +178,25 @@ export function BookingModal({
                   placeholder="Select a room…"
                   options={availableRooms.map((r) => ({
                     value: r.id,
-                    label: `Room ${r.number} · ₹${r.dailyRate}/day`,
+                    label: `Room ${r.number} · ${formatINR(r.dailyRate)}/day`,
                   }))}
                 />
               </View>
             )}
 
-            {/* Check-in / Time / Check-out */}
+            {/* Check-in date + time / Check-out date — real OS pickers on web */}
             <View className="mb-4 flex-row gap-3.5">
               <View style={{ flex: 1.3 }}>
                 <Text className={lbl}>Check-in Date</Text>
-                <TextInput
-                  value={checkIn}
-                  onChangeText={setCheckIn}
-                  placeholder="2026-06-20"
-                  placeholderTextColor="#9A9A8A"
-                  className={inp}
-                />
+                <DateTimeField mode="date" value={checkIn} onChange={setCheckIn} max={checkOut || undefined} />
               </View>
               <View style={{ flex: 0.9 }}>
                 <Text className={lbl}>Time</Text>
-                <TextInput
-                  placeholder="14:00"
-                  placeholderTextColor="#9A9A8A"
-                  className={`font-mono ${inp}`}
-                />
+                <DateTimeField mode="time" value={checkInTime} onChange={setCheckInTime} />
               </View>
               <View style={{ flex: 1.3 }}>
                 <Text className={lbl}>Expected Check-out</Text>
-                <TextInput
-                  value={checkOut}
-                  onChangeText={setCheckOut}
-                  placeholder="2026-06-22"
-                  placeholderTextColor="#9A9A8A"
-                  className={inp}
-                />
+                <DateTimeField mode="date" value={checkOut} onChange={setCheckOut} min={checkIn || undefined} />
               </View>
             </View>
 

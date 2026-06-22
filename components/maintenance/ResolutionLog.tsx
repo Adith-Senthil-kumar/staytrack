@@ -2,6 +2,7 @@ import { View, Text, ScrollView } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { MAINT_CATEGORY } from '../../constants/maintenance';
 import { formatINR } from '../../lib/domain/format';
+import { toDateStr } from '../../lib/domain/dates';
 import { AlertTriangleIcon } from '../icons';
 import type { MaintTicket, Vendor } from '../../types';
 
@@ -99,7 +100,7 @@ export function ResolutionLog({
                         className="font-mono text-[12.5px] text-muted-2"
                         style={{ width: 80 }}
                       >
-                        {t.resolvedDate ?? '—'}
+                        {toDateStr(t.resolvedDate)}
                       </Text>
                       <Text
                         className="font-mono-semibold text-right text-[13px] text-ink"

@@ -6,6 +6,7 @@ import { addLeave, setLeaveStatus, removeLeave } from '../../lib/db/leave';
 import { markAttendance, setShift } from '../../lib/db/attendance';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
+import { confirmAction } from '../../store/confirm';
 import { StaffCard } from '../../components/staff/StaffCard';
 import { AddStaffModal } from '../../components/staff/AddStaffModal';
 import { StaffDetailPanel } from '../../components/staff/StaffDetailPanel';
@@ -193,7 +194,15 @@ export default function Staff() {
           }
         }}
         onRemove={(id) => {
-          if (uid) { removeStaff(uid, id); clearStaffSelection(); }
+          if (!uid) return;
+          const m = staff.find((s) => s.id === id);
+          confirmAction({
+            title: 'Remove staff member?',
+            message: `${m?.name ?? 'This person'} will be removed from your team. Their attendance and payroll history will no longer appear.`,
+            confirmLabel: 'Remove',
+            danger: true,
+            onConfirm: () => { removeStaff(uid, id); clearStaffSelection(); },
+          });
         }}
       />
     </View>

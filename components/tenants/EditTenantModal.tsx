@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal } from 'react-native';
+import { toPaise, toRupees } from '../../lib/domain/format';
 import { XIcon } from '../icons';
 import type { Tenant, FoodPreference } from '../../types';
 
@@ -21,7 +22,7 @@ export function EditTenantModal({ tenant, onClose, onSave }: {
     if (tenant) {
       setName(tenant.name);
       setPhone(tenant.phone);
-      setRent(String(tenant.rent));
+      setRent(String(toRupees(tenant.rent)));
       setFood(tenant.foodPreference);
     }
   }, [tenant]);
@@ -36,7 +37,7 @@ export function EditTenantModal({ tenant, onClose, onSave }: {
 
   const save = () => {
     if (!canSave) return;
-    onSave(tenant.id, { name: name.trim(), phone: phone.trim(), rent: Number(rent) || 0, foodPreference: food });
+    onSave(tenant.id, { name: name.trim(), phone: phone.trim(), rent: toPaise(Number(rent) || 0), foodPreference: food });
     onClose();
   };
 

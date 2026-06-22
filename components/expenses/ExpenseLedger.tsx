@@ -1,6 +1,7 @@
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { CATEGORY_UI } from '../../constants/expenseCategory';
 import { formatINR } from '../../lib/domain/format';
+import { useNarrow } from '../../lib/ui/useNarrow';
 import { PlusIcon, TrashIcon } from '../icons';
 import type { Expense } from '../../types';
 
@@ -32,6 +33,7 @@ const head = 'text-[11px] font-sans-semibold uppercase tracking-wide text-muted-
 export function ExpenseLedger({ expenses, total, monthLabel, onRecord, onDelete }: {
   expenses: Expense[]; total: number; monthLabel: string; onRecord: () => void; onDelete: (id: string) => void;
 }) {
+  const narrow = useNarrow();
   return (
     <View className="overflow-hidden rounded-[14px] border border-border bg-surface" style={{ shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.03, shadowRadius: 2 }}>
       {/* Table header bar */}
@@ -43,7 +45,38 @@ export function ExpenseLedger({ expenses, total, monthLabel, onRecord, onDelete 
         </Pressable>
       </View>
 
-      {/* Scrollable ledger table */}
+      {/* Mobile: stacked cards — no horizontal scroll */}
+      {narrow ? (
+        expenses.length === 0 ? (
+          <Text className="px-[20px] py-12 text-center text-[13.5px] text-soft">No expenses recorded this month.</Text>
+        ) : (
+          <View>
+            {expenses.map((e) => {
+              const ui = CATEGORY_UI[e.category];
+              return (
+                <View key={e.id} className="flex-row items-start gap-3 border-b border-border-3 px-[18px] py-3">
+                  <View className="min-w-0 flex-1">
+                    <Text numberOfLines={1} className="text-[13.5px] font-sans-semibold text-text">{e.note || ui.label}</Text>
+                    <View className="mt-1 flex-row items-center gap-2">
+                      <View className="self-start rounded px-[7px] py-[3px]" style={{ backgroundColor: ui.color + '22' }}>
+                        <Text className="text-[11px] font-sans-semibold" style={{ color: ui.color }}>{ui.label}</Text>
+                      </View>
+                      <Text className="font-mono text-[11.5px] text-soft">{formatDate(e.date)}</Text>
+                    </View>
+                  </View>
+                  <View className="items-end gap-1.5">
+                    <Text className="font-mono text-[14px] font-semibold text-bad">{formatINR(e.amount)}</Text>
+                    <Pressable onPress={() => onDelete(e.id)} className="h-[28px] w-[28px] items-center justify-center rounded-[7px] active:bg-bad-bg">
+                      <TrashIcon size={15} color="#9A9A8A" />
+                    </Pressable>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )
+      ) : (
+      /* Scrollable ledger table */
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
         <View className="min-w-[620px] grow">
           {/* Column header */}
@@ -91,6 +124,7 @@ export function ExpenseLedger({ expenses, total, monthLabel, onRecord, onDelete 
           )}
         </View>
       </ScrollView>
+      )}
 
       {/* Footer total */}
       <View className="flex-row items-center justify-between bg-surface-2 px-[20px] py-[14px]">

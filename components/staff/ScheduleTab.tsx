@@ -1,7 +1,10 @@
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { SHIFT_UI, WEEKDAYS } from '../../constants/staffMeta';
 import { STAFF_ROLE_UI } from '../../constants/staffRole';
+import { useNarrow } from '../../lib/ui/useNarrow';
 import type { Staff, ScheduleEntry, Shift } from '../../types';
+
+const CELL_BG: Record<Shift, string> = { morning: '#FAF0DD', evening: '#EAF1EC', night: '#F2EDDF', off: '#FBF9F2' };
 
 export function ScheduleTab({
   staff,
@@ -14,6 +17,7 @@ export function ScheduleTab({
 }) {
   const shiftFor = (staffId: string, day: number): Shift =>
     schedule.find((s) => s.staffId === staffId && s.day === day)?.shift ?? 'off';
+  const narrow = useNarrow();
 
   return (
     <View className="overflow-hidden rounded-[14px] border border-border bg-surface shadow-sm">
@@ -36,6 +40,34 @@ export function ScheduleTab({
         </View>
       </View>
 
+      {narrow ? (
+        staff.length === 0 ? (
+          <View className="items-center py-12"><Text className="text-sm text-muted">No staff members yet.</Text></View>
+        ) : (
+          <View>
+            {staff.map((member) => (
+              <View key={member.id} className="border-b border-border-3 px-[18px] py-3.5">
+                <Text numberOfLines={1} className="text-[13.5px] font-sans-semibold text-text">{member.name}<Text className="text-[11.5px] font-sans-medium text-muted-2"> · {STAFF_ROLE_UI[member.role].label}</Text></Text>
+                <View className="mt-2.5 flex-row gap-1">
+                  {WEEKDAYS.map((day, dayIdx) => {
+                    const shift = shiftFor(member.id, dayIdx);
+                    const ui = SHIFT_UI[shift];
+                    const letterColor = shift === 'off' ? '#9A9A8A' : ui.color;
+                    return (
+                      <View key={dayIdx} className="flex-1 items-center gap-1">
+                        <Text className="text-[10px] font-sans-semibold uppercase text-muted-2">{day}</Text>
+                        <Pressable onPress={() => onCycle(member.id, dayIdx, shift)} style={{ backgroundColor: CELL_BG[shift], borderWidth: 1, borderColor: '#DED8C8' }} className="w-full items-center justify-center rounded-md py-2" accessibilityLabel="Tap to change shift">
+                          <Text className="font-mono text-[13px] font-semibold" style={{ color: letterColor }}>{ui.letter}</Text>
+                        </Pressable>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+            ))}
+          </View>
+        )
+      ) : (
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
         <View className="min-w-[620px] grow">
           {/* Column header row */}
@@ -113,6 +145,7 @@ export function ScheduleTab({
           )}
         </View>
       </ScrollView>
+      )}
     </View>
   );
 }

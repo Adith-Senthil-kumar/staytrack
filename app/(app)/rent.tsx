@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useRooms, useTenants, useDues, useUserDoc } from '../../lib/db/hooks';
 import { recordPayment } from '../../lib/db/dues';
@@ -11,6 +11,7 @@ import { RentStatCards } from '../../components/rent/RentStatCards';
 import { RentTable } from '../../components/rent/RentTable';
 import { RentRow } from '../../components/rent/RentRow';
 import { RecordPaymentModal } from '../../components/rent/RecordPaymentModal';
+import { RentReceiptModal } from '../../components/rent/RentReceiptModal';
 import type { PaymentMethod } from '../../types';
 
 export default function Rent() {
@@ -34,6 +35,12 @@ export default function Rent() {
   const payTenant = payDue ? tenants.find((t) => t.id === payDue.tenantId) ?? null : null;
   const payRoom = payTenant?.roomId ? roomById.get(payTenant.roomId) : undefined;
 
+  // Rent-receipt modal (paid tenants only)
+  const [receiptTenantId, setReceiptTenantId] = useState<string | null>(null);
+  const rcptTenant = receiptTenantId ? tenants.find((t) => t.id === receiptTenantId) ?? null : null;
+  const rcptDue = rcptTenant ? dueByTenant.get(rcptTenant.id) ?? null : null;
+  const rcptRoom = rcptTenant?.roomId ? roomById.get(rcptTenant.roomId) : undefined;
+
   const confirm = (method: PaymentMethod) => {
     if (uid && payDue) recordPayment(uid, payDue.id, payDue.amountDue, method);
     closePay();
@@ -49,13 +56,18 @@ export default function Rent() {
           return (
             <RentRow key={t.id} tenant={t} roomNumber={t.roomId ? roomById.get(t.roomId)?.number ?? '—' : '—'}
               rent={tenantRentLabel(due, new Date(), dueDay)} isDue={isDue}
-              onCollect={() => due && openPay(due.id)} />
+              onCollect={() => due && openPay(due.id)}
+              onReceipt={due && due.amountPaid > 0 ? () => setReceiptTenantId(t.id) : undefined} />
           );
         })}
       </RentTable>
 
       <RecordPaymentModal tenant={payTenant} roomNumber={payRoom?.number ?? '—'} due={payDue} monthLabel={mk}
         onClose={closePay} onConfirm={confirm} />
+
+      <RentReceiptModal tenant={rcptTenant} roomNumber={rcptRoom?.number ?? '—'} due={rcptDue}
+        monthLabel={monthName(mk)} propertyName={userDoc?.property?.name ?? 'PG'}
+        onClose={() => setReceiptTenantId(null)} />
     </View>
   );
 }

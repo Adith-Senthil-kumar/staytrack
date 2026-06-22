@@ -1,9 +1,11 @@
-import { View, Text, Pressable, Modal as RNModal, Share } from 'react-native';
+import { View, Text, Pressable, Modal as RNModal, Linking } from 'react-native';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import { calcPayroll, monthRecords, WORKDAYS } from '../../lib/domain/payroll';
 import { formatINR, monthKey, monthName } from '../../lib/domain/format';
 import { STAFF_ROLE_UI } from '../../constants/staffRole';
-import { PaperPlaneIcon, XIcon } from '../icons';
+import { printReceipt } from '../../lib/receipt/printReceipt';
+import { payslipHtml } from '../../lib/receipt/payslipHtml';
+import { PaperPlaneIcon, XIcon, FileTextIcon } from '../icons';
 import type { Staff, Attendance } from '../../types';
 
 const now = new Date();
@@ -52,9 +54,9 @@ export function PayslipModal({
   const roleUi = STAFF_ROLE_UI[staff.role];
   const payslipText = buildPayslipText(staff, roleUi.label, propertyName, c);
 
-  const handleShare = () => {
-    Share.share({ message: payslipText });
-  };
+  // Web → browser print dialog (Save as PDF) of the payslip HTML; native → share text.
+  const handlePrint = () => { printReceipt({ html: payslipHtml(staff, roleUi.label, propertyName, currentMonthName, currentYear, c), text: payslipText }); };
+  const handleWhatsApp = () => { Linking.openURL(`https://wa.me/?text=${encodeURIComponent(payslipText)}`); };
 
   return (
     <RNModal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -154,13 +156,14 @@ export function PayslipModal({
           {/* Footer buttons */}
           <View className="flex-row gap-3 px-[26px] pb-6">
             <Pressable
-              onPress={handleShare}
-              className="flex-none rounded-[10px] border border-border bg-surface px-4 py-3 active:bg-surface-2"
+              onPress={handlePrint}
+              className="flex-none flex-row items-center gap-2 rounded-[10px] border border-border bg-surface-2 px-4 py-3 active:bg-surface-3"
             >
-              <Text className="text-[13.5px] font-sans-semibold text-label">Print / PDF</Text>
+              <FileTextIcon size={15} color="#13352C" />
+              <Text className="text-[13.5px] font-sans-semibold text-ink">Print / PDF</Text>
             </Pressable>
             <Pressable
-              onPress={handleShare}
+              onPress={handleWhatsApp}
               className="flex-1 flex-row items-center justify-center gap-2 rounded-[10px] bg-accent py-3 active:opacity-80"
             >
               <PaperPlaneIcon size={16} color="#F4F1E7" />

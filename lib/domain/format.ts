@@ -8,9 +8,15 @@ function groupIndian(n: number): string {
   return `${grouped},${last3}`;
 }
 
-export function formatINR(amount: number): string {
-  const rounded = Math.round(amount);
-  const n = rounded === 0 ? 0 : rounded; // normalize -0 so we never show "-₹0"
+// Money is stored as integer PAISE (₹1 = 100 paise) so amounts stay exact.
+// `formatINR` takes paise and renders whole rupees; `toPaise`/`toRupees` convert
+// at the input/prefill boundaries.
+export const toPaise = (rupees: number): number => Math.round(rupees * 100);
+export const toRupees = (paise: number): number => Math.round(paise) / 100;
+
+export function formatINR(paise: number): string {
+  const rupees = Math.round(paise / 100); // display whole rupees (storage stays exact)
+  const n = rupees === 0 ? 0 : rupees; // normalize -0 so we never show "-₹0"
   const sign = n < 0 ? '-' : '';
   return `${sign}₹${groupIndian(Math.abs(n))}`;
 }

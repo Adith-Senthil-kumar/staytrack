@@ -22,12 +22,14 @@ export function SSRoomCard({
   onCheckout,
   onClean,
   onRemove,
+  onView,
 }: {
   room: SSRoom;
   onBook: () => void;
   onCheckout: () => void;
   onClean: () => void;
   onRemove?: () => void;
+  onView?: () => void;
 }) {
   const chip = CHIP[room.status] ?? CHIP.available;
   const cardBg = CARD_BG[room.status] ?? CARD_BG.available;
@@ -46,20 +48,29 @@ export function SSRoomCard({
       {/* Occupied state */}
       {room.status === 'occupied' && (
         <View className="flex-1">
-          <Text className="text-[14.5px] font-sans-semibold text-text">{room.guestName}</Text>
-          <View className="mt-[5px] flex-row items-center gap-1.5">
-            {/* calendar icon */}
-            <Text className="text-[11.5px] text-muted-2">
-              {room.checkIn} → {room.checkOut ?? '—'}
-            </Text>
-          </View>
-          <Text className="mt-1 font-mono text-[12px] text-text-2">{formatINR(room.rate ?? room.dailyRate)}/day</Text>
-          <Pressable
-            onPress={onCheckout}
-            className="mt-3 flex-row items-center justify-center gap-1.5 rounded-[9px] bg-brand py-[9px] active:bg-brand-hover"
-          >
-            <Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">Check Out</Text>
+          <Pressable onPress={onView} className="active:opacity-70">
+            <Text className="text-[14.5px] font-sans-semibold text-text">{room.guestName}</Text>
+            <View className="mt-[5px] flex-row items-center gap-1.5">
+              <Text className="text-[11.5px] text-muted-2">
+                {room.checkIn}{room.checkInTime ? ` ${room.checkInTime}` : ''} → {room.checkOut ?? '—'}
+              </Text>
+            </View>
+            <Text className="mt-1 font-mono text-[12px] text-text-2">{formatINR(room.rate ?? room.dailyRate)}/day</Text>
           </Pressable>
+          <View className="mt-3 flex-row gap-2">
+            <Pressable
+              onPress={onView}
+              className="flex-1 items-center justify-center rounded-[9px] border border-border bg-surface py-[9px] active:bg-surface-2"
+            >
+              <Text className="text-[13px] font-sans-semibold text-label">Details</Text>
+            </Pressable>
+            <Pressable
+              onPress={onCheckout}
+              className="flex-1 items-center justify-center rounded-[9px] bg-brand py-[9px] active:bg-brand-hover"
+            >
+              <Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">Check Out</Text>
+            </Pressable>
+          </View>
         </View>
       )}
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal } from 'react-native';
 import { CATEGORY_UI, CATEGORY_KEYS } from '../../constants/expenseCategory';
+import { toPaise } from '../../lib/domain/format';
 import { SelectField } from '../ui/SelectField';
 import { XIcon } from '../icons';
 import type { ExpenseCategory } from '../../types';
@@ -17,7 +18,7 @@ export function AddExpenseModal({ visible, onClose, onAdd }: {
 
   const submit = () => {
     if (!note.trim() || !Number(amount)) return;
-    onAdd({ note: note.trim(), category, amount: Number(amount) });
+    onAdd({ note: note.trim(), category, amount: toPaise(Number(amount)) });
     reset();
     onClose();
   };

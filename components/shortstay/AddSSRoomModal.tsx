@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, Modal as RNModal } from 'react-native';
+import { toPaise } from '../../lib/domain/format';
 
 export function AddSSRoomModal({
   visible,
@@ -19,7 +20,7 @@ export function AddSSRoomModal({
     const rate = Number(dailyRate);
     if (!rate) return;
     // auto-number handled by caller; pass empty string — caller uses next free S-number
-    onAdd({ number: '', dailyRate: rate });
+    onAdd({ number: '', dailyRate: toPaise(rate) });
     reset();
     onClose();
   };

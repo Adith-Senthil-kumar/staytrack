@@ -6,24 +6,27 @@ import { dueStatus } from '../../lib/domain/dues';
 import { monthName, monthKey } from '../../lib/domain/format';
 import { roomCapacity } from '../../lib/domain/dashboard';
 import { STATUS_UI } from '../../constants/roomStatus';
-import { ALL_DOCS } from '../../constants/documents';
-import { PhoneIcon, MessageIcon, CheckIcon } from '../icons';
+import { DocumentChecklist } from '../tenants/DocumentChecklist';
+import { PhoneIcon, MessageIcon } from '../icons';
 import type { Room, Tenant, Due } from '../../types';
 
 const MONTH = monthName(monthKey(new Date()));
 
 export function RoomDetailPanel({
-  room, tenants, dueByTenant, rentDueDay, onClose, onAssign, onRecordPayment, onVacate, onToggleDoc,
+  room, tenants, unassignedTenants, dueByTenant, rentDueDay, onClose, onAssign, onAssignExisting, onRecordPayment, onVacate, onAddDoc, onRemoveDoc,
 }: {
   room: Room | null;
   tenants: Tenant[];
+  unassignedTenants: Tenant[];
   dueByTenant: Map<string, Due>;
   rentDueDay: number;
   onClose: () => void;
   onAssign: (roomId: string) => void;
+  onAssignExisting: (tenant: Tenant) => void;
   onRecordPayment: (due: Due) => void;
   onVacate: (tenant: Tenant) => void;
-  onToggleDoc: (tenant: Tenant, label: string) => void;
+  onAddDoc: (tenant: Tenant, label: string) => void;
+  onRemoveDoc: (tenant: Tenant, label: string) => void;
 }) {
   const { width, height } = useWindowDimensions();
   const panelW = Math.min(width, 430);
@@ -47,6 +50,7 @@ export function RoomDetailPanel({
     : room.status === 'repair' ? `${occ} · temporarily blocked`
     : (room.status === 'reserved' || room.status === 'pending') ? `${occ} · awaiting check-in`
     : `${occ} · ready to assign`;
+  const hasSlot = !!room && room.status !== 'repair' && tenants.length < roomCapacity(room.type);
 
   return (
     <RNModal visible={open} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
@@ -70,7 +74,6 @@ export function RoomDetailPanel({
                 const due = dueByTenant.get(t.id);
                 const status = due ? dueStatus(due, new Date(), rentDueDay) : undefined;
                 const isDue = !!due && due.amountPaid < due.amountDue;
-                const docs = t.documents ?? [];
                 const payLabel = status === 'paid' ? `Paid · ${MONTH}`
                   : status === 'overdue' ? `Overdue · ${MONTH}`
                   : status === 'partial' ? `Partial · ${MONTH}`
@@ -116,22 +119,7 @@ export function RoomDetailPanel({
                     <View className="mt-3 flex-row justify-between border-t border-dashed border-border pt-3"><Text className="text-[12.5px] text-muted-2">Checked in</Text><Text className="font-mono text-[12.5px] text-text-2">{t.joinDate}</Text></View>
                     <View className="mt-2 flex-row justify-between"><Text className="text-[12.5px] text-muted-2">Security deposit</Text><MoneyText amount={t.deposit} className="text-[12.5px] text-text-2" /></View>
 
-                    <View className="mt-4">
-                      <View className="mb-1.5 flex-row items-center justify-between">
-                        <Text className="text-[11px] font-sans-semibold uppercase tracking-wide text-muted-2">Documents · tap to toggle</Text>
-                        <Text className={`font-mono-semibold text-[12px] ${docs.length === ALL_DOCS.length ? 'text-ok' : 'text-warn'}`}>{docs.length}/{ALL_DOCS.length}</Text>
-                      </View>
-                      {ALL_DOCS.map((d) => {
-                        const has = docs.includes(d);
-                        return (
-                          <Pressable key={d} onPress={() => onToggleDoc(t, d)} className="flex-row items-center gap-2.5 rounded-md px-1 py-[5px] active:bg-field-hover">
-                            <View className={`h-[18px] w-[18px] items-center justify-center rounded-[5px] border ${has ? 'border-accent bg-accent' : 'border-border bg-surface-2'}`}>{has && <CheckIcon size={11} color="#FBF8F0" />}</View>
-                            <Text className={`flex-1 text-[13px] ${has ? 'text-text-2' : 'text-soft'}`}>{d}</Text>
-                            <Text className={`text-[11.5px] font-sans-medium ${has ? 'text-ok' : 'text-warn'}`}>{has ? 'On file' : 'Tap to collect'}</Text>
-                          </Pressable>
-                        );
-                      })}
-                    </View>
+                    <DocumentChecklist tenant={t} onAdd={onAddDoc} onRemove={onRemoveDoc} />
 
                     <Pressable onPress={() => onVacate(t)} className="mt-4 items-center rounded-[11px] border border-maint-bd bg-surface py-3 active:bg-bad-bg"><Text className="text-[13.5px] font-sans-semibold text-bad">{tenants.length > 1 ? `Vacate ${t.name.split(' ')[0]}` : 'Vacate Room'}</Text></Pressable>
                   </View>
@@ -150,8 +138,27 @@ export function RoomDetailPanel({
                     {room.status === 'repair' ? 'This room is blocked for repairs and not available for assignment right now.' : 'This room is empty and ready for a new tenant. Onboard someone to start collecting rent.'}
                   </Text>
                   {room.status !== 'repair' && (
-                    <Pressable onPress={() => onAssign(room.id)} className="mt-4 rounded-[9px] bg-brand px-4 py-2.5 active:bg-brand-hover"><Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">+ Assign a Tenant</Text></Pressable>
+                    <Pressable onPress={() => onAssign(room.id)} className="mt-4 rounded-[9px] bg-brand px-4 py-2.5 active:bg-brand-hover"><Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">+ Onboard New Tenant</Text></Pressable>
                   )}
+                </View>
+              )}
+
+              {/* Place an existing, unassigned tenant (e.g. someone previously vacated) into the open slot */}
+              {hasSlot && unassignedTenants.length > 0 && (
+                <View className="mt-4">
+                  <Text className="mb-2 text-[11px] font-sans-semibold uppercase tracking-wide text-muted-2">Or place someone already on record</Text>
+                  <View className="gap-2">
+                    {unassignedTenants.map((u) => (
+                      <View key={u.id} className="flex-row items-center gap-3 rounded-[11px] border border-border bg-surface px-3 py-2.5">
+                        <View className="h-9 w-9 items-center justify-center rounded-lg" style={{ backgroundColor: avatarColor(u.name) }}><Text className="text-[13px] font-sans-semibold text-[#FBF8F0]">{initials(u.name)}</Text></View>
+                        <View className="flex-1">
+                          <Text className="text-[13.5px] font-sans-semibold text-text">{u.name}</Text>
+                          <Text className="text-[12px] text-muted-2">{u.status === 'vacated' ? 'Previously vacated' : 'Unassigned'}{u.phone ? ` · ${u.phone}` : ''}</Text>
+                        </View>
+                        <Pressable onPress={() => onAssignExisting(u)} className="rounded-[8px] bg-brand px-3 py-2 active:bg-brand-hover"><Text className="text-[12.5px] font-sans-semibold text-[#F4F1E7]">Assign</Text></Pressable>
+                      </View>
+                    ))}
+                  </View>
                 </View>
               )}
             </ScrollView>

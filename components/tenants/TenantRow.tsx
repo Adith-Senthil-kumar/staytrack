@@ -1,6 +1,7 @@
 import { View, Text, Pressable } from 'react-native';
 import { initials, avatarColor, type RentTone } from '../../lib/domain/tenants';
 import { formatINR } from '../../lib/domain/format';
+import { useNarrow } from '../../lib/ui/useNarrow';
 import type { Tenant } from '../../types';
 
 // Design grid fractions: Tenant 2.4 / Phone 1.3 / Room 0.8 / Sharing 1 / Rent 1 / Status 1.1
@@ -20,6 +21,36 @@ export function TenantRow({ tenant, roomNumber, sharing, rent, onPress }: {
 }) {
   const vacated = tenant.status === 'vacated';
   const pill = vacated ? PILL.vacated : PILL[rent.tone];
+  const narrow = useNarrow();
+
+  // Mobile: a stacked card so every field is visible without horizontal scrolling.
+  if (narrow) {
+    return (
+      <Pressable onPress={onPress} className="flex-row items-start gap-3 border-b border-border-3 px-[18px] py-3.5 active:bg-surface-3">
+        <View className="h-[38px] w-[38px] flex-none items-center justify-center rounded-[10px]" style={{ backgroundColor: avatarColor(tenant.name) }}>
+          <Text className="text-[13px] font-sans-semibold text-[#FBF8F0]">{initials(tenant.name)}</Text>
+        </View>
+        <View className="min-w-0 flex-1">
+          <View className="flex-row items-center gap-2">
+            <Text numberOfLines={1} className="min-w-0 flex-1 text-[14px] font-sans-semibold text-text">{tenant.name}</Text>
+            <View className={`flex-none flex-row items-center rounded-[20px] border px-[9px] py-[3px] ${pill.bg} ${pill.bd}`}>
+              <Text className={`text-[11px] font-sans-semibold ${pill.txt}`}>{pill.label}</Text>
+            </View>
+          </View>
+          <Text className={`mt-0.5 text-[12px] font-sans-medium ${tenant.foodPreference === 'veg' ? 'text-veg' : 'text-nonveg'}`}>{tenant.foodPreference === 'veg' ? 'Vegetarian' : 'Non-Veg'}</Text>
+          <View className="mt-1.5 flex-row flex-wrap items-center gap-x-2 gap-y-1">
+            <Text className="font-mono-semibold text-[12.5px] text-ink">Room {roomNumber}</Text>
+            <Text className="text-[12px] text-soft">·</Text>
+            <Text className="text-[12.5px] capitalize text-label">{sharing}</Text>
+            <Text className="text-[12px] text-soft">·</Text>
+            <Text className="font-mono-medium text-[12.5px] text-text">{formatINR(tenant.rent)}</Text>
+          </View>
+          {tenant.phone ? <Text numberOfLines={1} className="mt-1 font-mono text-[12px] text-muted-2">{tenant.phone}</Text> : null}
+        </View>
+      </Pressable>
+    );
+  }
+
   return (
     <Pressable onPress={onPress} className="flex-row items-center gap-3.5 border-b border-border-3 px-[22px] py-[13px] active:bg-surface-3">
       <View style={{ flex: COL.tenant }} className="min-w-0 flex-row items-center gap-[11px]">

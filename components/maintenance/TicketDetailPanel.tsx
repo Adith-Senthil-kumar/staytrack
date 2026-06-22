@@ -4,7 +4,8 @@ import { Image } from 'expo-image';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { STATUS_COL, PRIORITY_UI, MAINT_CATEGORY } from '../../constants/maintenance';
 import { VENDOR_TRADE_UI } from '../../constants/vendorTrade';
-import { formatINR } from '../../lib/domain/format';
+import { formatINR, toPaise } from '../../lib/domain/format';
+import { toDateStr } from '../../lib/domain/dates';
 import {
   PhoneIcon,
   CheckIcon,
@@ -233,7 +234,7 @@ export function TicketDetailPanel({
                       onPress={() =>
                         onResolve(
                           ticket,
-                          Number(costDraft) || 0,
+                          toPaise(Number(costDraft) || 0),
                           vendors.find((x) => x.id === ticket.vendorId)?.name ?? '',
                         )
                       }
@@ -254,7 +255,7 @@ export function TicketDetailPanel({
                       </View>
                       <View className="flex-1">
                         <Text className="font-sans-semibold text-sm text-ink">
-                          Resolved on {ticket.resolvedDate ?? '—'}
+                          Resolved on {toDateStr(ticket.resolvedDate)}
                         </Text>
                         <Text className="text-[12px] text-muted-2">
                           Cost {formatINR(ticket.cost)} · logged to Expenses

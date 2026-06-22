@@ -12,6 +12,7 @@ import { monthKey } from '../../lib/domain/format';
 import { Sidebar } from '../../components/shell/Sidebar';
 import { TopBar } from '../../components/shell/TopBar';
 import { AddTenantModal } from '../../components/tenants/AddTenantModal';
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 
 const META: Record<string, { title: string; subtitle: string; action?: string }> = {
   rooms: { title: 'Rooms & Occupancy', subtitle: 'Live view of all your rooms', action: 'Add Tenant' },
@@ -88,10 +89,12 @@ export default function AppLayout() {
         presetRoomId={assignRoomId}
         onClose={closeAddTenant}
         onAdd={(d) => {
-          if (uid) addTenant(uid, { name: d.name, phone: d.phone, roomId: d.roomId, rent: d.rent, deposit: 0, foodPreference: d.food }, d.sharing);
+          if (uid) addTenant(uid, { name: d.name, phone: d.phone, roomId: d.roomId, rent: d.rent, deposit: 0, foodPreference: d.food });
           closeAddTenant();
         }}
       />
+
+      <ConfirmDialog />
     </View>
   );
 }

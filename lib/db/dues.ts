@@ -1,4 +1,4 @@
-import { doc, updateDoc, writeBatch } from 'firebase/firestore';
+import { doc, updateDoc, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { duesRef } from './refs';
 import type { Due, NewDue, PaymentMethod } from '../../types';
@@ -14,4 +14,4 @@ export async function createDues(uid: string, dues: NewDue[]) {
 }
 
 export const recordPayment = (uid: string, id: string, amountPaid: number, method?: PaymentMethod) =>
-  updateDoc(doc(duesRef(uid), id), { amountPaid, paidAt: new Date().toISOString(), ...(method ? { method } : {}) });
+  updateDoc(doc(duesRef(uid), id), { amountPaid, paidAt: serverTimestamp(), ...(method ? { method } : {}) });

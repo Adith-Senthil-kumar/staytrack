@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { View, Text, ScrollView, TextInput, Pressable } from 'react-native';
 import { formatINR } from '../../lib/domain/format';
 import { initials, avatarColor } from '../../lib/domain/tenants';
+import { useNarrow } from '../../lib/ui/useNarrow';
+import { FileTextIcon } from '../icons';
 import type { SSStay } from '../../types';
 
 export function GuestHistoryTable({
@@ -12,6 +14,7 @@ export function GuestHistoryTable({
   onReceipt: (stay: SSStay) => void;
 }) {
   const [search, setSearch] = useState('');
+  const narrow = useNarrow();
 
   const filtered = search.trim()
     ? stays.filter(
@@ -43,6 +46,30 @@ export function GuestHistoryTable({
         </View>
       </View>
 
+      {narrow ? (
+        filtered.length === 0 ? (
+          <Text className="px-5 py-10 text-center text-[13px] text-soft">{search.trim() ? 'No guests match your search.' : 'No guests yet.'}</Text>
+        ) : (
+          <View>
+            {filtered.map((stay) => (
+              <View key={stay.id} className="flex-row items-center gap-3 border-b border-border-3 px-5 py-3.5">
+                <View className="h-9 w-9 flex-none items-center justify-center rounded-[9px]" style={{ backgroundColor: avatarColor(stay.guestName) }}>
+                  <Text className="text-[12px] font-sans-semibold text-[#FBF8F0]">{initials(stay.guestName)}</Text>
+                </View>
+                <View className="min-w-0 flex-1">
+                  <Text numberOfLines={1} className="text-[13.5px] font-sans-semibold text-text">{stay.guestName}</Text>
+                  <Text className="mt-0.5 font-mono text-[11.5px] text-text-2"><Text style={{ color: '#C7842A' }}>{stay.roomNumber}</Text> · {stay.checkIn} → {stay.checkOut} · {stay.nights}N</Text>
+                  <Text className="mt-0.5 font-mono-semibold text-[12.5px] text-ink">{formatINR(stay.total)}</Text>
+                </View>
+                <Pressable onPress={() => onReceipt(stay)} className="flex-none flex-row items-center gap-1.5 rounded-[8px] border border-border bg-surface-2 px-3 py-[7px] active:bg-surface-3">
+                  <FileTextIcon size={13} color="#13352C" />
+                  <Text className="text-[12px] font-sans-semibold text-ink">Receipt</Text>
+                </Pressable>
+              </View>
+            ))}
+          </View>
+        )
+      ) : (
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="grow">
         <View className="min-w-[660px] grow">
           {/* Column headers per design line 867–868 — 2fr 0.7fr 1.5fr 0.8fr 1fr 1fr */}
@@ -114,6 +141,7 @@ export function GuestHistoryTable({
           )}
         </View>
       </ScrollView>
+      )}
     </View>
   );
 }

@@ -3,9 +3,10 @@ import { View } from 'react-native';
 import { useExpenses, useDues, useUserDoc } from '../../lib/db/hooks';
 import { addExpense, removeExpense } from '../../lib/db/expenses';
 import { collectionStats, marginStats, categoryBreakdown } from '../../lib/domain/stats';
-import { monthKey } from '../../lib/domain/format';
+import { monthKey, formatINR } from '../../lib/domain/format';
 import { useUiStore } from '../../store/ui';
 import { useAuthStore } from '../../store/auth';
+import { confirmAction } from '../../store/confirm';
 import { ExpenseStatCards } from '../../components/expenses/ExpenseStatCards';
 import { ExpenseLedger } from '../../components/expenses/ExpenseLedger';
 import { CategoryBreakdown } from '../../components/expenses/CategoryBreakdown';
@@ -39,7 +40,17 @@ export default function Expenses() {
       <View className="flex-row flex-wrap items-start gap-4">
         <View className="min-w-[280px] flex-1">
           <ExpenseLedger expenses={monthExpenses} total={expTotal} monthLabel={mk} onRecord={openExpense}
-            onDelete={(id) => uid && removeExpense(uid, id)} />
+            onDelete={(id) => {
+              if (!uid) return;
+              const e = monthExpenses.find((x) => x.id === id);
+              confirmAction({
+                title: 'Delete this expense?',
+                message: e ? `"${e.note || e.category}" (${formatINR(e.amount)}) will be removed from the ledger.` : 'This entry will be removed from the ledger.',
+                confirmLabel: 'Delete',
+                danger: true,
+                onConfirm: () => removeExpense(uid, id),
+              });
+            }} />
         </View>
         <View className="w-[270px] shrink-0 grow-0">
           <CategoryBreakdown rows={cats} />

@@ -5,7 +5,8 @@ import { useRooms, useTenants, useDues, useExpenses, useUserDoc } from '../../li
 import { useUiStore } from '../../store/ui';
 import { useAuthStore } from '../../store/auth';
 import { addRoom, removeRoom, setRoomType, setRoomStatus } from '../../lib/db/rooms';
-import { vacateTenant, toggleTenantDocument } from '../../lib/db/tenants';
+import { vacateTenant, setTenantDocument, removeTenantDocument } from '../../lib/db/tenants';
+import { pickAndUploadPhoto } from '../../lib/storage/photos';
 import { recordPayment } from '../../lib/db/dues';
 import { occupancyStats, collectionStats, marginStats } from '../../lib/domain/stats';
 import { monthKey, monthName, formatINR } from '../../lib/domain/format';
@@ -127,7 +128,15 @@ export default function Rooms() {
           vacateTenant(uid, t, !others);
           if (!others) clearRoomSelection();
         }}
-        onToggleDoc={(t, label) => { if (uid) toggleTenantDocument(uid, t, label); }}
+        onToggleDoc={async (t, label) => {
+          if (!uid) return;
+          if ((t.documents ?? []).includes(label)) {
+            await removeTenantDocument(uid, t, label);
+          } else {
+            const url = await pickAndUploadPhoto(uid, `tenants/${t.id}/${label.replace(/\s+/g, '_')}`);
+            if (url) await setTenantDocument(uid, t, label, url);
+          }
+        }}
       />
 
       <ManageRoomsModal

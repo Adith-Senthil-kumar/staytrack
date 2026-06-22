@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from '
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import type { SSRoom } from '../../types';
 import { SelectField } from '../ui/SelectField';
+import { pickImage } from '../../lib/storage/photos';
 
 const PhotoIcon = ({ size = 16, color = '#5A5A4A' }: { size?: number; color?: string }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
@@ -32,7 +33,7 @@ export function BookingModal({
   availableRooms: SSRoom[];
   presetRoomId: string | null;
   onClose: () => void;
-  onConfirm: (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkOut: string; rate: number; advance: number; payMethod: PayMethod; idType: IdType }) => void;
+  onConfirm: (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkOut: string; rate: number; advance: number; payMethod: PayMethod; idType: IdType; idPhotoUri: string | null }) => void;
 }) {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -45,7 +46,7 @@ export function BookingModal({
   const [rate, setRate] = useState('');
   const [advance, setAdvance] = useState('');
   const [payMethod, setPayMethod] = useState<PayMethod>('upi');
-  const [idPhoto, setIdPhoto] = useState(false);
+  const [idPhotoUri, setIdPhotoUri] = useState<string | null>(null);
 
   useEffect(() => {
     if (visible) {
@@ -67,7 +68,7 @@ export function BookingModal({
   const reset = () => {
     setGuestName(''); setPhone(''); setIdType('aadhaar');
     setRoomId(''); setCheckIn(today); setCheckOut('');
-    setRate(''); setAdvance(''); setPayMethod('upi'); setIdPhoto(false);
+    setRate(''); setAdvance(''); setPayMethod('upi'); setIdPhotoUri(null);
   };
 
   const close = () => { reset(); onClose(); };
@@ -76,7 +77,7 @@ export function BookingModal({
 
   const submit = () => {
     if (!canSubmit) return;
-    onConfirm({ roomId, guestName: guestName.trim(), phone: phone.trim(), checkIn, checkOut, rate: Number(rate) || 0, advance: Number(advance) || 0, payMethod, idType });
+    onConfirm({ roomId, guestName: guestName.trim(), phone: phone.trim(), checkIn, checkOut, rate: Number(rate) || 0, advance: Number(advance) || 0, payMethod, idType, idPhotoUri });
     reset();
     onClose();
   };
@@ -150,14 +151,14 @@ export function BookingModal({
 
             {/* Upload ID photo toggle */}
             <Pressable
-              onPress={() => setIdPhoto((v) => !v)}
+              onPress={async () => { if (idPhotoUri) { setIdPhotoUri(null); } else { const uri = await pickImage(); if (uri) setIdPhotoUri(uri); } }}
               className="mb-4 flex-row items-center gap-2.5 rounded-[9px] border border-border bg-surface px-[13px] py-[11px]"
             >
-              <View className={`h-5 w-5 items-center justify-center rounded-[5px] border ${idPhoto ? 'border-accent bg-accent' : 'border-border'}`}>
-                {idPhoto ? <CheckTiny size={13} color="#FBF8F0" /> : null}
+              <View className={`h-5 w-5 items-center justify-center rounded-[5px] border ${idPhotoUri ? 'border-accent bg-accent' : 'border-border'}`}>
+                {idPhotoUri ? <CheckTiny size={13} color="#FBF8F0" /> : null}
               </View>
               <PhotoIcon size={16} color="#5A5A4A" />
-              <Text className="flex-1 text-[13.5px] font-sans-medium text-text-2">Upload ID photo (optional)</Text>
+              <Text className="flex-1 text-[13.5px] font-sans-medium text-text-2">{idPhotoUri ? 'ID photo attached — tap to remove' : 'Upload ID photo (optional)'}</Text>
             </Pressable>
 
             {/* Room selector */}

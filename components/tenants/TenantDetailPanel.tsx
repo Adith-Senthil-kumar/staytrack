@@ -1,4 +1,5 @@
 import { View, Text, Pressable, Linking, ScrollView, useWindowDimensions, Modal as RNModal } from 'react-native';
+import { Image } from 'expo-image';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import { MoneyText } from '../ui/MoneyText';
@@ -99,11 +100,13 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
                   </View>
                   {ALL_DOCS.map((d) => {
                     const has = docs.includes(d);
+                    const scan = tenant.documentPhotos?.[d];
                     return (
                       <Pressable key={d} onPress={() => onToggleDoc(tenant, d)} className="flex-row items-center gap-2.5 rounded-md px-1 py-[5px] active:bg-field-hover">
                         <View className={`h-[18px] w-[18px] items-center justify-center rounded-[5px] border ${has ? 'border-accent bg-accent' : 'border-border bg-surface-2'}`}>{has && <CheckIcon size={11} color="#FBF8F0" />}</View>
                         <Text className={`flex-1 text-[13px] ${has ? 'text-text-2' : 'text-soft'}`}>{d}</Text>
-                        <Text className={`text-[11.5px] font-sans-medium ${has ? 'text-ok' : 'text-warn'}`}>{has ? 'On file' : 'Tap to collect'}</Text>
+                        {scan && <Image source={{ uri: scan }} style={{ width: 30, height: 22, borderRadius: 4 }} contentFit="cover" />}
+                        <Text className={`text-[11.5px] font-sans-medium ${has ? 'text-ok' : 'text-warn'}`}>{has ? 'On file' : 'Tap to add'}</Text>
                       </Pressable>
                     );
                   })}

@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
 import { useSSRooms, useSSStays, useUserDoc } from '../../lib/db/hooks';
 import { addSSRoom, bookSSRoom, checkoutSSRoom, cleanSSRoom, removeSSRoom } from '../../lib/db/shortstay';
+import { uploadPhoto } from '../../lib/storage/photos';
 import { SSStatCards } from '../../components/shortstay/SSStatCards';
 import { SSRoomCard } from '../../components/shortstay/SSRoomCard';
 import { AddSSRoomModal } from '../../components/shortstay/AddSSRoomModal';
@@ -57,9 +58,14 @@ export default function ShortStay() {
     addSSRoom(uid, num, data.dailyRate);
   };
 
-  const handleConfirmBooking = (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkOut: string; rate: number; advance: number; payMethod: PaymentMethod; idType: string }) => {
+  const handleConfirmBooking = async (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkOut: string; rate: number; advance: number; payMethod: PaymentMethod; idType: string; idPhotoUri: string | null }) => {
     if (!uid) return;
-    bookSSRoom(uid, data.roomId, data);
+    const { idPhotoUri, ...rest } = data;
+    let idPhotoUrl: string | null = null;
+    if (idPhotoUri) {
+      try { idPhotoUrl = await uploadPhoto(uid, `shortstay/${data.roomId}/id`, idPhotoUri); } catch { /* book without the ID scan if upload fails */ }
+    }
+    bookSSRoom(uid, data.roomId, { ...rest, idPhotoUrl });
   };
 
   const handleCheckout = (room: SSRoom, paymentMethod: PaymentMethod) => {

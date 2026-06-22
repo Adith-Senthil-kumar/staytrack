@@ -34,3 +34,19 @@ export const toggleTenantDocument = (uid: string, tenant: Tenant, label: string)
   const next = docs.includes(label) ? docs.filter((d) => d !== label) : [...docs, label];
   return updateDoc(doc(tenantsRef(uid), tenant.id), { documents: next });
 };
+
+// Mark a document on file with its uploaded scan URL.
+export const setTenantDocument = (uid: string, tenant: Tenant, label: string, photoUrl: string) => {
+  const docs = tenant.documents ?? [];
+  const next = docs.includes(label) ? docs : [...docs, label];
+  const photos = { ...(tenant.documentPhotos ?? {}), [label]: photoUrl };
+  return updateDoc(doc(tenantsRef(uid), tenant.id), { documents: next, documentPhotos: photos });
+};
+
+// Remove a document (and drop its stored scan).
+export const removeTenantDocument = (uid: string, tenant: Tenant, label: string) => {
+  const next = (tenant.documents ?? []).filter((d) => d !== label);
+  const photos = { ...(tenant.documentPhotos ?? {}) };
+  delete photos[label];
+  return updateDoc(doc(tenantsRef(uid), tenant.id), { documents: next, documentPhotos: photos });
+};

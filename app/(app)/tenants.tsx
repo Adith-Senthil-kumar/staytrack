@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useRooms, useTenants, useDues, useUserDoc } from '../../lib/db/hooks';
 import { recordPayment } from '../../lib/db/dues';
-import { vacateTenant, toggleTenantDocument, updateTenant } from '../../lib/db/tenants';
+import { vacateTenant, updateTenant, setTenantDocument, removeTenantDocument } from '../../lib/db/tenants';
+import { pickAndUploadPhoto } from '../../lib/storage/photos';
 import { monthKey } from '../../lib/domain/format';
 import { tenantRentLabel } from '../../lib/domain/tenants';
 import { useUiStore } from '../../store/ui';
@@ -52,7 +53,15 @@ export default function Tenants() {
         due={selDue} rentDueDay={dueDay} onClose={clearSelection}
         onEdit={() => { if (selected) setEditTenant(selected); }}
         onRecordPayment={() => { if (uid && selDue) recordPayment(uid, selDue.id, selDue.amountDue); }}
-        onToggleDoc={(t, label) => { if (uid) toggleTenantDocument(uid, t, label); }}
+        onToggleDoc={async (t, label) => {
+          if (!uid) return;
+          if ((t.documents ?? []).includes(label)) {
+            await removeTenantDocument(uid, t, label);
+          } else {
+            const url = await pickAndUploadPhoto(uid, `tenants/${t.id}/${label.replace(/\s+/g, '_')}`);
+            if (url) await setTenantDocument(uid, t, label, url);
+          }
+        }}
         onVacate={() => {
           if (!uid || !selected) return;
           const others = tenants.some((x) => x.id !== selected.id && x.status === 'active' && x.roomId === selected.roomId);

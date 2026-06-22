@@ -24,6 +24,7 @@ export interface Tenant {
   status: TenantStatus;
   foodPreference: FoodPreference;
   documents?: string[]; // labels of docs on file (subset of ALL_DOCS)
+  documentPhotos?: Record<string, string>; // doc label → uploaded scan URL
 }
 
 // `status` is DERIVED via dueStatus(); only these fields are stored.
@@ -86,8 +87,8 @@ export type SSStatus = 'available' | 'occupied' | 'cleaning';
 // Booking-time fields (rate/advance/payMethod/idType/phone) are set when a room
 // is booked and cleared on checkout. `rate` is the agreed daily rate for the
 // current guest (defaults to dailyRate); advance is what they paid up front.
-export interface SSRoom { id: string; number: string; dailyRate: number; status: SSStatus; guestName: string | null; checkIn: string | null; checkOut: string | null; phone?: string | null; rate?: number | null; advance?: number | null; payMethod?: PaymentMethod | null; idType?: string | null; }
-export interface SSStay { id: string; guestName: string; roomNumber: string; checkIn: string; checkOut: string; nights: number; total: number; createdAt: string; rate?: number; advance?: number; balance?: number; paymentMethod?: PaymentMethod; }
+export interface SSRoom { id: string; number: string; dailyRate: number; status: SSStatus; guestName: string | null; checkIn: string | null; checkOut: string | null; phone?: string | null; rate?: number | null; advance?: number | null; payMethod?: PaymentMethod | null; idType?: string | null; idPhotoUrl?: string | null; }
+export interface SSStay { id: string; guestName: string; roomNumber: string; checkIn: string; checkOut: string; nights: number; total: number; createdAt: string; rate?: number; advance?: number; balance?: number; paymentMethod?: PaymentMethod; idPhotoUrl?: string | null; }
 
 export type AttendanceStatus = 'present' | 'late' | 'absent' | 'leave';
 export interface Attendance { id: string; staffId: string; date: string; status: AttendanceStatus; }

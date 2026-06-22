@@ -35,7 +35,7 @@ export function TicketCard({ ticket, onPress }: { ticket: MaintTicket; onPress: 
           <Text className="text-[11.5px] text-muted-2">{MAINT_CATEGORY[category]}</Text>
         </View>
         {/* Photo chip */}
-        {ticket.photo && (
+        {ticket.photoUrl && (
           <View className="flex-row items-center gap-1">
             <ImageIcon size={12} color="#9A9A8A" />
             <Text className="text-[11.5px] text-muted-2">Photo</Text>

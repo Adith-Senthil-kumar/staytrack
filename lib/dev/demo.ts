@@ -105,10 +105,10 @@ export const DEMO_VENDORS: Vendor[] = [
 ];
 
 export const DEMO_TICKETS: MaintTicket[] = [
-  { id: 'tk1', roomNumber: '12', category: 'plumbing', issue: 'Leaking tap in bathroom', priority: 'high', status: 'done', createdDate: '2026-06-10', cost: 850, vendorId: 'v1', resolvedDate: '2026-06-12', photo: true },
+  { id: 'tk1', roomNumber: '12', category: 'plumbing', issue: 'Leaking tap in bathroom', priority: 'high', status: 'done', createdDate: '2026-06-10', cost: 850, vendorId: 'v1', resolvedDate: '2026-06-12', photoUrl: 'https://picsum.photos/seed/leak/600/400' },
   { id: 'tk2', roomNumber: '12', category: 'electrical', issue: 'Ceiling fan not working', priority: 'medium', status: 'done', createdDate: '2026-06-05', cost: 400, vendorId: 'v2', resolvedDate: '2026-06-06' },
   { id: 'tk3', roomNumber: '07', category: 'furniture', issue: 'Broken study chair', priority: 'low', status: 'in_progress', createdDate: '2026-06-18', cost: 0, vendorId: 'v3' },
-  { id: 'tk4', roomNumber: '03', category: 'appliance', issue: 'AC not cooling', priority: 'high', status: 'open', createdDate: '2026-06-20', cost: 0, vendorId: null, photo: true },
+  { id: 'tk4', roomNumber: '03', category: 'appliance', issue: 'AC not cooling', priority: 'high', status: 'open', createdDate: '2026-06-20', cost: 0, vendorId: null, photoUrl: 'https://picsum.photos/seed/ac/600/400' },
   { id: 'tk5', roomNumber: '201', category: 'plumbing', issue: 'Low water pressure', priority: 'medium', status: 'open', createdDate: '2026-06-19', cost: 0, vendorId: 'v1' },
 ];
 

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { View, Text, Pressable, Linking } from 'react-native';
 import { useMaintenance, useVendors, useRooms } from '../../lib/db/hooks';
-import { addTicket, startTicket, resolveTicket, reopenTicket, removeTicket } from '../../lib/db/maintenance';
+import { addTicket, startTicket, resolveTicket, reopenTicket, removeTicket, setTicketPhoto } from '../../lib/db/maintenance';
+import { pickAndUploadPhoto, uploadPhoto } from '../../lib/storage/photos';
 import { addVendor, updateVendor, removeVendor } from '../../lib/db/vendors';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
@@ -38,22 +39,31 @@ export default function Maintenance() {
 
   const [tab, setTab] = useState<MainTab>('board');
 
-  const onAdd = (data: {
+  const onAdd = async (data: {
     roomNumber: string;
     category: MaintCategory;
     issue: string;
     priority: MaintPriority;
     vendorId: string | null;
-    photo: boolean;
+    photoUri: string | null;
   }) => {
     if (!uid) return;
-    addTicket(uid, {
-      ...data,
+    const { photoUri, ...rest } = data;
+    const ref = await addTicket(uid, {
+      ...rest,
       status: 'open',
       createdDate: new Date().toISOString().slice(0, 10),
       cost: 0,
       resolvedDate: null,
+      photoUrl: null,
     });
+    // Upload the picked image now that the ticket has an id, then link it.
+    if (photoUri) {
+      try {
+        const url = await uploadPhoto(uid, `maintenance/${ref.id}`, photoUri);
+        await setTicketPhoto(uid, ref.id, url);
+      } catch { /* leave the ticket without a photo if upload fails */ }
+    }
   };
 
   const editingVendor =
@@ -149,6 +159,12 @@ export default function Maintenance() {
           if (uid) reopenTicket(uid, id);
         }}
         onDelete={(id) => { if (uid) { removeTicket(uid, id); clearTicketSelection(); } }}
+        onAttachPhoto={async (t) => {
+          if (!uid) return;
+          const url = await pickAndUploadPhoto(uid, `maintenance/${t.id}`);
+          if (url) setTicketPhoto(uid, t.id, url);
+        }}
+        onRemovePhoto={(id) => { if (uid) setTicketPhoto(uid, id, null); }}
         onCallVendor={(phone) => Linking.openURL('tel:' + phone)}
       />
     </View>

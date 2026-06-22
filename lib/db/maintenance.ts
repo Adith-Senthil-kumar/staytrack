@@ -9,6 +9,8 @@ export const setTicketStatus = (uid: string, id: string, status: MaintStatus) =>
   updateDoc(doc(maintRef(uid), id), { status });
 export const removeTicket = (uid: string, id: string) =>
   deleteDoc(doc(maintRef(uid), id));
+export const setTicketPhoto = (uid: string, id: string, photoUrl: string | null) =>
+  updateDoc(doc(maintRef(uid), id), { photoUrl });
 
 export const startTicket = (uid: string, id: string) =>
   updateDoc(doc(maintRef(uid), id), { status: 'in_progress' });

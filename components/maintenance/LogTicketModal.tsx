@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable, Modal as RNModal, ScrollView } from '
 import { MAINT_CATEGORY, MAINT_CATEGORY_KEYS, PRIORITY_UI } from '../../constants/maintenance';
 import { CheckIcon, ImageIcon, XIcon } from '../icons';
 import { SelectField } from '../ui/SelectField';
+import { pickImage } from '../../lib/storage/photos';
 import type { MaintCategory, MaintPriority, Vendor, Room } from '../../types';
 
 export function LogTicketModal({
@@ -20,7 +21,7 @@ export function LogTicketModal({
     issue: string;
     priority: MaintPriority;
     vendorId: string | null;
-    photo: boolean;
+    photoUri: string | null;
   }) => void;
   vendors: Vendor[];
   rooms: Room[];
@@ -30,7 +31,7 @@ export function LogTicketModal({
   const [issue, setIssue] = useState('');
   const [priority, setPriority] = useState<MaintPriority>('medium');
   const [vendorId, setVendorId] = useState<string | null>(null);
-  const [photo, setPhoto] = useState(false);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
 
   const reset = () => {
     setRoomNumber('');
@@ -38,7 +39,7 @@ export function LogTicketModal({
     setIssue('');
     setPriority('medium');
     setVendorId(null);
-    setPhoto(false);
+    setPhotoUri(null);
   };
 
   const submit = () => {
@@ -49,7 +50,7 @@ export function LogTicketModal({
       issue: issue.trim(),
       priority,
       vendorId,
-      photo,
+      photoUri,
     });
     reset();
     onClose();
@@ -164,14 +165,14 @@ export function LogTicketModal({
 
             {/* Photo toggle */}
             <Pressable
-              onPress={() => setPhoto((p) => !p)}
+              onPress={async () => { if (photoUri) { setPhotoUri(null); } else { const uri = await pickImage(); if (uri) setPhotoUri(uri); } }}
               className="mb-2 flex-row items-center gap-2.5 rounded-[9px] border border-border bg-surface px-3 py-2.5 active:bg-surface-2"
             >
-              <View className="h-5 w-5 items-center justify-center rounded-md border border-border bg-field">
-                {photo && <CheckIcon size={13} color="#1E6F5C" />}
+              <View className={`h-5 w-5 items-center justify-center rounded-md border ${photoUri ? 'border-accent bg-accent' : 'border-border bg-field'}`}>
+                {photoUri && <CheckIcon size={13} color="#FBF8F0" />}
               </View>
               <ImageIcon size={16} color="#5A6A65" />
-              <Text className="text-[13px] text-label">Attach a photo of the issue</Text>
+              <Text className="text-[13px] text-label">{photoUri ? 'Photo attached — tap to remove' : 'Attach a photo of the issue'}</Text>
             </Pressable>
           </ScrollView>
 

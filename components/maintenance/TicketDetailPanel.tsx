@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView, TextInput, useWindowDimensions, Modal as RNModal } from 'react-native';
+import { Image } from 'expo-image';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { STATUS_COL, PRIORITY_UI, MAINT_CATEGORY } from '../../constants/maintenance';
 import { VENDOR_TRADE_UI } from '../../constants/vendorTrade';
@@ -21,6 +22,8 @@ export function TicketDetailPanel({
   onResolve,
   onReopen,
   onDelete,
+  onAttachPhoto,
+  onRemovePhoto,
   onCallVendor,
 }: {
   ticket: MaintTicket | null;
@@ -30,6 +33,8 @@ export function TicketDetailPanel({
   onResolve: (ticket: MaintTicket, cost: number, vendorName: string) => void;
   onReopen: (id: string) => void;
   onDelete: (id: string) => void;
+  onAttachPhoto: (ticket: MaintTicket) => void;
+  onRemovePhoto: (id: string) => void;
   onCallVendor: (phone: string) => void;
 }) {
   const { width, height } = useWindowDimensions();
@@ -143,31 +148,19 @@ export function TicketDetailPanel({
               {/* Scrollable body */}
               <ScrollView className="flex-1" contentContainerClassName="px-[22px] py-5 pb-[30px]">
 
-                {/* Photo placeholder */}
-                {ticket.photo && (
-                  <View
-                    className="mb-4 h-[150px] items-center justify-center rounded-[12px] border border-border"
-                    style={{
-                      backgroundColor: 'transparent',
-                      backgroundImage: undefined,
-                    }}
-                  >
-                    {/* Hatched background using overlapping stripes */}
-                    <View
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                      }}
-                      className="bg-surface-2"
-                    />
-                    <ImageIcon size={30} color="#9A9A8A" />
-                    <Text className="mt-2 text-[12.5px] text-muted-2">Photo attached for reference</Text>
+                {/* Issue photo — real upload or attach prompt */}
+                {ticket.photoUrl ? (
+                  <View className="mb-4">
+                    <Image source={{ uri: ticket.photoUrl }} style={{ width: '100%', height: 180, borderRadius: 12 }} contentFit="cover" />
+                    <Pressable onPress={() => onRemovePhoto(ticket.id)} style={{ backgroundColor: 'rgba(0,0,0,0.55)' }} className="absolute right-2 top-2 rounded-lg px-2.5 py-1 active:opacity-80">
+                      <Text className="text-[12px] font-sans-semibold text-[#FBF8F0]">Remove</Text>
+                    </Pressable>
                   </View>
+                ) : (
+                  <Pressable onPress={() => onAttachPhoto(ticket)} className="mb-4 h-[110px] items-center justify-center rounded-[12px] border border-dashed border-border bg-surface-2 active:bg-surface-3">
+                    <ImageIcon size={26} color="#9A9A8A" />
+                    <Text className="mt-2 text-[12.5px] font-sans-medium text-muted-2">Attach a photo</Text>
+                  </Pressable>
                 )}
 
                 {/* Assigned Vendor card */}

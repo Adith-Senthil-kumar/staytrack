@@ -12,7 +12,6 @@ import {
   persistentLocalCache,
   persistentMultipleTabManager,
 } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
@@ -41,6 +40,3 @@ export const db = initializeFirestore(app, {
       ? persistentLocalCache({ tabManager: persistentMultipleTabManager() })
       : memoryLocalCache(),
 });
-
-// Cloud Storage for tenant/ID document scans and maintenance photos.
-export const storage = getStorage(app);

@@ -1,39 +1,41 @@
 import * as ImagePicker from 'expo-image-picker';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '../firebase';
+import * as ImageManipulator from 'expo-image-manipulator';
 
-// Opens the device image library and returns the chosen image's local uri
-// (null if cancelled or permission denied). Upload happens separately so the
-// caller can pick before an entity exists (e.g. while logging a new ticket).
+// Photos are stored INLINE in Firestore as compressed base64 data URIs — no
+// Firebase/Cloud Storage (which now requires a billing account). Each image is
+// downscaled to ~800px and JPEG-compressed so it stays well under Firestore's
+// 1MB-per-document limit (~50–150KB), and is private under the owner-scoped
+// security rules. The function names below match the old Storage helper so the
+// call sites are unchanged — the "URL" they store is now a data URI.
+
 export async function pickImage(): Promise<string | null> {
   const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!perm.granted) return null;
-  const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.5 });
+  const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7 });
   if (res.canceled || !res.assets?.length) return null;
   return res.assets[0].uri;
 }
 
-// Uploads a local image uri to Cloud Storage under the owner's namespace
-// (users/{uid}/{path}) and returns the public download URL.
-export async function uploadPhoto(uid: string, path: string, localUri: string): Promise<string> {
-  const blob = await (await fetch(localUri)).blob();
-  const r = ref(storage, `users/${uid}/${path}`);
-  await uploadBytes(r, blob);
-  return getDownloadURL(r);
+async function toDataUri(localUri: string): Promise<string> {
+  const out = await ImageManipulator.manipulateAsync(
+    localUri,
+    [{ resize: { width: 800 } }],
+    { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG, base64: true },
+  );
+  return `data:image/jpeg;base64,${out.base64}`;
 }
 
-// Pick + upload in one step, for attaching to an entity that already exists.
-export async function pickAndUploadPhoto(uid: string, path: string): Promise<string | null> {
+// uid/path are ignored (no Storage path) but kept so callers don't change.
+export async function uploadPhoto(_uid: string, _path: string, localUri: string): Promise<string> {
+  return toDataUri(localUri);
+}
+
+export async function pickAndUploadPhoto(_uid: string, _path: string): Promise<string | null> {
   const uri = await pickImage();
   if (!uri) return null;
-  return uploadPhoto(uid, path, uri);
+  return toDataUri(uri);
 }
 
-// Best-effort delete; ignores "object not found" so callers can fire-and-forget.
-export async function deletePhoto(uid: string, path: string): Promise<void> {
-  try {
-    await deleteObject(ref(storage, `users/${uid}/${path}`));
-  } catch {
-    /* already gone */
-  }
-}
+// Nothing to delete from a remote store — the data lives in the Firestore field,
+// which callers clear by updating the document. Kept for API compatibility.
+export async function deletePhoto(_uid: string, _path: string): Promise<void> {}

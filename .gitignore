@@ -47,3 +47,6 @@ example
 
 # design reference archive
 reference/*.zip
+
+# Firebase Hosting deploy cache
+.firebase/

@@ -114,12 +114,12 @@ export const DEMO_TICKETS: MaintTicket[] = [
 
 export const DEMO_SSROOMS: SSRoom[] = [
   { id: 'ss1', number: 'A1', dailyRate: 1200, status: 'available', guestName: null, checkIn: null, checkOut: null },
-  { id: 'ss2', number: 'A2', dailyRate: 1200, status: 'occupied', guestName: 'Vikram Singh', checkIn: '2026-06-19', checkOut: '2026-06-23' },
+  { id: 'ss2', number: 'A2', dailyRate: 1200, status: 'occupied', guestName: 'Vikram Singh', checkIn: '2026-06-19', checkOut: '2026-06-23', phone: '+91 98801 22334', rate: 1200, advance: 2000, payMethod: 'upi', idType: 'aadhaar' },
   { id: 'ss3', number: 'B1', dailyRate: 1500, status: 'cleaning', guestName: null, checkIn: null, checkOut: null },
   { id: 'ss4', number: 'B2', dailyRate: 1500, status: 'available', guestName: null, checkIn: null, checkOut: null },
 ];
 
 export const DEMO_SSSTAYS: SSStay[] = [
-  { id: 'st1', guestName: 'Priya Menon', roomNumber: 'A1', checkIn: '2026-06-15', checkOut: '2026-06-18', nights: 3, total: 3600, createdAt: '2026-06-18T10:00:00Z' },
-  { id: 'st2', guestName: 'Rahul Verma', roomNumber: 'B1', checkIn: '2026-06-10', checkOut: '2026-06-12', nights: 2, total: 3000, createdAt: '2026-06-12T10:00:00Z' },
+  { id: 'st1', guestName: 'Priya Menon', roomNumber: 'A1', checkIn: '2026-06-15', checkOut: '2026-06-18', nights: 3, rate: 1200, total: 3600, advance: 1000, balance: 2600, paymentMethod: 'cash', createdAt: '2026-06-18T10:00:00Z' },
+  { id: 'st2', guestName: 'Rahul Verma', roomNumber: 'B1', checkIn: '2026-06-10', checkOut: '2026-06-12', nights: 2, rate: 1500, total: 3000, advance: 0, balance: 3000, paymentMethod: 'upi', createdAt: '2026-06-12T10:00:00Z' },
 ];

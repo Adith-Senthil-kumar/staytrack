@@ -51,7 +51,7 @@ export function SSRoomCard({
               {room.checkIn} → {room.checkOut ?? '—'}
             </Text>
           </View>
-          <Text className="mt-1 font-mono text-[12px] text-text-2">{formatINR(room.dailyRate)}/day</Text>
+          <Text className="mt-1 font-mono text-[12px] text-text-2">{formatINR(room.rate ?? room.dailyRate)}/day</Text>
           <Pressable
             onPress={onCheckout}
             className="mt-3 flex-row items-center justify-center gap-1.5 rounded-[9px] bg-brand py-[9px] active:bg-brand-hover"

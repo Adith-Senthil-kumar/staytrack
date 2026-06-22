@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { View, Text, Pressable, Modal as RNModal } from 'react-native';
 import { formatINR } from '../../lib/domain/format';
-import { nightsBetween } from '../../lib/domain/shortstay';
-import type { SSRoom } from '../../types';
+import { bookingFinancials } from '../../lib/domain/shortstay';
+import type { SSRoom, PaymentMethod } from '../../types';
 
 type PayMethod = 'upi' | 'cash';
 
@@ -15,17 +15,14 @@ export function CheckoutModal({
   visible: boolean;
   room: SSRoom | null;
   onClose: () => void;
-  onConfirm: (room: SSRoom) => void;
+  onConfirm: (room: SSRoom, method: PaymentMethod) => void;
 }) {
   const [payMethod, setPayMethod] = useState<PayMethod>('upi');
 
   if (!room || !room.guestName || !room.checkIn) return null;
 
   const today = new Date().toISOString().slice(0, 10);
-  const nights = nightsBetween(room.checkIn, today);
-  const total = nights * room.dailyRate;
-  // advance not stored on room type — show full total as balance
-  const balance = total;
+  const { nights, rate, total, advance, balance } = bookingFinancials(room, today);
 
   const pmBtn = (active: boolean) =>
     `rounded-[8px] border px-4 py-[9px] ${active ? 'border-ok bg-occ-bg' : 'border-border bg-surface'}`;
@@ -57,7 +54,7 @@ export function CheckoutModal({
             <View className="flex-row items-center justify-between border-b border-border-3 py-[9px]">
               <Text className="text-[13px] text-muted-2">Nights × rate</Text>
               <Text className="font-mono text-[13px] text-text-2">
-                {nights} × {formatINR(room.dailyRate)}
+                {nights} × {formatINR(rate)}
               </Text>
             </View>
             {/* Total stay cost */}
@@ -68,7 +65,7 @@ export function CheckoutModal({
             {/* Advance */}
             <View className="flex-row items-center justify-between border-b border-border-3 py-[9px]">
               <Text className="text-[13px] text-muted-2">Advance already paid</Text>
-              <Text className="font-mono text-[13px] text-ok">− {formatINR(0)}</Text>
+              <Text className="font-mono text-[13px] text-ok">− {formatINR(advance)}</Text>
             </View>
             {/* Balance due */}
             <View className="flex-row items-center justify-between pb-1 pt-[13px]">
@@ -97,7 +94,7 @@ export function CheckoutModal({
               <Text className="text-sm font-sans-semibold text-label">Cancel</Text>
             </Pressable>
             <Pressable
-              onPress={() => { onConfirm(room); onClose(); }}
+              onPress={() => { onConfirm(room, payMethod); onClose(); }}
               className="flex-1 flex-row items-center justify-center gap-2 rounded-[10px] bg-accent py-3"
             >
               <Text className="text-sm font-sans-semibold text-[#F4F1E7]">Complete Check-out</Text>

@@ -11,7 +11,7 @@ import { BookingModal } from '../../components/shortstay/BookingModal';
 import { CheckoutModal } from '../../components/shortstay/CheckoutModal';
 import { GuestHistoryTable } from '../../components/shortstay/GuestHistoryTable';
 import { ReceiptModal } from '../../components/shortstay/ReceiptModal';
-import type { SSRoom } from '../../types';
+import type { SSRoom, PaymentMethod } from '../../types';
 
 export default function ShortStay() {
   const uid = useAuthStore((s) => s.user?.uid);
@@ -57,14 +57,14 @@ export default function ShortStay() {
     addSSRoom(uid, num, data.dailyRate);
   };
 
-  const handleConfirmBooking = (data: { roomId: string; guestName: string; checkIn: string; checkOut: string }) => {
+  const handleConfirmBooking = (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkOut: string; rate: number; advance: number; payMethod: PaymentMethod; idType: string }) => {
     if (!uid) return;
-    bookSSRoom(uid, data.roomId, data.guestName, data.checkIn, data.checkOut);
+    bookSSRoom(uid, data.roomId, data);
   };
 
-  const handleCheckout = (room: SSRoom) => {
+  const handleCheckout = (room: SSRoom, paymentMethod: PaymentMethod) => {
     if (!uid) return;
-    checkoutSSRoom(uid, room);
+    checkoutSSRoom(uid, room, paymentMethod);
   };
 
   const availableRooms = rooms.filter((r) => r.status === 'available');

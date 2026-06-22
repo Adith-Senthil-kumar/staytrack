@@ -83,8 +83,11 @@ export type VendorTrade = 'plumber' | 'electrician' | 'carpenter' | 'ac' | 'othe
 export interface Vendor { id: string; name: string; trade: VendorTrade; phone: string; jobs: number; }
 
 export type SSStatus = 'available' | 'occupied' | 'cleaning';
-export interface SSRoom { id: string; number: string; dailyRate: number; status: SSStatus; guestName: string | null; checkIn: string | null; checkOut: string | null; }
-export interface SSStay { id: string; guestName: string; roomNumber: string; checkIn: string; checkOut: string; nights: number; total: number; createdAt: string; }
+// Booking-time fields (rate/advance/payMethod/idType/phone) are set when a room
+// is booked and cleared on checkout. `rate` is the agreed daily rate for the
+// current guest (defaults to dailyRate); advance is what they paid up front.
+export interface SSRoom { id: string; number: string; dailyRate: number; status: SSStatus; guestName: string | null; checkIn: string | null; checkOut: string | null; phone?: string | null; rate?: number | null; advance?: number | null; payMethod?: PaymentMethod | null; idType?: string | null; }
+export interface SSStay { id: string; guestName: string; roomNumber: string; checkIn: string; checkOut: string; nights: number; total: number; createdAt: string; rate?: number; advance?: number; balance?: number; paymentMethod?: PaymentMethod; }
 
 export type AttendanceStatus = 'present' | 'late' | 'absent' | 'leave';
 export interface Attendance { id: string; staffId: string; date: string; status: AttendanceStatus; }

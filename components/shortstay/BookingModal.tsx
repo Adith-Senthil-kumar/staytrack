@@ -32,7 +32,7 @@ export function BookingModal({
   availableRooms: SSRoom[];
   presetRoomId: string | null;
   onClose: () => void;
-  onConfirm: (data: { roomId: string; guestName: string; checkIn: string; checkOut: string }) => void;
+  onConfirm: (data: { roomId: string; guestName: string; phone: string; checkIn: string; checkOut: string; rate: number; advance: number; payMethod: PayMethod; idType: IdType }) => void;
 }) {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -76,7 +76,7 @@ export function BookingModal({
 
   const submit = () => {
     if (!canSubmit) return;
-    onConfirm({ roomId, guestName: guestName.trim(), checkIn, checkOut });
+    onConfirm({ roomId, guestName: guestName.trim(), phone: phone.trim(), checkIn, checkOut, rate: Number(rate) || 0, advance: Number(advance) || 0, payMethod, idType });
     reset();
     onClose();
   };

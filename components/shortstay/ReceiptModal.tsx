@@ -4,10 +4,11 @@ import { CheckIcon, PaperPlaneIcon } from '../icons';
 import type { SSStay } from '../../types';
 
 function nightlyRate(stay: SSStay) {
-  return stay.nights > 0 ? Math.round(stay.total / stay.nights) : stay.total;
+  return stay.rate ?? (stay.nights > 0 ? Math.round(stay.total / stay.nights) : stay.total);
 }
 
 function buildReceiptText(stay: SSStay, propertyName: string) {
+  const advance = stay.advance ?? 0;
   return [
     `RECEIPT · ${propertyName}`,
     ``,
@@ -17,9 +18,10 @@ function buildReceiptText(stay: SSStay, propertyName: string) {
     `Check-in: ${stay.checkIn}`,
     `Check-out: ${stay.checkOut}`,
     `Nights × rate: ${stay.nights} × ${formatINR(nightlyRate(stay))}`,
+    ...(advance > 0 ? [`Advance: ${formatINR(advance)}`, `Balance: ${formatINR(stay.balance ?? stay.total - advance)}`] : []),
     ``,
     `Total Paid: ${formatINR(stay.total)}`,
-    `Paid in full.`,
+    stay.paymentMethod ? `Paid in full via ${stay.paymentMethod}.` : `Paid in full.`,
   ].join('\n');
 }
 
@@ -36,8 +38,7 @@ export function ReceiptModal({
 }) {
   if (!stay) return null;
 
-  const payMethod = (stay as { paymentMethod?: string }).paymentMethod;
-  const paidLabel = payMethod ? `Paid in full via ${payMethod}` : 'Paid in full';
+  const paidLabel = stay.paymentMethod ? `Paid in full via ${stay.paymentMethod}` : 'Paid in full';
   const receiptText = buildReceiptText(stay, propertyName);
   const handleShare = () => {
     Share.share({ message: receiptText });
@@ -81,7 +82,7 @@ export function ReceiptModal({
             </View>
             <View className="flex-row justify-between border-b border-border-3 py-2">
               <Text className="text-[13px] text-muted-2">Advance</Text>
-              <Text className="font-mono text-[13px] text-text-2">{formatINR(0)}</Text>
+              <Text className="font-mono text-[13px] text-text-2">{formatINR(stay.advance ?? 0)}</Text>
             </View>
             <View className="flex-row items-center justify-between pt-3 pb-1">
               <Text className="text-sm font-sans-bold text-ink">Total Paid</Text>

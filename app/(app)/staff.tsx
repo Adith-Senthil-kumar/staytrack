@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, Pressable, useWindowDimensions } from 'react-native';
 import { useStaff, useAttendance, useSchedule, useLeave, useUserDoc } from '../../lib/db/hooks';
 import { addStaff, updateStaff, removeStaff } from '../../lib/db/staff';
-import { addLeave, setLeaveStatus } from '../../lib/db/leave';
+import { addLeave, setLeaveStatus, removeLeave } from '../../lib/db/leave';
 import { markAttendance, setShift } from '../../lib/db/attendance';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
@@ -138,6 +138,7 @@ export default function Staff() {
           leave={leave}
           onApprove={(id) => { if (uid) setLeaveStatus(uid, id, 'approved'); }}
           onReject={(id) => { if (uid) setLeaveStatus(uid, id, 'rejected'); }}
+          onDelete={(id) => { if (uid) removeLeave(uid, id); }}
         />
       )}
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, Pressable, Linking } from 'react-native';
 import { useMaintenance, useVendors, useRooms } from '../../lib/db/hooks';
-import { addTicket, startTicket, resolveTicket, reopenTicket } from '../../lib/db/maintenance';
+import { addTicket, startTicket, resolveTicket, reopenTicket, removeTicket } from '../../lib/db/maintenance';
 import { addVendor, updateVendor, removeVendor } from '../../lib/db/vendors';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
@@ -148,6 +148,7 @@ export default function Maintenance() {
         onReopen={(id) => {
           if (uid) reopenTicket(uid, id);
         }}
+        onDelete={(id) => { if (uid) { removeTicket(uid, id); clearTicketSelection(); } }}
         onCallVendor={(phone) => Linking.openURL('tel:' + phone)}
       />
     </View>

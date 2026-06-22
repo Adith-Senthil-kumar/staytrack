@@ -10,9 +10,9 @@ import type { Tenant, Due } from '../../types';
 
 const MONTH = monthName(monthKey(new Date()));
 
-export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDay, onClose, onRecordPayment, onVacate, onToggleDoc }: {
+export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDay, onClose, onEdit, onRecordPayment, onVacate, onToggleDoc }: {
   tenant: Tenant | null; roomNumber: string; roomType: string; due: Due | undefined; rentDueDay: number;
-  onClose: () => void; onRecordPayment: () => void; onVacate: () => void; onToggleDoc: (tenant: Tenant, label: string) => void;
+  onClose: () => void; onEdit?: () => void; onRecordPayment: () => void; onVacate: () => void; onToggleDoc: (tenant: Tenant, label: string) => void;
 }) {
   const { width, height } = useWindowDimensions();
   const panelW = Math.min(width, 420);
@@ -45,6 +45,7 @@ export function TenantDetailPanel({ tenant, roomNumber, roomType, due, rentDueDa
           <View style={{ height }} className="bg-surface-2">
             <View className="bg-brand px-6 pb-5 pt-6">
               <Pressable onPress={onClose} style={{ zIndex: 10 }} className="absolute right-4 top-4 h-8 w-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14]"><Text className="text-base text-[#DCE7E1]">✕</Text></Pressable>
+              {onEdit && <Pressable onPress={onEdit} style={{ position: 'absolute', right: 56, top: 16, zIndex: 10 }} className="h-8 items-center justify-center rounded-lg border border-[#ffffff2e] bg-[#ffffff14] px-3 active:bg-[#ffffff28]"><Text className="text-[12.5px] font-sans-semibold text-[#DCE7E1]">Edit</Text></Pressable>}
               <View className="flex-row items-center gap-2">
                 <Text className="font-mono-medium text-[13px] text-[#9CC0B5]">Room {roomNumber}</Text>
                 {status && <Text className={`rounded-[20px] border px-[9px] py-[3px] text-[10.5px] font-sans-semibold uppercase tracking-[0.3px] ${headChipCls}`}>{headChipLabel}</Text>}

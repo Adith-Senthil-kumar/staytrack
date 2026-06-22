@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useRooms, useTenants, useDues, useUserDoc } from '../../lib/db/hooks';
 import { recordPayment } from '../../lib/db/dues';
-import { vacateTenant, toggleTenantDocument } from '../../lib/db/tenants';
+import { vacateTenant, toggleTenantDocument, updateTenant } from '../../lib/db/tenants';
 import { monthKey } from '../../lib/domain/format';
 import { tenantRentLabel } from '../../lib/domain/tenants';
 import { useUiStore } from '../../store/ui';
@@ -10,6 +10,8 @@ import { useAuthStore } from '../../store/auth';
 import { TenantsTable } from '../../components/tenants/TenantsTable';
 import { TenantRow } from '../../components/tenants/TenantRow';
 import { TenantDetailPanel } from '../../components/tenants/TenantDetailPanel';
+import { EditTenantModal } from '../../components/tenants/EditTenantModal';
+import type { Tenant } from '../../types';
 
 export default function Tenants() {
   const mk = monthKey(new Date());
@@ -23,6 +25,7 @@ export default function Tenants() {
   const selectTenant = useUiStore((s) => s.selectTenant);
   const clearSelection = useUiStore((s) => s.clearSelection);
   const searchTerm = useUiStore((s) => s.searchTerm);
+  const [editTenant, setEditTenant] = useState<Tenant | null>(null);
 
   const roomById = useMemo(() => new Map(rooms.map((r) => [r.id, r])), [rooms]);
   const dueByTenant = useMemo(() => new Map(dues.map((d) => [d.tenantId, d])), [dues]);
@@ -47,6 +50,7 @@ export default function Tenants() {
 
       <TenantDetailPanel tenant={selected} roomNumber={selRoom?.number ?? '—'} roomType={selRoom?.type ?? 'single'}
         due={selDue} rentDueDay={dueDay} onClose={clearSelection}
+        onEdit={() => { if (selected) setEditTenant(selected); }}
         onRecordPayment={() => { if (uid && selDue) recordPayment(uid, selDue.id, selDue.amountDue); }}
         onToggleDoc={(t, label) => { if (uid) toggleTenantDocument(uid, t, label); }}
         onVacate={() => {
@@ -55,6 +59,9 @@ export default function Tenants() {
           vacateTenant(uid, selected, !others);
           clearSelection();
         }} />
+
+      <EditTenantModal tenant={editTenant} onClose={() => setEditTenant(null)}
+        onSave={(id, data) => { if (uid) updateTenant(uid, id, data); }} />
     </View>
   );
 }

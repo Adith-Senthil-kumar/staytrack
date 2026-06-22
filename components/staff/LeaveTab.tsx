@@ -27,11 +27,13 @@ export function LeaveTab({
   leave,
   onApprove,
   onReject,
+  onDelete,
 }: {
   staff: Staff[];
   leave: LeaveRequest[];
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
+  onDelete: (id: string) => void;
 }) {
   return (
     <View className="flex-col gap-4 lg:flex-row lg:items-start">
@@ -107,6 +109,13 @@ export function LeaveTab({
                         className="rounded-lg border border-maint-bd bg-surface px-3.5 py-[7px] active:bg-bad-bg"
                       >
                         <Text className="text-[12.5px] font-sans-semibold text-bad">Reject</Text>
+                      </Pressable>
+                    </View>
+                  )}
+                  {req.status !== 'pending' && (
+                    <View className="mt-[11px] pl-[45px]">
+                      <Pressable onPress={() => onDelete(req.id)} className="self-start rounded-lg border border-border bg-surface px-3.5 py-[7px] active:bg-bad-bg">
+                        <Text className="text-[12.5px] font-sans-semibold text-muted-2">Delete</Text>
                       </Pressable>
                     </View>
                   )}

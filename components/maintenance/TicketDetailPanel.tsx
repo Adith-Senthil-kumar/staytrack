@@ -20,6 +20,7 @@ export function TicketDetailPanel({
   onStart,
   onResolve,
   onReopen,
+  onDelete,
   onCallVendor,
 }: {
   ticket: MaintTicket | null;
@@ -28,6 +29,7 @@ export function TicketDetailPanel({
   onStart: (id: string) => void;
   onResolve: (ticket: MaintTicket, cost: number, vendorName: string) => void;
   onReopen: (id: string) => void;
+  onDelete: (id: string) => void;
   onCallVendor: (phone: string) => void;
 }) {
   const { width, height } = useWindowDimensions();
@@ -274,6 +276,10 @@ export function TicketDetailPanel({
                     </Pressable>
                   </View>
                 )}
+
+                <Pressable onPress={() => onDelete(ticket.id)} className="mt-4 items-center rounded-[11px] border border-maint-bd bg-surface py-3 active:bg-bad-bg">
+                  <Text className="text-[13.5px] font-sans-semibold text-bad">Delete Ticket</Text>
+                </Pressable>
 
               </ScrollView>
             </View>

@@ -3,7 +3,7 @@ import { View, Text, Pressable, useWindowDimensions } from 'react-native';
 import { useAuthStore } from '../../store/auth';
 import { useUiStore } from '../../store/ui';
 import { useSSRooms, useSSStays, useUserDoc } from '../../lib/db/hooks';
-import { addSSRoom, bookSSRoom, checkoutSSRoom, cleanSSRoom } from '../../lib/db/shortstay';
+import { addSSRoom, bookSSRoom, checkoutSSRoom, cleanSSRoom, removeSSRoom } from '../../lib/db/shortstay';
 import { SSStatCards } from '../../components/shortstay/SSStatCards';
 import { SSRoomCard } from '../../components/shortstay/SSRoomCard';
 import { AddSSRoomModal } from '../../components/shortstay/AddSSRoomModal';
@@ -122,6 +122,7 @@ export default function ShortStay() {
                 onBook={() => openBooking(room.id)}
                 onCheckout={() => setCheckoutRoom(room)}
                 onClean={() => { if (uid) cleanSSRoom(uid, room.id); }}
+                onRemove={() => { if (uid) removeSSRoom(uid, room.id); }}
               />
             </View>
           ))}

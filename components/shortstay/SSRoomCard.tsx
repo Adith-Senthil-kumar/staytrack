@@ -21,11 +21,13 @@ export function SSRoomCard({
   onBook,
   onCheckout,
   onClean,
+  onRemove,
 }: {
   room: SSRoom;
   onBook: () => void;
   onCheckout: () => void;
   onClean: () => void;
+  onRemove?: () => void;
 }) {
   const chip = CHIP[room.status] ?? CHIP.available;
   const cardBg = CARD_BG[room.status] ?? CARD_BG.available;
@@ -77,6 +79,11 @@ export function SSRoomCard({
           >
             <Text className="text-[13px] font-sans-semibold" style={{ color: '#C7842A' }}>Book this room</Text>
           </Pressable>
+          {onRemove && (
+            <Pressable onPress={onRemove} className="mt-2 items-center py-1 active:opacity-70">
+              <Text className="text-[11.5px] font-sans-medium text-muted-2">Remove room</Text>
+            </Pressable>
+          )}
         </View>
       )}
 

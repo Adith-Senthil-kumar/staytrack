@@ -41,7 +41,7 @@ export function StaffCard({
   return (
     <Pressable
       onPress={onPress}
-      className="min-w-0 grow basis-[47%] rounded-[14px] border border-border bg-surface p-[18px] shadow-sm active:border-brand lg:basis-[31%]"
+      className="min-w-0 grow basis-full rounded-[14px] border border-border bg-surface p-[18px] shadow-sm active:border-brand sm:basis-[47%] lg:basis-[31%]"
     >
       {/* Top row: avatar + name + role badge */}
       <View className="flex-row items-center gap-3">

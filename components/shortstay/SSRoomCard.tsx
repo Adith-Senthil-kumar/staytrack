@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from 'react-native';
 import { formatINR } from '../../lib/domain/format';
+import { fmtDateShort, fmtTime12 } from '../../lib/domain/dates';
 import type { SSRoom } from '../../types';
 
 // Status chip styles per design line 821
@@ -50,25 +51,26 @@ export function SSRoomCard({
         <View className="flex-1">
           <Pressable onPress={onView} className="active:opacity-70">
             <Text className="text-[14.5px] font-sans-semibold text-text">{room.guestName}</Text>
-            <View className="mt-[5px] flex-row items-center gap-1.5">
+            <View className="mt-[5px]">
               <Text className="text-[11.5px] text-muted-2">
-                {room.checkIn}{room.checkInTime ? ` ${room.checkInTime}` : ''} → {room.checkOut ?? '—'}
+                In: {fmtDateShort(room.checkIn)}{room.checkInTime ? `, ${fmtTime12(room.checkInTime)}` : ''}
               </Text>
+              <Text className="text-[11.5px] text-muted-2">Out: {fmtDateShort(room.checkOut)}</Text>
             </View>
             <Text className="mt-1 font-mono text-[12px] text-text-2">{formatINR(room.rate ?? room.dailyRate)}/day</Text>
           </Pressable>
           <View className="mt-3 flex-row gap-2">
             <Pressable
               onPress={onView}
-              className="flex-1 items-center justify-center rounded-[9px] border border-border bg-surface py-[9px] active:bg-surface-2"
+              className="flex-1 items-center justify-center rounded-[9px] border border-border bg-surface px-2 py-[10px] active:bg-surface-2"
             >
-              <Text className="text-[13px] font-sans-semibold text-label">Details</Text>
+              <Text numberOfLines={1} className="text-center text-[12.5px] font-sans-semibold text-label">Details</Text>
             </Pressable>
             <Pressable
               onPress={onCheckout}
-              className="flex-1 items-center justify-center rounded-[9px] bg-brand py-[9px] active:bg-brand-hover"
+              className="flex-1 items-center justify-center rounded-[9px] bg-brand px-2 py-[10px] active:bg-brand-hover"
             >
-              <Text className="text-[13px] font-sans-semibold text-[#F4F1E7]">Check Out</Text>
+              <Text numberOfLines={1} className="text-center text-[12.5px] font-sans-semibold text-[#F4F1E7]">Check Out</Text>
             </Pressable>
           </View>
         </View>
@@ -85,10 +87,10 @@ export function SSRoomCard({
           </View>
           <Pressable
             onPress={onBook}
-            className="mt-3 items-center rounded-[9px] border py-[9px]"
+            className="mt-3 items-center justify-center rounded-[9px] border px-2 py-[10px]"
             style={{ backgroundColor: '#C7842A1F', borderColor: '#C7842A55' }}
           >
-            <Text className="text-[13px] font-sans-semibold" style={{ color: '#C7842A' }}>Book this room</Text>
+            <Text numberOfLines={1} className="text-center text-[13px] font-sans-semibold" style={{ color: '#C7842A' }}>Book this room</Text>
           </Pressable>
           {onRemove && (
             <Pressable onPress={onRemove} className="mt-2 items-center py-1 active:opacity-70">
@@ -108,9 +110,9 @@ export function SSRoomCard({
           </View>
           <Pressable
             onPress={onClean}
-            className="mt-3 w-full items-center rounded-[9px] border border-border bg-surface py-[9px] active:bg-surface-3"
+            className="mt-3 w-full items-center justify-center rounded-[9px] border border-border bg-surface px-2 py-[10px] active:bg-surface-3"
           >
-            <Text className="text-[13px] font-sans-semibold text-ink">Mark Cleaned · Available</Text>
+            <Text numberOfLines={1} className="text-center text-[12.5px] font-sans-semibold text-ink">Mark Cleaned</Text>
           </Pressable>
         </View>
       )}

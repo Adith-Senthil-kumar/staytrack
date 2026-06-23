@@ -1,6 +1,7 @@
 import { View, Text, Pressable, Modal as RNModal, ScrollView } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { groupByFloor, floorName } from '../../lib/domain/dashboard';
+import { useNarrow } from '../../lib/ui/useNarrow';
 import type { Room } from '../../types';
 
 function TrashIcon() {
@@ -33,6 +34,7 @@ export function ManageRoomsModal({
 }) {
   const floors = groupByFloor(rooms);
   const totalRooms = rooms.length;
+  const narrow = useNarrow();
 
   const shBtn = (active: boolean) => `flex-1 items-center rounded-[7px] border px-1.5 py-[7px] ${active ? 'border-brand bg-brand' : 'border-border bg-surface'}`;
   const shTxt = (active: boolean) => `text-[12px] font-sans-semibold ${active ? 'text-[#F4F1E7]' : 'text-label'}`;
@@ -63,19 +65,39 @@ export function ManageRoomsModal({
                 <View className="gap-2">
                   {f.rooms.map((r) => {
                     const chip = STATUS_CHIP[r.status] ?? STATUS_CHIP.vacant;
+                    const sharing = (
+                      <View className="flex-row gap-1.5">
+                        <Pressable onPress={() => onSetSharing(r.id, 'single')} className={shBtn(r.type === 'single')}><Text className={shTxt(r.type === 'single')}>Single</Text></Pressable>
+                        <Pressable onPress={() => onSetSharing(r.id, 'double')} className={shBtn(r.type === 'double')}><Text className={shTxt(r.type === 'double')}>Double</Text></Pressable>
+                      </View>
+                    );
+                    const statusChip = (
+                      <Pressable onPress={() => onToggleStatus(r)} disabled={r.status === 'occupied'} className={`self-start rounded-full border px-2.5 py-[3px] ${chip.cls}`}>
+                        <Text className={`text-[11px] font-sans-semibold ${chip.cls.split(' ').pop()}`}>{chip.label}</Text>
+                      </Pressable>
+                    );
+                    const trash = (
+                      <Pressable onPress={() => onRemoveRoom(r.id)} className="h-8 w-8 flex-none items-center justify-center rounded-[7px] active:bg-bad-bg"><TrashIcon /></Pressable>
+                    );
+                    // Mobile: two rows (number + status + trash; then full-width Single/Double)
+                    // so the controls never overlap. Desktop: single row, unchanged.
+                    if (narrow) {
+                      return (
+                        <View key={r.id} className="gap-2 rounded-[10px] border border-border bg-surface px-3 py-2.5">
+                          <View className="flex-row items-center gap-3">
+                            <Text className="font-mono-semibold text-sm text-ink">{r.number}</Text>
+                            <View className="ml-auto flex-row items-center gap-2">{statusChip}{trash}</View>
+                          </View>
+                          {sharing}
+                        </View>
+                      );
+                    }
                     return (
                       <View key={r.id} className="flex-row items-center gap-3 rounded-[10px] border border-border bg-surface px-3 py-2">
                         <Text className="w-[54px] font-mono-semibold text-sm text-ink">{r.number}</Text>
-                        <View className="w-[158px] flex-row gap-1.5">
-                          <Pressable onPress={() => onSetSharing(r.id, 'single')} className={shBtn(r.type === 'single')}><Text className={shTxt(r.type === 'single')}>Single</Text></Pressable>
-                          <Pressable onPress={() => onSetSharing(r.id, 'double')} className={shBtn(r.type === 'double')}><Text className={shTxt(r.type === 'double')}>Double</Text></Pressable>
-                        </View>
-                        <View className="flex-1">
-                          <Pressable onPress={() => onToggleStatus(r)} disabled={r.status === 'occupied'} className={`self-start rounded-full border px-2.5 py-[3px] ${chip.cls}`}>
-                            <Text className={`text-[11px] font-sans-semibold ${chip.cls.split(' ').pop()}`}>{chip.label}</Text>
-                          </Pressable>
-                        </View>
-                        <Pressable onPress={() => onRemoveRoom(r.id)} className="h-8 w-[34px] items-center justify-center rounded-[7px] active:bg-bad-bg"><TrashIcon /></Pressable>
+                        <View className="w-[158px]">{sharing}</View>
+                        <View className="flex-1">{statusChip}</View>
+                        {trash}
                       </View>
                     );
                   })}

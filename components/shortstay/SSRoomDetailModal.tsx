@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, Pressable, Linking, Modal as RNModal, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import { formatINR } from '../../lib/domain/format';
+import { fmtDateShort, fmtTime12 } from '../../lib/domain/dates';
 import { bookingFinancials } from '../../lib/domain/shortstay';
 import { PhoneIcon } from '../icons';
 import type { SSRoom } from '../../types';
@@ -73,8 +74,8 @@ export function SSRoomDetailModal({ room, onClose, onCheckout }: {
 
               {/* Booking grid */}
               <View className="mt-3 flex-row flex-wrap gap-2.5">
-                {cell('Check-in', room.checkInTime ? `${room.checkIn} · ${room.checkInTime}` : room.checkIn ?? '—', true)}
-                {cell('Expected check-out', room.checkOut ?? '—', true)}
+                {cell('Check-in', `${fmtDateShort(room.checkIn)}${room.checkInTime ? `, ${fmtTime12(room.checkInTime)}` : ''}`, true)}
+                {cell('Expected check-out', fmtDateShort(room.checkOut), true)}
                 {cell('Rate / day', formatINR(rate), true)}
                 {cell('Nights so far', String(nights), true)}
                 {cell('Advance paid', formatINR(advance), true)}

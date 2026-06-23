@@ -1,6 +1,7 @@
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import { ATT_UI, ATT_KEYS } from '../../constants/staffMeta';
+import { useNarrow } from '../../lib/ui/useNarrow';
 import type { Staff, Attendance, AttendanceStatus } from '../../types';
 
 const today = new Date().toISOString().slice(0, 10);
@@ -40,6 +41,7 @@ export function AttendanceTab({
 
   const statusFor = (staffId: string): AttendanceStatus | null =>
     todayRecs.find((a) => a.staffId === staffId)?.status ?? null;
+  const narrow = useNarrow();
 
   return (
     <View>
@@ -83,20 +85,19 @@ export function AttendanceTab({
             return (
               <View
                 key={member.id}
-                className={`flex-row items-center gap-[18px] px-5 py-[13px] ${idx < staff.length - 1 ? 'border-b border-border-3' : ''}`}
-                style={{ display: 'flex' }}
+                className={`px-5 py-[13px] ${idx < staff.length - 1 ? 'border-b border-border-3' : ''} ${narrow ? '' : 'flex-row items-center gap-[18px]'}`}
               >
-                {/* Avatar + name (1.4fr equivalent) */}
-                <View className="flex-row items-center gap-[11px]" style={{ flex: 1.4 }}>
+                {/* Avatar + name — on mobile this is its own row above the buttons */}
+                <View className="min-w-0 flex-row items-center gap-[11px]" style={narrow ? undefined : { flex: 1.4 }}>
                   <View
-                    className="h-9 w-9 flex-none items-center justify-center rounded-[10px]"
+                    className={`flex-none items-center justify-center rounded-[10px] ${narrow ? 'h-8 w-8' : 'h-9 w-9'}`}
                     style={{ backgroundColor: avatarColor(member.name) }}
                   >
-                    <Text className="text-[13px] font-sans-semibold text-[#FBF8F0]">
+                    <Text className="text-[12px] font-sans-semibold text-[#FBF8F0]">
                       {initials(member.name)}
                     </Text>
                   </View>
-                  <View className="min-w-0">
+                  <View className="min-w-0 flex-1">
                     <Text numberOfLines={1} className="text-[13.5px] font-sans-semibold text-text">
                       {member.name}
                     </Text>
@@ -106,8 +107,8 @@ export function AttendanceTab({
                   </View>
                 </View>
 
-                {/* Status buttons (2fr equivalent) */}
-                <View className="flex-row gap-[7px]" style={{ flex: 2 }}>
+                {/* Status buttons — full-width row on mobile so labels don't overlap */}
+                <View className={`flex-row gap-[7px] ${narrow ? 'mt-2.5' : ''}`} style={narrow ? undefined : { flex: 2 }}>
                   {ATT_KEYS.map((k) => {
                     const isSelected = current === k;
                     const activeBg: Record<AttendanceStatus, string> = {

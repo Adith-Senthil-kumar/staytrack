@@ -25,7 +25,7 @@ export default function ShortStay() {
   const { width } = useWindowDimensions();
   // Pad the last row with invisible fillers so a lone card keeps its column
   // width instead of stretching full-width (flex `grow` would expand it).
-  const roomCols = width >= 1024 ? 4 : 2;
+  const roomCols = width >= 1024 ? 4 : width >= 640 ? 2 : 1; // 1-per-row on a phone
   const roomFillers = (roomCols - (rooms.length % roomCols)) % roomCols;
 
   const ssAddRoomOpen = useUiStore((s) => s.ssAddRoomOpen);
@@ -92,27 +92,26 @@ export default function ShortStay() {
       <SSStatCards rooms={rooms} stays={stays} />
 
       {/* Rooms board header — per design lines 799–815 */}
-      <View className="mb-[14px] flex-row items-center justify-between">
+      <View className="mb-[14px] gap-3 sm:flex-row sm:items-center sm:justify-between">
         <View className="flex-row items-center gap-[9px]">
           <View className="h-[9px] w-[9px] rounded-full" style={{ backgroundColor: '#C7842A' }} />
           <Text className="font-serif text-[17px] font-semibold text-ink">Short-Stay Rooms</Text>
           <Text className="text-[12.5px] text-muted-2">walk-in, day-by-day</Text>
         </View>
-        <View className="flex-row items-center gap-[10px]">
-          {/* Add Room — surface/border per design line 806 */}
+        {/* On mobile these go full-width below the title so the walk-in button is visible */}
+        <View className="flex-row items-center gap-2.5">
           <Pressable
             onPress={openSSAddRoom}
-            className="flex-row items-center gap-[7px] rounded-[9px] border border-border bg-surface px-[14px] py-[9px] active:bg-surface-2"
+            className="flex-1 flex-row items-center justify-center gap-[7px] rounded-[9px] border border-border bg-surface px-[14px] py-[10px] active:bg-surface-2 sm:flex-none"
           >
             <Text className="text-[13px] font-sans-semibold text-ink">Add Room</Text>
           </Pressable>
-          {/* New Walk-in Booking — amber per design line 810 */}
           <Pressable
             onPress={() => setBookingOpen(true)}
-            className="flex-row items-center gap-[7px] rounded-[9px] px-[15px] py-[9px] active:opacity-90"
+            className="flex-1 flex-row items-center justify-center gap-[7px] rounded-[9px] px-[15px] py-[10px] active:opacity-90 sm:flex-none"
             style={{ backgroundColor: '#C7842A' }}
           >
-            <Text className="text-[13px] font-sans-semibold text-[#FBF8F0]">New Walk-in Booking</Text>
+            <Text numberOfLines={1} className="text-[13px] font-sans-semibold text-[#FBF8F0]">New Walk-in Booking</Text>
           </Pressable>
         </View>
       </View>
@@ -125,7 +124,7 @@ export default function ShortStay() {
       ) : (
         <View className="mb-[30px] flex-row flex-wrap gap-4">
           {rooms.map((room) => (
-            <View key={room.id} className="grow basis-[47%] lg:basis-[23%]">
+            <View key={room.id} className="grow basis-full sm:basis-[47%] lg:basis-[23%]">
               <SSRoomCard
                 room={room}
                 onBook={() => openBooking(room.id)}
@@ -150,7 +149,7 @@ export default function ShortStay() {
             </View>
           ))}
           {Array.from({ length: roomFillers }).map((_, i) => (
-            <View key={`filler-${i}`} className="grow basis-[47%] lg:basis-[23%]" />
+            <View key={`filler-${i}`} className="grow basis-full sm:basis-[47%] lg:basis-[23%]" />
           ))}
         </View>
       )}

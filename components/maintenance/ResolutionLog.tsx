@@ -3,6 +3,7 @@ import Svg, { Path } from 'react-native-svg';
 import { MAINT_CATEGORY } from '../../constants/maintenance';
 import { formatINR } from '../../lib/domain/format';
 import { toDateStr } from '../../lib/domain/dates';
+import { useNarrow } from '../../lib/ui/useNarrow';
 import { AlertTriangleIcon } from '../icons';
 import type { MaintTicket, Vendor } from '../../types';
 
@@ -23,6 +24,7 @@ export function ResolutionLog({
   const troubleRooms = [...roomCounts.entries()]
     .filter(([, count]) => count >= 2)
     .sort((a, b) => b[1] - a[1]);
+  const narrow = useNarrow();
 
   return (
     <View className="flex-col gap-4 lg:flex-row lg:items-start">
@@ -32,6 +34,23 @@ export function ResolutionLog({
           {resolved.length === 0 ? (
             <View className="py-10 items-center">
               <Text className="text-[13px] text-soft">No resolved tickets yet.</Text>
+            </View>
+          ) : narrow ? (
+            // Mobile: stacked cards — no horizontal scrolling
+            <View>
+              {resolved.map((t) => {
+                const vendorName = vendors.find((v) => v.id === t.vendorId)?.name ?? '—';
+                return (
+                  <View key={t.id} className="flex-row items-start gap-3 border-b border-border-3 px-[18px] py-3">
+                    <View className="min-w-0 flex-1">
+                      <Text numberOfLines={2} className="text-[13px] font-sans-semibold text-text">{t.issue}</Text>
+                      <Text className="mt-0.5 text-[11.5px] text-muted-2"><Text className="font-mono-semibold text-ink">{t.roomNumber}</Text> · {MAINT_CATEGORY[t.category]}</Text>
+                      <Text className="text-[11.5px] text-muted-2">{vendorName} · {toDateStr(t.resolvedDate)}</Text>
+                    </View>
+                    <Text className="font-mono-semibold text-[13px] text-ink">{formatINR(t.cost)}</Text>
+                  </View>
+                );
+              })}
             </View>
           ) : (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>

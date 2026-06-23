@@ -1,7 +1,7 @@
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 
 
-type IconProps = { size?: number; color?: string };
+type IconProps = { size?: number; color?: string; className?: string };
 const base = (size: number) => ({ width: size, height: size, viewBox: '0 0 24 24' });
 
 export const RoomsIcon = ({ size = 18, color = '#fff' }: IconProps) => (
@@ -25,19 +25,19 @@ export const ExpensesIcon = ({ size = 18, color = '#fff' }: IconProps) => (
     <Path d="M12 2v20" /><Path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
   </Svg>
 );
-export const MenuIcon = ({ size = 18, color = '#000' }: IconProps) => (
-  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round"><Path d="M3 12h18M3 6h18M3 18h18" /></Svg>
+export const MenuIcon = ({ size = 18, color, className }: IconProps) => (
+  <Svg {...base(size)} className={className} fill="none" stroke={color ?? 'currentColor'} strokeWidth={2} strokeLinecap="round"><Path d="M3 12h18M3 6h18M3 18h18" /></Svg>
 );
 export const SearchIcon = ({ size = 16, color = '#999' }: IconProps) => (
   <Svg {...base(size)} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round"><Circle cx={11} cy={11} r={7} /><Path d="m21 21-4.3-4.3" /></Svg>
 );
-export const SunIcon = ({ size = 17, color = '#000' }: IconProps) => (
-  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+export const SunIcon = ({ size = 17, color, className }: IconProps) => (
+  <Svg {...base(size)} className={className} fill="none" stroke={color ?? 'currentColor'} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
     <Circle cx={12} cy={12} r={4} /><Path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
   </Svg>
 );
-export const MoonIcon = ({ size = 16, color = '#000' }: IconProps) => (
-  <Svg {...base(size)} fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round"><Path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></Svg>
+export const MoonIcon = ({ size = 16, color, className }: IconProps) => (
+  <Svg {...base(size)} className={className} fill="none" stroke={color ?? 'currentColor'} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round"><Path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></Svg>
 );
 export const PlusIcon = ({ size = 16, color = '#fff' }: IconProps) => (
   <Svg {...base(size)} fill="none" stroke={color} strokeWidth={2.2} strokeLinecap="round"><Path d="M12 5v14M5 12h14" /></Svg>

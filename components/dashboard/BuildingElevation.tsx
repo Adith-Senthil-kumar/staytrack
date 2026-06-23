@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { RoomTile } from './RoomTile';
 import { STATUS_UI } from '../../constants/roomStatus';
 import { roomTileVM, floorName, type FloorGroup } from '../../lib/domain/dashboard';
+import { useNarrow } from '../../lib/ui/useNarrow';
 import type { Room, Tenant, Due } from '../../types';
 
 const ROW_H = 96;
@@ -16,21 +17,24 @@ function LegendSwatch({ status }: { status: keyof typeof STATUS_UI }) {
   return <View className={`h-[11px] w-[11px] rounded-[3px] ${STATUS_UI[status].dot}`} />;
 }
 
-function chunk6<T>(arr: T[]): (T | null)[][] {
+// Pack rooms into rows of `n` (6 across on desktop, 2 on a phone so tiles stay
+// readable instead of being crushed to ~50px). Pads the last row with nulls.
+function chunkRows<T>(arr: T[], n: number): (T | null)[][] {
   const rows: (T | null)[][] = [];
-  for (let i = 0; i < arr.length; i += 6) {
-    const row: (T | null)[] = arr.slice(i, i + 6);
-    while (row.length < 6) row.push(null);
+  for (let i = 0; i < arr.length; i += n) {
+    const row: (T | null)[] = arr.slice(i, i + n);
+    while (row.length < n) row.push(null);
     rows.push(row);
   }
-  return rows.length ? rows : [[null, null, null, null, null, null]];
+  return rows.length ? rows : [Array(n).fill(null)];
 }
 
 export function BuildingElevation({ floors, tenantByRoom, dueByTenant, subtitle, onManage, onSelectRoom }: {
   floors: FloorGroup[]; tenantByRoom: Map<string, Tenant>; dueByTenant: Map<string, Due>;
   subtitle: string; onManage?: () => void; onSelectRoom?: (r: Room) => void;
 }) {
-  const bodyH = Math.max(floors.length, 1) * ROW_H;
+  const narrow = useNarrow();
+  const perRow = narrow ? 2 : 6;
   return (
     <View className="flex-1 rounded-[14px] border border-border bg-surface px-6 pb-[26px] pt-[22px]">
       {/* header: title + inline legend + Manage */}
@@ -67,28 +71,28 @@ export function BuildingElevation({ floors, tenantByRoom, dueByTenant, subtitle,
       {/* building body with stairwell shaft */}
       <View className="relative">
         <View className="absolute bottom-0 top-0 border-x border-border" style={{ left: 21, width: 16 }}>
-          <Svg width={16} height={bodyH}>
+          <Svg width={16} height="100%">
             <Defs>
               <Pattern id="stair" width={10} height={10} patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
                 <Rect width={10} height={10} fill="#E7E1D2" />
                 <Line x1={0} y1={5} x2={10} y2={5} stroke="#F1ECDD" strokeWidth={5} />
               </Pattern>
             </Defs>
-            <Rect width={16} height={bodyH} fill="url(#stair)" />
+            <Rect width={16} height="100%" fill="url(#stair)" />
           </Svg>
         </View>
 
         {floors.map((f) => (
           <View key={f.floor} className="flex-row items-stretch border-b border-border-2" style={{ minHeight: ROW_H }}>
-            <View className="justify-center pl-[42px]" style={{ width: 58 }}>
+            <View className="justify-center" style={{ width: narrow ? 62 : 58, paddingLeft: narrow ? 38 : 42 }}>
               <Text numberOfLines={1} className="font-mono-semibold text-[15px] text-ink">{f.floor}F</Text>
-              <Text numberOfLines={1} className="text-[10px] text-soft">{floorName(f.floor)}</Text>
+              {!narrow && <Text numberOfLines={1} className="text-[10px] text-soft">{floorName(f.floor)}</Text>}
             </View>
             <View className="flex-1 justify-center py-3.5 pr-1 pl-[18px]">
               {f.rooms.length === 0 ? (
                 <Text className="text-xs text-soft">No rooms on this floor yet — add them from Manage.</Text>
               ) : (
-                chunk6(f.rooms).map((row, ri) => (
+                chunkRows(f.rooms, perRow).map((row, ri) => (
                   <View key={ri} className={`flex-row gap-2.5 ${ri > 0 ? 'mt-2.5' : ''}`}>
                     {row.map((r, ci) =>
                       r ? (

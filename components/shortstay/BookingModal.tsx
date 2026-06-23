@@ -5,6 +5,7 @@ import type { SSRoom } from '../../types';
 import { SelectField } from '../ui/SelectField';
 import { DateTimeField } from '../ui/DateTimeField';
 import { toPaise, toRupees, formatINR } from '../../lib/domain/format';
+import { useNarrow } from '../../lib/ui/useNarrow';
 import { pickImage } from '../../lib/storage/photos';
 
 const PhotoIcon = ({ size = 16, color = '#5A5A4A' }: { size?: number; color?: string }) => (
@@ -93,6 +94,8 @@ export function BookingModal({
     `rounded-[8px] border px-4 py-[9px] text-[13.5px] font-sans-semibold ${active ? 'border-ok bg-occ-bg text-ok' : 'border-border bg-surface text-label'}`;
 
   const selectedRoom = availableRooms.find((r) => r.id === roomId);
+  const narrow = useNarrow();
+  const row = narrow ? 'mb-4 gap-3' : 'mb-4 flex-row gap-3.5'; // stack two-up rows on a phone
 
   return (
     <RNModal visible={visible} transparent animationType="fade" onRequestClose={close}>
@@ -114,7 +117,7 @@ export function BookingModal({
 
           <ScrollView contentContainerClassName="px-[26px] pb-2 pt-6">
             {/* Row 1: Guest Name + Phone */}
-            <View className="mb-4 flex-row gap-3.5">
+            <View className={row}>
               <View className="flex-1">
                 <Text className={lbl}>Guest Name</Text>
                 <TextInput
@@ -140,7 +143,7 @@ export function BookingModal({
 
             {/* ID Type */}
             <Text className={lbl}>ID Type</Text>
-            <View className="mb-[11px] flex-row gap-2.5">
+            <View className="mb-[11px] flex-row flex-wrap gap-2.5">
               <Pressable onPress={() => setIdType('aadhaar')} className={idBtn(idType === 'aadhaar')}>
                 <Text className={`text-[13.5px] font-sans-semibold ${idType === 'aadhaar' ? 'text-[#C7842A]' : 'text-label'}`}>Aadhaar</Text>
               </Pressable>
@@ -184,24 +187,35 @@ export function BookingModal({
               </View>
             )}
 
-            {/* Check-in date + time / Check-out date — real OS pickers on web */}
-            <View className="mb-4 flex-row gap-3.5">
-              <View style={{ flex: 1.3 }}>
-                <Text className={lbl}>Check-in Date</Text>
-                <DateTimeField mode="date" value={checkIn} onChange={setCheckIn} max={checkOut || undefined} />
+            {/* Check-in date + time / Check-out date — real OS pickers on web.
+                Mobile: date+time on one row, expected check-out full-width below. */}
+            <View className="mb-4 gap-3">
+              <View className="flex-row gap-3.5">
+                <View style={{ flex: 1.4 }}>
+                  <Text className={lbl}>Check-in Date</Text>
+                  <DateTimeField mode="date" value={checkIn} onChange={setCheckIn} max={checkOut || undefined} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text className={lbl}>Time</Text>
+                  <DateTimeField mode="time" value={checkInTime} onChange={setCheckInTime} />
+                </View>
+                {!narrow && (
+                  <View style={{ flex: 1.4 }}>
+                    <Text className={lbl}>Expected Check-out</Text>
+                    <DateTimeField mode="date" value={checkOut} onChange={setCheckOut} min={checkIn || undefined} />
+                  </View>
+                )}
               </View>
-              <View style={{ flex: 0.9 }}>
-                <Text className={lbl}>Time</Text>
-                <DateTimeField mode="time" value={checkInTime} onChange={setCheckInTime} />
-              </View>
-              <View style={{ flex: 1.3 }}>
-                <Text className={lbl}>Expected Check-out</Text>
-                <DateTimeField mode="date" value={checkOut} onChange={setCheckOut} min={checkIn || undefined} />
-              </View>
+              {narrow && (
+                <View>
+                  <Text className={lbl}>Expected Check-out</Text>
+                  <DateTimeField mode="date" value={checkOut} onChange={setCheckOut} min={checkIn || undefined} />
+                </View>
+              )}
             </View>
 
             {/* Rate + Advance */}
-            <View className="mb-4 flex-row gap-3.5">
+            <View className={row}>
               <View className="flex-1">
                 <Text className={lbl}>Rate per Day (₹)</Text>
                 <TextInput

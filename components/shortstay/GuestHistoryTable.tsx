@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, ScrollView, TextInput, Pressable } from 'react-native';
 import { formatINR } from '../../lib/domain/format';
+import { fmtDateShort } from '../../lib/domain/dates';
 import { initials, avatarColor } from '../../lib/domain/tenants';
 import { useNarrow } from '../../lib/ui/useNarrow';
 import { FileTextIcon } from '../icons';
@@ -58,7 +59,7 @@ export function GuestHistoryTable({
                 </View>
                 <View className="min-w-0 flex-1">
                   <Text numberOfLines={1} className="text-[13.5px] font-sans-semibold text-text">{stay.guestName}</Text>
-                  <Text className="mt-0.5 font-mono text-[11.5px] text-text-2"><Text style={{ color: '#C7842A' }}>{stay.roomNumber}</Text> · {stay.checkIn} → {stay.checkOut} · {stay.nights}N</Text>
+                  <Text className="mt-0.5 text-[11.5px] text-text-2"><Text className="font-mono" style={{ color: '#C7842A' }}>{stay.roomNumber}</Text> · {fmtDateShort(stay.checkIn)} → {fmtDateShort(stay.checkOut)} · {stay.nights}N</Text>
                   <Text className="mt-0.5 font-mono-semibold text-[12.5px] text-ink">{formatINR(stay.total)}</Text>
                 </View>
                 <Pressable onPress={() => onReceipt(stay)} className="flex-none flex-row items-center gap-1.5 rounded-[8px] border border-border bg-surface-2 px-3 py-[7px] active:bg-surface-3">

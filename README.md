@@ -18,6 +18,7 @@ rent, staff, expenses and maintenance, all from **one codebase** that runs on iO
 ![NativeWind](https://img.shields.io/badge/NativeWind-v4-38BDF8?logo=tailwindcss&logoColor=white)
 ![Zustand](https://img.shields.io/badge/State-Zustand-2D3748)
 ![Tests](https://img.shields.io/badge/tests-44%20passing-1E6F5C?logo=jest&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-1E6F5C)
 
 **🌐 [Live app](https://staytrack-ca1ac.web.app)** (owner sign-in) &nbsp;·&nbsp; **📱 iOS · Android · Web** &nbsp;·&nbsp; **🎬 Remotion demo video in [`video/`](video/)**
 
@@ -263,6 +264,12 @@ cd video
 npm install
 npx remotion render StayTrack out/staytrack-demo.mp4
 ```
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE) © 2026 Adith Senthil Kumar.
 
 ---
 

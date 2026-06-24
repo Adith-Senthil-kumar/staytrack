@@ -50,3 +50,6 @@ reference/*.zip
 
 # Firebase Hosting deploy cache
 .firebase/
+
+# Remotion render output (regenerable from video/ source)
+video/out/

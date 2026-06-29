@@ -28,7 +28,7 @@ export function ManageRoomsModal({
   onClose: () => void;
   onAddRoom: (floor: number) => void;
   onRemoveRoom: (id: string) => void;
-  onSetSharing: (id: string, sharing: 'single' | 'double') => void;
+  onSetSharing: (id: string, sharing: Room['type']) => void;
   onToggleStatus: (room: Room) => void;
   onAddFloor: () => void;
 }) {
@@ -69,6 +69,7 @@ export function ManageRoomsModal({
                       <View className="flex-row gap-1.5">
                         <Pressable onPress={() => onSetSharing(r.id, 'single')} className={shBtn(r.type === 'single')}><Text className={shTxt(r.type === 'single')}>Single</Text></Pressable>
                         <Pressable onPress={() => onSetSharing(r.id, 'double')} className={shBtn(r.type === 'double')}><Text className={shTxt(r.type === 'double')}>Double</Text></Pressable>
+                        <Pressable onPress={() => onSetSharing(r.id, 'triple')} className={shBtn(r.type === 'triple')}><Text className={shTxt(r.type === 'triple')}>Triple</Text></Pressable>
                       </View>
                     );
                     const statusChip = (
@@ -79,7 +80,7 @@ export function ManageRoomsModal({
                     const trash = (
                       <Pressable onPress={() => onRemoveRoom(r.id)} className="h-8 w-8 flex-none items-center justify-center rounded-[7px] active:bg-bad-bg"><TrashIcon /></Pressable>
                     );
-                    // Mobile: two rows (number + status + trash; then full-width Single/Double)
+                    // Mobile: two rows (number + status + trash; then full-width Single/Double/Triple)
                     // so the controls never overlap. Desktop: single row, unchanged.
                     if (narrow) {
                       return (
@@ -95,7 +96,7 @@ export function ManageRoomsModal({
                     return (
                       <View key={r.id} className="flex-row items-center gap-3 rounded-[10px] border border-border bg-surface px-3 py-2">
                         <Text className="w-[54px] font-mono-semibold text-sm text-ink">{r.number}</Text>
-                        <View className="w-[158px]">{sharing}</View>
+                        <View className="w-[212px]">{sharing}</View>
                         <View className="flex-1">{statusChip}</View>
                         {trash}
                       </View>

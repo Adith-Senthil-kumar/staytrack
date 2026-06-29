@@ -87,7 +87,7 @@ export function ManagePropertyModal({ visible, onClose }: { visible: boolean; on
                 {f.rooms.map((r) => (
                   <View key={r.id} className="mb-2 flex-row items-center gap-3 rounded-[10px] border border-border bg-surface px-3 py-2">
                     <Text className="w-[54px] font-mono-semibold text-sm text-ink">{r.number}</Text>
-                    <View className="w-[158px] flex-row gap-1.5">{typeBtn(r, 'single', 'Single')}{typeBtn(r, 'double', 'Double')}</View>
+                    <View className="w-[214px] flex-row gap-1.5">{typeBtn(r, 'single', 'Single')}{typeBtn(r, 'double', 'Double')}{typeBtn(r, 'triple', 'Triple')}</View>
                     <View className="flex-1">
                       <Pressable onPress={() => uid && setRoomStatus(uid, r.id, r.status === 'repair' ? 'vacant' : 'repair')} className={`self-start rounded-md px-2 py-1 ${r.status === 'repair' ? 'border border-maint-bd bg-maint-bg' : 'bg-surface-2'}`}><Text className={`text-[11px] font-sans-semibold ${r.status === 'repair' ? 'text-bad' : 'text-muted'}`}>{r.status === 'repair' ? 'Repair' : 'OK'}</Text></Pressable>
                     </View>
